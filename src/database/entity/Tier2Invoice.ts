@@ -39,8 +39,8 @@ export class Tier2Invoice {
   })
   approvalStatus: "Approved" | "Rejected" | "Pending" | null;
 
-  @Column("bigint", { name: "ReceivableAmount", nullable: true })
-  receivableAmount: string | null;
+  @Column("bigint", { name: "ReceivableAmount", nullable: true, transformer: new MoneyTransformer()})
+  receivableAmount: Dinero.Dinero | null;
 
   @ManyToOne(() => Actor, (actor) => actor.tier2Invoices)
   @JoinColumn([{ name: "Tier1Id", referencedColumnName: "actorid" }])
