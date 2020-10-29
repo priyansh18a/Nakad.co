@@ -1,9 +1,9 @@
+import { Request, Response } from "express";
 import { getConnection } from "typeorm";
-import { AnchorInvoice } from "../database/entity/AnchorInvoice";
-import { AnchorTier2InvoiceMapping } from "../database/entity/AnchorTier2InvoiceMapping";
 import { Tier2Invoice } from "../database/entity/Tier2Invoice";
 
-export async function listTier2InvoicesForApproval(req, res) {
+// Request has query param named tier1Id
+export async function listTier2InvoicesForApproval(req: Request, res: Response) {
     const tier1Id = parseInt(req.query.tier1Id[0]);
     return res.json(await listTier2InvoicesForApprovalInternal(tier1Id));
 }
