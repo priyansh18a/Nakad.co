@@ -5,9 +5,9 @@ import { Actor } from "./Actor";
 @Index("tier2invoice_pk", ["invoiceId", "tier1Id", "tier2Id"], { unique: true })
 @Entity("tier2invoice", { schema: "public" })
 export class Tier2Invoice {
+  
   @Column("integer", { primary: true, name: "Tier2Id", unique: true })
   tier2Id: number;
-
   @Column("integer", { primary: true, name: "Tier1Id", unique: true })
   tier1Id: number;
 
