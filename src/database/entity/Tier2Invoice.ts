@@ -1,4 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import { MoneyTransformer } from "../util/MoneyTransformer";
 import { Actor } from "./Actor";
 
 @Index("tier2_unqiue", ["invoiceId", "tier1Id", "tier2Id"], { unique: true })
@@ -19,8 +20,8 @@ export class Tier2Invoice {
   })
   invoiceId: string;
 
-  @Column("bigint", { name: "InvoiceAmount", nullable: true })
-  invoiceAmount: string | null;
+  @Column("bigint", { name: "InvoiceAmount", nullable: true , transformer: new MoneyTransformer()})
+  invoiceAmount: Dinero.Dinero | null;
 
   @Column("timestamp with time zone", { name: "InvoiceDate", nullable: true })
   invoiceDate: Date | null;

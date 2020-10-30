@@ -1,4 +1,5 @@
 import { Column, Entity, Index, OneToMany } from "typeorm";
+import { MoneyTransformer } from "../util/MoneyTransformer";
 import { AnchorTier2InvoiceMapping } from "./AnchorTier2InvoiceMapping";
 
 @Index("anchorinvoice_primary", ["anchorId", "invoiceId", "tier1Id"], {
@@ -23,8 +24,8 @@ export class AnchorInvoice {
   @Column("timestamp with time zone", { name: "InvoiceDate", nullable: true })
   invoiceDate: Date | null;
 
-  @Column("bigint", { name: "InvoiceAmount", nullable: true })
-  invoiceAmount: string | null;
+  @Column("bigint", { name: "InvoiceAmount", nullable: true, transformer: new MoneyTransformer() })
+  invoiceAmount: Dinero.Dinero | null;
 
   @Column("integer", { primary: true, name: "AnchorId", unique: true })
   anchorId: number;
