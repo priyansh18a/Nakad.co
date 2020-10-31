@@ -28,4 +28,4 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Do tslint check
-        run: tslint --project .
+        run: npx tslint --project .
