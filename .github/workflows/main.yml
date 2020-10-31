@@ -25,7 +25,11 @@ jobs:
       # Runs a single command using the runners shell
       - name: Do npm build
         run: npm build
-
+      
+      # Runs a set of commands using the runners shell
+      - name: install typescript
+        run: npm install typescript -g
+        
       # Runs a set of commands using the runners shell
       - name: Do tslint check
         run: npx tslint --project .
