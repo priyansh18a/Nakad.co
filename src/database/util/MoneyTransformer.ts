@@ -7,6 +7,6 @@ export class MoneyTransformer implements ValueTransformer  {
     }
 
     from (value: string): Dinero.Dinero {
-        return Dinero({ amount: parseInt(value), currency: 'INR' })
+        return Dinero({ amount: parseInt(value, 10), currency: 'INR' })
     }
 }

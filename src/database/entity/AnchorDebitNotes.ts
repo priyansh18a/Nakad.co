@@ -1,11 +1,7 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Actor } from "./Actor";
 
-@Index(
-  "anchorDebitNotes_pk",
-  ["anchorId", "debitNoteId", "invoiceId", "tier1Id"],
-  { unique: true }
-)
+@Index("anchorDebitNotes_pk", ["anchorId", "debitNoteId", "invoiceId", "tier1Id"], { unique: true })
 @Entity("AnchorDebitNotes", { schema: "public" })
 export class AnchorDebitNotes {
   @Column("integer", { primary: true, name: "AnchorId" })

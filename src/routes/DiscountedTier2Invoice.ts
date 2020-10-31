@@ -10,6 +10,6 @@ export interface DiscountedTier2Invoice {
     tier2Invoice: Tier2Invoice;
     partAnchorInvoices: PartAnchorInvoice[];
     discountedAmount: Dinero.Dinero;
-    discountedAnnualRatePercentage: Number;
+    discountedAnnualRatePercentage: number;
     status: "Pending" | "Discounted";
 }

@@ -7,49 +7,55 @@ import { DiscountedTier2Invoice } from "./DiscountedTier2Invoice";
 
 // Request has query param named tier2Id
 export async function listTier2InvoicesForDiscounting(req: Request, res: Response) {
-    const tier1Id = parseInt(req.query.tier1Id[0]);
-    const tier2Id = parseInt(req.query.tier2Id[0]);
-    return res.json(await listTier2InvoicesForDiscountingInternal(tier1Id, tier2Id));
+  const tier1Id = parseInt(req.query.tier1Id[0], 10);
+  const tier2Id = parseInt(req.query.tier2Id[0], 10);
+  return res.json(await listTier2InvoicesForDiscountingInternal(tier1Id, tier2Id));
 }
 
-export async function listTier2InvoicesForDiscountingInternal(tier1Id: Number, tier2Id: Number): Promise<DiscountedTier2Invoice[]> {
-    const anchorInvoices = await getConnection().createQueryBuilder()
-        .select('AI')
-        .from(AnchorInvoice, 'AI')
-        .leftJoin(AnchorTier2InvoiceMapping, 'ATM', '"AI"."InvoiceId" = "ATM"."AnchorInvoiceId"')
-        .where('"ATM"."AnchorInvoiceId" IS NULL').andWhere('"AI"."Tier1Id" = :id', { id: tier1Id })
-        .orderBy('"AI"."DueDate"', 'ASC')
-        .getMany();
-    console.log("anchorInvoices: " + JSON.stringify(anchorInvoices));
+export async function listTier2InvoicesForDiscountingInternal(
+  tier1Id: number,
+  tier2Id: number
+): Promise<DiscountedTier2Invoice[]> {
+  const anchorInvoices = await getConnection()
+    .createQueryBuilder()
+    .select("AI")
+    .from(AnchorInvoice, "AI")
+    .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"AI"."InvoiceId" = "ATM"."AnchorInvoiceId"')
+    .where('"ATM"."AnchorInvoiceId" IS NULL')
+    .andWhere('"AI"."Tier1Id" = :id', { id: tier1Id })
+    .orderBy('"AI"."DueDate"', "ASC")
+    .getMany();
+  console.log("anchorInvoices: " + JSON.stringify(anchorInvoices));
 
-    const tier2Invoices = await getConnection().createQueryBuilder()
-        .select('t')
-        .from(Tier2Invoice, 't')
-        .where('"t"."ApprovalStatus" = \'Approved\'').andWhere('"t"."Tier2Id" = :id', {id: tier2Id})
-        .orderBy('"t"."DueDate"', 'ASC').getMany();
+  const tier2Invoices = await getConnection()
+    .createQueryBuilder()
+    .select("t")
+    .from(Tier2Invoice, "t")
+    .where('"t"."ApprovalStatus" = \'Approved\'')
+    .andWhere('"t"."Tier2Id" = :id', { id: tier2Id })
+    .orderBy('"t"."DueDate"', "ASC")
+    .getMany();
 
-    console.log("tier2Invoices: " + JSON.stringify(tier2Invoices));
+  console.log("tier2Invoices: " + JSON.stringify(tier2Invoices));
 
-    let j = 0;
-    let invoiceToReturn: DiscountedTier2Invoice[] = [];
-    // TODO(harshil) This logic will need change.
-    for (let i = 0; i < tier2Invoices.length; i++) {
-        const inv: Tier2Invoice = tier2Invoices[i];
-
-        if (j >= anchorInvoices.length)
-            break;
-        const anchorInvoice = anchorInvoices[j];
-        if (inv.dueDate < anchorInvoice.dueDate && inv.invoiceAmount.lessThanOrEqual(anchorInvoice.invoiceAmount)) {
-            // TODO(harshil) Add logic for current date etc and calculate discounting amount
-            invoiceToReturn.push({
-                tier2Invoice: inv, 
-                discountedAmount: inv.invoiceAmount.multiply(0.85), 
-                discountedAnnualRatePercentage: 15, 
-                status: "Pending", 
-                partAnchorInvoices: [{ anchorInvoice: anchorInvoice, partialAmount: inv.invoiceAmount }]});
-            j++;
-        }
+  let j = 0;
+  const invoiceToReturn: DiscountedTier2Invoice[] = [];
+  // TODO(harshil) This logic will need change.
+  for (const inv of tier2Invoices) {
+    if (j >= anchorInvoices.length) break;
+    const anchorInvoice = anchorInvoices[j];
+    if (inv.dueDate < anchorInvoice.dueDate && inv.invoiceAmount.lessThanOrEqual(anchorInvoice.invoiceAmount)) {
+      // TODO(harshil) Add logic for current date etc and calculate discounting amount
+      invoiceToReturn.push({
+        tier2Invoice: inv,
+        discountedAmount: inv.invoiceAmount.multiply(0.85),
+        discountedAnnualRatePercentage: 15,
+        status: "Pending",
+        partAnchorInvoices: [{ anchorInvoice, partialAmount: inv.invoiceAmount }],
+      });
+      j++;
     }
+  }
 
-    return invoiceToReturn;
+  return invoiceToReturn;
 }
