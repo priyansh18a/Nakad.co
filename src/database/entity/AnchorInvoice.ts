@@ -33,9 +33,6 @@ export class AnchorInvoice {
   @Column("timestamp with time zone", { name: "DueDate", nullable: true })
   dueDate: Date | null;
 
-  @OneToMany(
-    () => AnchorTier2InvoiceMapping,
-    (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.anchorInvoice
-  )
+  @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.anchorInvoice)
   anchorTier2InvoiceMappings: AnchorTier2InvoiceMapping[];
 }

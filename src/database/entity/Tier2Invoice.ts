@@ -6,7 +6,6 @@ import { Actor } from "./Actor";
 @Index("tier2invoice_pk", ["invoiceId", "tier1Id", "tier2Id"], { unique: true })
 @Entity("tier2invoice", { schema: "public" })
 export class Tier2Invoice {
-  
   @Column("integer", { primary: true, name: "Tier2Id", unique: true })
   tier2Id: number;
   @Column("integer", { primary: true, name: "Tier1Id", unique: true })
@@ -20,7 +19,11 @@ export class Tier2Invoice {
   })
   invoiceId: string;
 
-  @Column("bigint", { name: "InvoiceAmount", nullable: true , transformer: new MoneyTransformer()})
+  @Column("bigint", {
+    name: "InvoiceAmount",
+    nullable: true,
+    transformer: new MoneyTransformer(),
+  })
   invoiceAmount: Dinero.Dinero | null;
 
   @Column("timestamp with time zone", { name: "InvoiceDate", nullable: true })
@@ -39,8 +42,12 @@ export class Tier2Invoice {
   })
   approvalStatus: "Approved" | "Rejected" | "Pending" | null;
 
-  @Column("bigint", { name: "ReceivableAmount", nullable: true })
-  receivableAmount: string | null;
+  @Column("bigint", {
+    name: "ReceivableAmount",
+    nullable: true,
+    transformer: new MoneyTransformer(),
+  })
+  receivableAmount: Dinero.Dinero | null;
 
   @ManyToOne(() => Actor, (actor) => actor.tier2Invoices)
   @JoinColumn([{ name: "Tier1Id", referencedColumnName: "actorid" }])
