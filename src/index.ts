@@ -1,5 +1,6 @@
 import { createConnection } from "typeorm";
 import express from "express";
+import cors from "cors";
 import { listTier2InvoicesForApproval } from "./routes/listTier2InvoicesForApproval";
 import { updateTier2InvoiceForApproval } from "./routes/updateTier2InvoiceForApproval";
 import { listTier2InvoicesForDiscounting } from "./routes/listTier2InvoicesForDiscounting";
@@ -8,9 +9,11 @@ import { tier2Invoice } from "./routes/tier2Invoice";
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const PORT = 8082;
 app.use(express.json());
+
 createConnection()
   .then(async (connection) => {
     app.get("/", (req, res) => res.send("Express + TypeScript Server"));
