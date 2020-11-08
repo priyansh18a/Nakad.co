@@ -2,11 +2,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Actor } from "./Actor";
 import { AnchorInvoice } from "./AnchorInvoice";
 
-@Index(
-  "main",
-  ["anchorId", "anchorInvoiceId", "tier1Id", "tier2Id", "tier2InvoiceId"],
-  { unique: true }
-)
+@Index("main", ["anchorId", "anchorInvoiceId", "tier1Id", "tier2Id", "tier2InvoiceId"], { unique: true })
 @Entity("anchortier2invoicemapping", { schema: "public" })
 export class AnchorTier2InvoiceMapping {
   @Column("integer", { primary: true, name: "AnchorId" })
@@ -44,10 +40,7 @@ export class AnchorTier2InvoiceMapping {
   @JoinColumn([{ name: "Tier2Id", referencedColumnName: "actorid" }])
   tier2: Actor;
 
-  @ManyToOne(
-    () => AnchorInvoice,
-    (anchorInvoice) => anchorInvoice.anchorTier2InvoiceMappings
-  )
+  @ManyToOne(() => AnchorInvoice, (anchorInvoice) => anchorInvoice.anchorTier2InvoiceMappings)
   @JoinColumn([
     { name: "AnchorInvoiceId", referencedColumnName: "invoiceId" },
     { name: "AnchorId", referencedColumnName: "anchorId" },

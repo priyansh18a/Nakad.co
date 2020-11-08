@@ -11,6 +11,15 @@
       "emitDecoratorMetadata": true,
       "esModuleInterop": true,
       "experimentalDecorators": true,
-      "sourceMap": true
+      "sourceMap": true,
+      "plugins": [
+         {
+            "name": "typescript-tslint-plugin",
+            "configFile": "./tslint.json",
+            "alwaysShowRuleFailuresAsWarnings": false,
+            "ignoreDefinitionFiles": true,
+            "suppressWhileTypeErrorsPresent": false
+         }
+      ]
    }
 }
