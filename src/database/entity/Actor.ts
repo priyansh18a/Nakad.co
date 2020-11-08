@@ -4,7 +4,7 @@ import { AnchorTier2InvoiceMapping } from "./AnchorTier2InvoiceMapping";
 import { Tier2Invoice } from "./Tier2Invoice";
 
 @Index("books_pkey", ["actorid"], { unique: true })
-@Entity("Actor", { schema: "public" })
+@Entity("actor", { schema: "public" })
 export class Actor {
   @PrimaryGeneratedColumn({ type: "integer", name: "actorid" })
   actorid: number;

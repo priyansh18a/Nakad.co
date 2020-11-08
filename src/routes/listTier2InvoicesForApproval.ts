@@ -10,13 +10,14 @@ export async function listTier2InvoicesForApproval(req: Request, res: Response) 
 
 async function listTier2InvoicesForApprovalInternal(tier1Id: number): Promise<Tier2Invoice[]> {
   const tier2Invoices = await getConnection()
-    .createQueryBuilder()
-    .select("t")
-    .from(Tier2Invoice, "t")
-    .where('"t"."ApprovalStatus" = \'Pending\'')
-    .andWhere('"t"."Tier1Id" = :id', { id: tier1Id })
-    .orderBy('"t"."DueDate"', "ASC")
-    .getMany();
+    .getRepository(Tier2Invoice)
+    .find({
+      where: { approvalStatus: "Pending", tier1Id },
+      order: {
+        dueDate: "ASC",
+      },
+      relations: ["tier2"],
+    });
 
   console.log("tier2Invoices: " + JSON.stringify(tier2Invoices));
   return tier2Invoices;
