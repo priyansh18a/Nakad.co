@@ -15,6 +15,8 @@ import { listTier2InvoicesForApproval } from "./routes/listTier2InvoicesForAppro
 import { listTier2InvoicesForDiscounting } from "./routes/listTier2InvoicesForDiscounting";
 import { updateTier2InvoiceForApproval } from "./routes/updateTier2InvoiceForApproval";
 import { updateTier2InvoicesForDiscounting } from "./routes/updateTier2InvoicesForDiscounting";
+import { listInvoicesForBankApproval } from "./routes/listInvoicesForBankApproval";
+import { updateInvoiceForBankApproval } from "./routes/updateInvoiceForBankApproval";
 import { AssertionError } from "assert";
 
 // Create a new express application instance
@@ -36,6 +38,12 @@ createConnection()
     app.get("/ListTier2InvoicesForDiscounting", loginCheck(), listTier2InvoicesForDiscounting);
     app.post("/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
 
+    app.get("/ListTier2InvoicesForApproval", listTier2InvoicesForApproval);
+    app.post("/UpdateTier2InvoiceForApproval", updateTier2InvoiceForApproval);
+    app.get("/ListTier2InvoicesForDiscounting", listTier2InvoicesForDiscounting);
+    app.post("/UpdateTier2InvoiceForDiscounting", updateTier2InvoicesForDiscounting);
+    app.get("/ListInvoicesForBankApproval", listInvoicesForBankApproval);
+    app.post("/UpdateInvoiceForBankApproval", updateInvoiceForBankApproval);
     app.listen(PORT, () => {
       console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
     });

@@ -27,11 +27,14 @@ export class Actor {
   @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.anchor)
   anchorTier2InvoiceMappings: AnchorTier2InvoiceMapping[];
 
-  @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.tier)
+  @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.bank)
   anchorTier2InvoiceMappings2: AnchorTier2InvoiceMapping[];
 
-  @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.tier2)
+  @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.tier)
   anchorTier2InvoiceMappings3: AnchorTier2InvoiceMapping[];
+
+  @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.tier2)
+  anchorTier2InvoiceMappings4: AnchorTier2InvoiceMapping[];
 
   @OneToMany(() => Tier2Invoice, (tier2Invoice) => tier2Invoice.tier)
   tier2Invoices: Tier2Invoice[];
