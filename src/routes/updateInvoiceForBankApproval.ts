@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import { getConnection } from 'typeorm';
-import { AnchorTier2InvoiceMapping } from '../database/entity/AnchorTier2InvoiceMapping';
+import { Request, Response } from "express";
+import { getConnection } from "typeorm";
+import { AnchorTier2InvoiceMapping } from "../database/entity/AnchorTier2InvoiceMapping";
 
 // Request is a AnchorTier2InvoiceMapping with bankApproval Status of Accepted or Rejected and bankId
 
@@ -38,7 +38,7 @@ export async function updateInvoiceForBankApproval(
       },
     });
   console.log(JSON.stringify(invoiceForApproval));
-  console.log('BankId  and Bank Status updated');
+  console.log("BankId  and Bank Status updated");
 
   return res.json(invoiceForApproval);
 }
