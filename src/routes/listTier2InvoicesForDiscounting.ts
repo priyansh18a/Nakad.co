@@ -3,7 +3,7 @@ import { getConnection } from "typeorm";
 import { AnchorInvoice } from "../database/entity/AnchorInvoice";
 import { AnchorTier2InvoiceMapping } from "../database/entity/AnchorTier2InvoiceMapping";
 import { Tier2Invoice } from "../database/entity/Tier2Invoice";
-import { DiscountedTier2Invoice } from "./DiscountedTier2Invoice";
+import { DiscountedTier2Invoice } from "../models/DiscountedTier2Invoice";
 
 // Request has query param named tier2Id
 export async function listTier2InvoicesForDiscounting(req: Request, res: Response) {

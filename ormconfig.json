@@ -1,7 +1,7 @@
 {
    "name": "default",
    "type": "postgres",
-   "host": "localhost",
+   "host": "harshil-blog.southindia.cloudapp.azure.com",
    "port": 5432,
    "username": "postgres",
    "password": "harshillodhipostgres",

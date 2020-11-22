@@ -1,33 +1,85 @@
-import { createConnection } from "typeorm";
+import { Connection, createConnection } from "typeorm";
 import express from "express";
+import session from "express-session";
+import passport from "passport";
+import register from "./routes/register";
 import cors from "cors";
-import { listTier2InvoicesForApproval } from "./routes/listTier2InvoicesForApproval";
-import { updateTier2InvoiceForApproval } from "./routes/updateTier2InvoiceForApproval";
-import { listTier2InvoicesForDiscounting } from "./routes/listTier2InvoicesForDiscounting";
-import { updateTier2InvoicesForDiscounting } from "./routes/updateTier2InvoicesForDiscounting";
+import { PostgresDriver } from "typeorm/driver/postgres/PostgresDriver";
+import { Pool } from "pg";
+import Session from "express-session";
+import connectPgSimple from "connect-pg-simple";
+import { initializePassportConfig } from "./config/passport";
+import { ensureLoggedIn } from "connect-ensure-login";
 import { tier2Invoice } from "./routes/tier2Invoice";
+import { listTier2InvoicesForApproval } from "./routes/listTier2InvoicesForApproval";
+import { listTier2InvoicesForDiscounting } from "./routes/listTier2InvoicesForDiscounting";
+import { updateTier2InvoiceForApproval } from "./routes/updateTier2InvoiceForApproval";
+import { updateTier2InvoicesForDiscounting } from "./routes/updateTier2InvoicesForDiscounting";
+import { AssertionError } from "assert";
 
-const app = express();
+// Create a new express application instance
+const app: express.Application = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 const PORT = 8082;
-app.use(express.json());
-
 createConnection()
-  .then(async (connection) => {
-    app.get("/", (req, res) => res.send("Express + TypeScript Server"));
+  .then((connection) => {
+    setupSessionAndPassport(connection);
 
-    app.post("/Tier2Invoice", tier2Invoice);
+    setupDefaultAndAuthRoutes();
 
-    app.get("/ListTier2InvoicesForApproval", listTier2InvoicesForApproval);
-    app.post("/UpdateTier2InvoiceForApproval", updateTier2InvoiceForApproval);
-    app.get("/ListTier2InvoicesForDiscounting", listTier2InvoicesForDiscounting);
-    app.post("/UpdateTier2InvoiceForDiscounting", updateTier2InvoicesForDiscounting);
+    app.post("/Tier2Invoice", loginCheck(), tier2Invoice);
+    app.get("/ListTier2InvoicesForApproval", loginCheck(), listTier2InvoicesForApproval);
+    app.post("/UpdateTier2InvoiceForApproval", loginCheck(), updateTier2InvoiceForApproval);
+    app.get("/ListTier2InvoicesForDiscounting", loginCheck(), listTier2InvoicesForDiscounting);
+    app.post("/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
 
     app.listen(PORT, () => {
-      // tslint:disable-next-line: no-console
-      console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);
+      console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
     });
   })
   .catch((error) => console.log(error));
+
+function setupDefaultAndAuthRoutes() {
+  app.get("/", (req, res) => {
+    res.send("Hello World!");
+  });
+
+  app.post("/register", register);
+  app.post("/login", passport.authenticate("local", { failureFlash: true }), (req, res) => {
+    res.json({});
+    res.end();
+  });
+  app.get("/logout", (req, res) => {
+    req.logout();
+  });
+}
+
+function setupSessionAndPassport(connection: Connection) {
+  if (connection.driver instanceof PostgresDriver) {
+    const pool = connection.driver.master as Pool;
+    app.use(
+      session({
+        store: new (connectPgSimple(Session))({
+          pool,
+        }),
+        secret: "9OLWxND4o83j4K4iuopOhjbdjwgg515",
+        saveUninitialized: false,
+        resave: false,
+        cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 },
+      })
+    );
+
+    app.use(passport.initialize());
+    app.use(passport.session());
+    initializePassportConfig();
+  } else {
+    throw new AssertionError({ message: "connection driver has to be of type postgres" });
+  }
+}
+
+function loginCheck() {
+  return ensureLoggedIn("/");
+}
