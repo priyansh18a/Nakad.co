@@ -17,12 +17,14 @@ import { updateTier2InvoicesForDiscounting } from "./routes/updateTier2InvoicesF
 import { listInvoicesForBankApproval } from "./routes/listInvoicesForBankApproval";
 import { updateInvoiceForBankApproval } from "./routes/updateInvoiceForBankApproval";
 import { AssertionError } from "assert";
+import path from "path";
 
 // Create a new express application instance
 const app: express.Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(express.static(path.join(__dirname, "../clientbuild")));
 
 const PORT = 8082;
 createConnection()
@@ -31,18 +33,17 @@ createConnection()
 
     setupDefaultAndAuthRoutes();
 
-    app.post("/Tier2Invoice", loginCheck(), tier2Invoice);
-    app.get("/ListTier2InvoicesForApproval", loginCheck(), listTier2InvoicesForApproval);
-    app.post("/UpdateTier2InvoiceForApproval", loginCheck(), updateTier2InvoiceForApproval);
-    app.get("/ListTier2InvoicesForDiscounting", loginCheck(), listTier2InvoicesForDiscounting);
-    app.post("/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
+    app.post("/api/Tier2Invoice", loginCheck(), tier2Invoice);
+    app.get("/api/ListTier2InvoicesForApproval", loginCheck(), listTier2InvoicesForApproval);
+    app.post("/api/UpdateTier2InvoiceForApproval", loginCheck(), updateTier2InvoiceForApproval);
+    app.get("/api/ListTier2InvoicesForDiscounting", loginCheck(), listTier2InvoicesForDiscounting);
+    app.post("/api/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
+    app.get("/api/ListInvoicesForBankApproval", loginCheck(), listInvoicesForBankApproval);
+    app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval);
 
-    app.get("/ListTier2InvoicesForApproval", listTier2InvoicesForApproval);
-    app.post("/UpdateTier2InvoiceForApproval", updateTier2InvoiceForApproval);
-    app.get("/ListTier2InvoicesForDiscounting", listTier2InvoicesForDiscounting);
-    app.post("/UpdateTier2InvoiceForDiscounting", updateTier2InvoicesForDiscounting);
-    app.get("/ListInvoicesForBankApproval", listInvoicesForBankApproval);
-    app.post("/UpdateInvoiceForBankApproval", updateInvoiceForBankApproval);
+    app.get("/*", function (req, res) {
+      res.sendFile(path.join(__dirname, "../clientbuild", "index.html"));
+    });
     app.listen(PORT, () => {
       console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
     });

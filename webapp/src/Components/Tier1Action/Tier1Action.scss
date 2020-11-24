@@ -1,0 +1,80 @@
+.actiontop{
+    display: flex;
+    padding-top: 2rem;
+}
+
+.tier-2-action{
+    margin-top: 0px;
+    margin: auto;
+}
+.Tier-2-Invoice{
+    margin: auto;
+}
+.ag-header-row{
+    background-color: skyblue;
+    margin-top: 10px;
+}
+.ag-header-cell-text {
+    margin-top: -8px;
+}
+.navbar-item img {
+    max-height: 2.5rem;
+}
+
+.notification{
+    position: absolute;
+    right: 50px;
+    padding: 1rem;
+}
+
+.total-benefit{
+    position: absolute;
+    right: 20px;
+    height: 40px;
+    padding: 10px;
+    font-weight: bold;
+    color: white;
+    
+}
+.table-info{
+    margin: auto;
+    height: 40px;
+    padding: 10px;
+    width: 240px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+
+.ag-cell.ag-cell-not-inline-editing.ag-cell-auto-height.ag-cell-focus{
+    outline: none !important;
+    border: none !important;
+}
+#table-more-info{
+    display: none;
+    height: 60px;
+    width: 500px;
+    padding-left: 10px;
+    padding-top: 6px;
+    border: 1px solid #3298dc;
+    margin: auto;
+    position: absolute;
+    left: 20%;
+    font-weight: 800;
+}
+.moreinfospan{
+    margin-left: 9px;
+    cursor: pointer;
+}
+
+.highlight{
+    background-color: rgb(243, 243, 147) !important;
+}
+
+@media(max-width:1120px){
+    .tier-2-action{
+        display: none;
+    }
+}
