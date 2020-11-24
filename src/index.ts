@@ -1,5 +1,5 @@
 import { Connection, createConnection } from "typeorm";
-import express from "express";
+import express, { Request, Response } from "express";
 import session from "express-session";
 import passport from "passport";
 import register from "./routes/register";
@@ -9,7 +9,6 @@ import { Pool } from "pg";
 import Session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { initializePassportConfig } from "./config/passport";
-import { ensureLoggedIn } from "connect-ensure-login";
 import { tier2Invoice } from "./routes/tier2Invoice";
 import { listTier2InvoicesForApproval } from "./routes/listTier2InvoicesForApproval";
 import { listTier2InvoicesForDiscounting } from "./routes/listTier2InvoicesForDiscounting";
@@ -56,7 +55,7 @@ function setupDefaultAndAuthRoutes() {
   });
 
   app.post("/register", register);
-  app.post("/login", passport.authenticate("local", { failureFlash: true }), (req, res) => {
+  app.post("/login", passport.authenticate("local", { failureFlash: false }), (req, res) => {
     res.json({});
     res.end();
   });
@@ -89,5 +88,15 @@ function setupSessionAndPassport(connection: Connection) {
 }
 
 function loginCheck() {
-  return ensureLoggedIn("/");
+  return ensureLoggedIn();
+}
+
+function ensureLoggedIn() {
+  return (req: Request, res: Response, next) => {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401);
+      return res.end();
+    }
+    next();
+  };
 }

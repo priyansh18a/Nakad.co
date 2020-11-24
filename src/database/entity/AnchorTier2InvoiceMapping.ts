@@ -2,7 +2,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Actor } from "./Actor";
 import { AnchorInvoice } from "./AnchorInvoice";
 
-@Index("anchortier2invoicemapping_unique", ["anchorId", "anchorInvoiceId", "tier1Id", "tier2Id", "tier2InvoiceId"], {
+@Index("main", ["anchorId", "anchorInvoiceId", "tier1Id", "tier2Id", "tier2InvoiceId"], {
   unique: true,
 })
 @Index("anchortier2invoicemapping_pk", ["anchorId", "anchorInvoiceId", "tier1Id", "tier2Id", "tier2InvoiceId"], {
