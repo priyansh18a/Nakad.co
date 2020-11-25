@@ -41,7 +41,7 @@ createConnection()
     app.get("/api/ListInvoicesForBankApproval", loginCheck(), listInvoicesForBankApproval);
     app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval);
 
-    app.get("/*", function (req, res) {
+    app.get("/*", (req, res) => {
       res.sendFile(path.join(__dirname, "../clientbuild", "index.html"));
     });
     app.listen(PORT, () => {
