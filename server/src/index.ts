@@ -1,5 +1,5 @@
 import { Connection, createConnection } from "typeorm";
-import express from "express";
+import express, { Request, Response } from "express";
 import session from "express-session";
 import passport from "passport";
 import register from "./routes/register";
@@ -9,19 +9,22 @@ import { Pool } from "pg";
 import Session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { initializePassportConfig } from "./config/passport";
-import { ensureLoggedIn } from "connect-ensure-login";
 import { tier2Invoice } from "./routes/tier2Invoice";
 import { listTier2InvoicesForApproval } from "./routes/listTier2InvoicesForApproval";
 import { listTier2InvoicesForDiscounting } from "./routes/listTier2InvoicesForDiscounting";
 import { updateTier2InvoiceForApproval } from "./routes/updateTier2InvoiceForApproval";
 import { updateTier2InvoicesForDiscounting } from "./routes/updateTier2InvoicesForDiscounting";
+import { listInvoicesForBankApproval } from "./routes/listInvoicesForBankApproval";
+import { updateInvoiceForBankApproval } from "./routes/updateInvoiceForBankApproval";
 import { AssertionError } from "assert";
+import path from "path";
 
 // Create a new express application instance
 const app: express.Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(express.static(path.join(__dirname, "../clientbuild")));
 
 const PORT = 8082;
 createConnection()
@@ -30,12 +33,17 @@ createConnection()
 
     setupDefaultAndAuthRoutes();
 
-    app.post("/Tier2Invoice", loginCheck(), tier2Invoice);
-    app.get("/ListTier2InvoicesForApproval", loginCheck(), listTier2InvoicesForApproval);
-    app.post("/UpdateTier2InvoiceForApproval", loginCheck(), updateTier2InvoiceForApproval);
-    app.get("/ListTier2InvoicesForDiscounting", loginCheck(), listTier2InvoicesForDiscounting);
-    app.post("/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
+    app.post("/api/Tier2Invoice", loginCheck(), tier2Invoice);
+    app.get("/api/ListTier2InvoicesForApproval", loginCheck(), listTier2InvoicesForApproval);
+    app.post("/api/UpdateTier2InvoiceForApproval", loginCheck(), updateTier2InvoiceForApproval);
+    app.get("/api/ListTier2InvoicesForDiscounting", loginCheck(), listTier2InvoicesForDiscounting);
+    app.post("/api/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
+    app.get("/api/ListInvoicesForBankApproval", loginCheck(), listInvoicesForBankApproval);
+    app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval);
 
+    app.get("/*", (req, res) => {
+      res.sendFile(path.join(__dirname, "../clientbuild", "index.html"));
+    });
     app.listen(PORT, () => {
       console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
     });
@@ -48,7 +56,7 @@ function setupDefaultAndAuthRoutes() {
   });
 
   app.post("/register", register);
-  app.post("/login", passport.authenticate("local", { failureFlash: true }), (req, res) => {
+  app.post("/login", passport.authenticate("local", { failureFlash: false }), (req, res) => {
     res.json({});
     res.end();
   });
@@ -81,5 +89,15 @@ function setupSessionAndPassport(connection: Connection) {
 }
 
 function loginCheck() {
-  return ensureLoggedIn("/");
+  return ensureLoggedIn();
+}
+
+function ensureLoggedIn() {
+  return (req: Request, res: Response, next) => {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401);
+      return res.end();
+    }
+    next();
+  };
 }
