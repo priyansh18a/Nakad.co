@@ -19,6 +19,7 @@ import { updateInvoiceForBankApproval } from "./routes/updateInvoiceForBankAppro
 import { AssertionError } from "assert";
 import path from "path";
 import { config } from "dotenv";
+import { router as uploadRouter } from "./routes/upload";
 
 // Loads .env file to process
 config();
@@ -29,6 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, "../clientbuild")));
+app.use(uploadRouter);
 
 const PORT = 8082;
 createConnection()
