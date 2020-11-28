@@ -18,6 +18,10 @@ import { listInvoicesForBankApproval } from "./routes/listInvoicesForBankApprova
 import { updateInvoiceForBankApproval } from "./routes/updateInvoiceForBankApproval";
 import { AssertionError } from "assert";
 import path from "path";
+import { config } from "dotenv";
+
+// Loads .env file to process
+config();
 
 // Create a new express application instance
 const app: express.Application = express();
