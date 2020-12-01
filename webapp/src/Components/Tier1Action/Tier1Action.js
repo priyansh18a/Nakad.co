@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
@@ -7,7 +7,7 @@ import BtnCellRenderer from "./BtnCellRenderer.jsx";
 import invoice from '../../Graphics/invoice.jpeg'
 import logo from './../../Graphics/logo.jpg';
 import './Tier1Action.scss';
-
+import Dinero from "dinero.js";
 
 
 const Tier1Action = () => {
@@ -93,7 +93,7 @@ const Tier1Action = () => {
         btnCellRenderer: BtnCellRenderer  
  }
 
-    const rowData = [
+    const rowDataInitial = [
         {   invoice: "KEINV1234",   
             vendor: "Kamal Enterprises",
             invoice_date: "03/11/2020",
@@ -160,10 +160,10 @@ const Tier1Action = () => {
         
     ]
     
-
+    const [rowData, setRowData] = useState(rowDataInitial); 
 
     const onGridReady = params => {
-        fetch("/ListTier2InvoicesForApproval?tier1Id=1").then(response => {
+        fetch("/api/ListTier2InvoicesForApproval?tier1Id=1").then(response => {
             response.json().then(data => {
                 const newRowData = data.map(inv => {
                     return {
@@ -175,10 +175,9 @@ const Tier1Action = () => {
                         payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00')
                     };
                 });
-                this.setState({rowData: newRowData });
+                setRowData(newRowData);
             })
         })
-
     };
 
     const closemodal = () => {

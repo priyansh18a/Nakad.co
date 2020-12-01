@@ -10,6 +10,7 @@
     "ag-grid-enterprise": "^24.1.0",
     "ag-grid-react": "^24.1.0",
     "bulma": "^0.9.1",
+    "dinero.js": "^1.8.1",
     "node-sass": "^4.14.1",
     "react": "^16.14.0",
     "react-bulma-components": "^3.4.0",
