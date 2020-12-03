@@ -1,40 +1,59 @@
-import React, { useState} from 'react';
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useHistory ,  useLocation  } from "react-router-dom";
 import 'react-bulma-components/dist/react-bulma-components.min.css';
 import "./Tier1Login.scss"
 
 
 const Tier1Login = () => {
     const history = useHistory();
+    const location = useLocation();
     const [form, setForm] = useState({ companyid: '',username: '', password: '' });
     const update = (({ target }) => setForm({ ...form, [target.name]: target.value }))
+    useEffect(() => {
+        // console.log(location.state.alert); 
+        if(location.state.alert){
+            document.getElementById("flash-msg").style.display = "block";
+            document.getElementById("msg").innerHTML = "Please Login to access Action page";
+        }
+     }, [location]);
+    
     
     const logintier1 = event => {
         event.preventDefault();
-
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({
-                'username': form.username,
-                'password': form.password
-              })
-        };
-        
-        fetch('/login', requestOptions)
-            .then(response => {
-                if(response.status == 200){
-                    history.push("/tier1/action")
-                }else {
-                    alert("Login failed")
-                }
-            });
+        axios.post('/login', {
+            username: form.username,
+            password: form.password
+          })
+          .then(function (response) {
+            if(response.status === 200){
+                history.push("/tier1/action");
+            }
+            else if(response.status === 401){
+                document.getElementById("flash-msg").style.display = "block";
+                document.getElementById("msg").innerHTML = "Wrong Credential ! Please Try Again";
+            }
+          })
+          .catch(function (error) {
+            document.getElementById("flash-msg").style.display = "block";
+            document.getElementById("msg").innerHTML = "Login Failed! Please Try Again";
+            console.log(error);
+          });
     }
+
+    const closeflash = () => {
+        document.getElementById("flash-msg").style.display = "none";
+    }
+
     return (
         <div className="container">
         <p className="title has-text-info">Tier 1 Login</p>
         <div className="tier-1-login">
          <div className="column is-4 is-offset-4">
+            <div className="notification is-danger" id="flash-msg">
+                <button className="delete" onClick={closeflash}></button>
+                <p id="msg"></p>
+            </div>
          <form onSubmit={logintier1}> 
             <div className="field">
                 <div className="control">

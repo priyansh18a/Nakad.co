@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useHistory } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
+import axios from 'axios';
 import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-material.css";
@@ -11,6 +13,7 @@ import Dinero from "dinero.js";
 
 
 const Tier1Action = () => {
+    const history = useHistory();
     const showtablemoreinfo = () => {
         document.getElementById('table-more-info').style.display = "block";
         console.log('it work');
@@ -91,7 +94,7 @@ const Tier1Action = () => {
 
     const frameworkComponents = {
         btnCellRenderer: BtnCellRenderer  
- }
+    }
 
     const rowDataInitial = [
         {   invoice: "KEINV1234",   
@@ -163,8 +166,9 @@ const Tier1Action = () => {
     const [rowData, setRowData] = useState(rowDataInitial); 
 
     const onGridReady = params => {
-        fetch("/api/ListTier2InvoicesForApproval?tier1Id=1").then(response => {
-            response.json().then(data => {
+        axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1")
+        .then(function (response) {
+            const data = response.data;
                 const newRowData = data.map(inv => {
                     return {
                         invoice: inv.invoiceId,
@@ -177,8 +181,29 @@ const Tier1Action = () => {
                 });
                 setRowData(newRowData);
             })
+        .catch(function (error) {
+            history.push({
+                pathname: "/tier1",
+                state: { alert: 'true' }
+            });
+            console.log(error);
         })
+        .then(function () {
+            // always executed
+        });
     };
+
+    const logout = () => {
+        axios.get('/logout')
+        .then(function (response) {
+            // handle success
+            history.push("/");
+        })
+        .catch(function (error){
+            // handle error
+            console.log(error);
+        })
+    }
 
     const closemodal = () => {
         document.getElementById('modal').style.display = "none";
@@ -213,9 +238,9 @@ const Tier1Action = () => {
                     </a>
                     <div className="navbar-item">
                         <div className="buttons">
-                        <a className="button is-primary is-light">
+                        <button className="button is-primary is-light"  onClick={logout}>
                             Log Out
-                        </a>
+                        </button>
                         </div>
                     </div>
                 </div>
