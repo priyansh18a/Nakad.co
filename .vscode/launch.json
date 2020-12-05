@@ -7,8 +7,8 @@
         "request": "launch",
         "runtimeExecutable": "node",
         "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
-        "args": ["server/src/index.ts"],
-        "cwd": "${workspaceRoot}",
+        "args": ["src/index.ts"],
+        "cwd": "${workspaceRoot}/server",
         "internalConsoleOptions": "openOnSessionStart",
         "skipFiles": ["<node_internals>/**", "node_modules/**"]
       }

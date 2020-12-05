@@ -41,17 +41,20 @@ export async function listTier2InvoicesForDiscountingInternal(
   let j = 0;
   const invoiceToReturn: DiscountedTier2Invoice[] = [];
   // TODO(harshil) This logic will need change.
-  for (const inv of tier2Invoices) {
+  for (const tier2Invoice of tier2Invoices) {
     if (j >= anchorInvoices.length) break;
     const anchorInvoice = anchorInvoices[j];
-    if (inv.dueDate < anchorInvoice.dueDate && inv.invoiceAmount.lessThanOrEqual(anchorInvoice.invoiceAmount)) {
+    if (
+      tier2Invoice.dueDate <= anchorInvoice.dueDate &&
+      tier2Invoice.invoiceAmount.lessThanOrEqual(anchorInvoice.invoiceAmount)
+    ) {
       // TODO(harshil) Add logic for current date etc and calculate discounting amount
       invoiceToReturn.push({
-        tier2Invoice: inv,
-        discountedAmount: inv.invoiceAmount.multiply(0.85),
+        tier2Invoice,
+        discountedAmount: tier2Invoice.invoiceAmount.multiply(0.85),
         discountedAnnualRatePercentage: 15,
         status: "Pending",
-        partAnchorInvoices: [{ anchorInvoice, partialAmount: inv.invoiceAmount }],
+        partAnchorInvoices: [{ anchorInvoice, partialAmount: tier2Invoice.invoiceAmount }],
       });
       j++;
     }
