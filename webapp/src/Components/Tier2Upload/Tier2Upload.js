@@ -1,17 +1,36 @@
 import React, { useState} from 'react';
 import { useHistory } from "react-router-dom";
+import axios from 'axios';
+import Dinero from "dinero.js";
 import logo from './../../Graphics/logo.jpg';
 import "./Tier2Upload.scss"
 
 const Tier2Upload =  () => {
-    const history = useHistory();
-    const [form, setForm] = useState({ invoice: 'KEINV1234',payername: 'Shyam international', invoicedate: '03/11/2020', invoiceamount: '30000' , receivableamount: '30000' , receivabledate: '03/02/2021' , grn: 'KEGRN1234' , invoicefile: '', grnfile: ' ' });
+    const history = useHistory(); 
+    const [form, setForm] = useState({invoice: '',payername: '', invoicedate: '', invoiceamount: '' , receivableamount: '' , receivabledate: '' , grn: '' , invoicefile: '', grnfile: ' '  }); // 
     const update = (({ target }) => setForm({ ...form, [target.name]: target.value }))
 
     const sendforapproval =  event => {
         event.preventDefault();
-        // const { invoice, password } = event.target.elements;
-        history.push("/tier2/early");
+        console.log(form);
+        axios.post("/api/Tier2Invoice", {
+            tier1Id: 1,
+            tier2Id: 2,
+            invoiceId: form.invoice,
+            invoiceAmount : form.invoiceamount.toString(),
+            invoiceDate: form.invoicedate,
+            dueDate: form.receivabledate,
+            grnId: form.grn,
+            approvalStatus:  "Pending",
+            receivableAmount: form.receivableamount.toString()
+        })
+          .then(function (response) {
+            console.log(response);
+            history.push("/tier2/early");
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
     }
     return (
     <div>
@@ -101,7 +120,7 @@ const Tier2Upload =  () => {
                 </div> 
                 <div id="file-js-example" class=" field file has-name is-dark">
                     <label class="file-label">
-                        <input class="file-input" type="file" name="invoicefile" required/>
+                        <input class="file-input" type="file" name="invoicefile"/>
                         <span class="file-cta">
                         <span class="file-icon">
                             <i class="fas fa-upload"></i>
@@ -117,7 +136,7 @@ const Tier2Upload =  () => {
                 </div>
                 <div id="file-js-example2" class=" field file has-name is-dark">
                     <label class="file-label">
-                        <input class="file-input" type="file" name="grnfile" required/>
+                        <input class="file-input" type="file" name="grnfile"/>
                         <span class="file-cta">
                         <span class="file-icon">
                             <i class="fas fa-upload"></i>

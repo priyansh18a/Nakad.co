@@ -12,7 +12,7 @@ const Tier1Login = () => {
     const update = (({ target }) => setForm({ ...form, [target.name]: target.value }))
     useEffect(() => {
         // console.log(location.state.alert); 
-        if(location.state.alert){
+        if(location.state.alert === "true"){
             document.getElementById("flash-msg").style.display = "block";
             document.getElementById("msg").innerHTML = "Please Login to access Action page";
         }

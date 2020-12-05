@@ -11,7 +11,7 @@ const ChooseType =  () => {
         <div className="choosemain container">
             <img  src={logo} className="main-logo" alt=""/>
             <div className="tier-1-2">
-               <div className="tier-1 card"><button class="button btn" onClick={() => history.push("/tier1")}>Login</button></div>
+               <div className="tier-1 card"><button class="button btn" onClick={() => history.push({ pathname: "/tier1",state: { alert: "false" }})}>Login</button></div>
                <div className="tier-2 card"><button class="button btn" onClick={() => history.push("/tier2")}>Login</button></div>
             </div>
             <div className="bank card"><button class="button btn" onClick={() => history.push("/bank")}>Login</button></div>
