@@ -29,10 +29,10 @@ const app: express.Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(express.static(path.join(__dirname, "../clientbuild")));
+app.use(express.static(path.join(__dirname, "../webapp/build")));
 app.use(uploadRouter);
 
-const PORT = 8082;
+const PORT = process.env.PORT || 8082;
 createConnection()
   .then((connection) => {
     setupSessionAndPassport(connection);
@@ -48,7 +48,7 @@ createConnection()
     app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval);
 
     app.get("/*", (req, res) => {
-      res.sendFile(path.join(__dirname, "../clientbuild", "index.html"));
+      res.sendFile(path.join(__dirname, "../../webapp/build", "index.html"));
     });
     app.listen(PORT, () => {
       console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);

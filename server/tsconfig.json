@@ -2,9 +2,10 @@
    "compilerOptions": {
       "lib": [
          "es5",
-         "es6"
+         "es6",
+         "esnext.asynciterable"
       ],
-      "target": "es5",
+      "target": "es6",
       "module": "commonjs",
       "moduleResolution": "node",
       "outDir": "./build",
@@ -21,5 +22,5 @@
             "suppressWhileTypeErrorsPresent": false
          }
       ]
-   }
+   },
 }
