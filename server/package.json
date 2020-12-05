@@ -46,7 +46,7 @@
     },
     "scripts": {
         "start": "node ./build/index.js",
-        "build": "tsc && cp ormconfig.json ./build/",
+        "build": "tsc && cp ormconfig.json ./build/ && cd webapp && npm install && npm run build",
         "dev": "concurrently \"tsc -w\" \"nodemon build/index.js\"",
         "tsc": "tsc",
         "prod": "tsc && node ./build/index.js",
