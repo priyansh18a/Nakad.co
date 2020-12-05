@@ -7,7 +7,6 @@ import {
   generateBlobSASQueryParameters,
   StorageSharedKeyCredential,
 } from "@azure/storage-blob";
-import getStream from "into-stream";
 export const router = express.Router();
 const inMemoryStorage = multer.memoryStorage();
 const uploadStrategy = multer({ storage: inMemoryStorage }).single("image");
@@ -30,7 +29,6 @@ const getBlobName = (originalName) => {
 
 router.post("/upload", uploadStrategy, async (req: Request, res: Response) => {
   const blobName = getBlobName(req.file.originalname);
-  const stream = getStream(req.file.buffer);
   const streamLength = req.file.buffer.length;
   const contentType = mime.lookup(req.file.originalname) || null;
   try {
