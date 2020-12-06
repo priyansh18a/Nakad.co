@@ -204,7 +204,7 @@ const Tier2EarlyPayment = () => {
         const discontedtier2 =  checkedbytier1.find((element) => {
             return element.tier2Invoice.invoiceId === invoicetoupdate;
         });
-        discontedtier2.status = "Discounted";
+        discontedtier2.status = "Discounted";          //TODO(Priyanshu)
         callapi(discontedtier2);
     }
 
