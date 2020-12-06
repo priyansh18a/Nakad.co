@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useHistory } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
+import axios from 'axios';
 import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-material.css";
@@ -11,6 +13,9 @@ import Dinero from "dinero.js";
 
 
 const Tier1Action = () => {
+    const history = useHistory();
+    const [tier2actiondata, setTier2actiondata] = useState([]);
+    const [invoicetoupdate, setInvoicetoupdate] = useState('');
     const showtablemoreinfo = () => {
         document.getElementById('table-more-info').style.display = "block";
         console.log('it work');
@@ -48,11 +53,12 @@ const Tier1Action = () => {
             minWidth: 180
         },
         {   headerName:"Details",
-            field: "details",
+            field: "invoice",
             cellRenderer: "btnCellRenderer",
             cellRendererParams: {
               clicked: function(field) {
-                  // alert(`${field} was clicked`);
+                  console.log(field);
+                  setInvoicetoupdate(field);
                   document.getElementById('modal').style.display = "flex";
               }
             },
@@ -91,97 +97,72 @@ const Tier1Action = () => {
 
     const frameworkComponents = {
         btnCellRenderer: BtnCellRenderer  
- }
+    }
 
-    const rowDataInitial = [
-        {   invoice: "KEINV1234",   
-            vendor: "Kamal Enterprises",
-            invoice_date: "03/11/2020",
-            payable_date: "03/02/2021",
-            invoice_amount: "₹30,000",
-            payable_amount: "₹30,000"
-        },
-        {   invoice: "MTINV1987",   
-            vendor: "Ramesh metals",
-            invoice_date: "07/11/2020",
-            payable_date: "07/02/2021",
-            invoice_amount: "₹30,000",
-            payable_amount: "₹30,000"
-        },
-        {   invoice: "HUINV2097",   
-            vendor: "Indian Welders",
-            invoice_date: "12/11/2020",
-            payable_date: "12/02/2021",
-            invoice_amount: "₹10,000",
-            payable_amount: "₹10,000"
-        },
-        {   invoice: "PRINV4398",   
-            vendor: "S.Ram & Sons",
-            invoice_date: "17/11/2020",
-            payable_date: "17/02/2021",
-            invoice_amount: "₹80,000",
-            payable_amount: "₹80,000"
-        },
-        {   invoice: "STINV1098",   
-            vendor: "Abhinav Traders",
-            invoice_date: "18/11/2020",
-            payable_date: "18/02/2021",
-            invoice_amount: "₹90,000",
-            payable_amount: "₹90,000"
-        },
-        {   invoice: "BCINV8765",   
-            vendor: "UMEX",
-            invoice_date: "22/11/2020",
-            payable_date: "22/02/2021",
-            invoice_amount: "₹50,000",
-            payable_amount: "₹50,000"
-        },
-        {   invoice: "CGINV2743",   
-            vendor: "Jai Bhavani Auto",
-            invoice_date: "20/11/2020",
-            payable_date: "20/02/2021",
-            invoice_amount: "₹50,000",
-            payable_amount: "₹50,000"
-        },
-        {   invoice: "MSINV2343",   
-            vendor: "Novel Rubber",
-            invoice_date: "1/12/2020",
-            payable_date: "3/03/2021",
-            invoice_amount: "₹30,000",
-            payable_amount: "₹30,000"
-        },
-        {   invoice: "GPINV2132",   
-            vendor: "RM pipes",
-            invoice_date: "12/12/2020",
-            payable_date: "14/03/2021",
-            invoice_amount: "₹10,000",
-            payable_amount: "₹10,000"
-        }
-        
-    ]
-    
-    const [rowData, setRowData] = useState(rowDataInitial); 
+     
 
     const onGridReady = params => {
-        fetch("/api/ListTier2InvoicesForApproval?tier1Id=1").then(response => {
-            response.json().then(data => {
-                const newRowData = data.map(inv => {
-                    return {
-                        invoice: inv.invoiceId,
-                        vendor: inv.tier2.actorinfo.name,
-                        invoice_date: inv.invoiceDate,
-                        payable_date: inv.dueDate,
-                        invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
-                        payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00')
-                    };
-                });
-                setRowData(newRowData);
-            })
+        axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1") // TODO(Priyanshu)
+        .then(function (response) {
+            setTier2actiondata(response.data);         
+        })
+        .catch(function (error) {
+            history.push({
+                pathname: "/tier1",
+                state: { alert: "true" }
+            });
+            console.log(error);
         })
     };
 
+    const changeapprovedstatus = () => {
+        const tier2invoice =  tier2actiondata.find((element) => {
+            return element.invoiceId === invoicetoupdate;
+        })
+        tier2invoice.approvalStatus = "Approved";
+        console.log(tier2invoice);
+        callapi(tier2invoice);
+    }
+
+    const callapi = tier2invoice => {
+        axios.post("/api/UpdateTier2InvoiceForApproval", tier2invoice)
+          .then(function (response) {
+            console.log(response);
+            window.location.reload(); 
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+    }
+
+
     const closemodal = () => {
         document.getElementById('modal').style.display = "none";
+    }
+
+
+    const getrowdata = () => {
+       return tier2actiondata.map(inv => {
+            return {
+                invoice: inv.invoiceId,
+                vendor: inv.tier2.actorinfo.name,
+                invoice_date: inv.invoiceDate,
+                payable_date: inv.dueDate,
+                invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
+                payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00')
+            };
+        });
+    }
+
+    const logout = () => {
+        axios.get('/logout')
+        .then(function (response) {
+            history.push("/");
+        })
+        .catch(function (error){
+            // handle error
+            console.log(error);
+        })
     }
 
     return (
@@ -213,9 +194,9 @@ const Tier1Action = () => {
                     </a>
                     <div className="navbar-item">
                         <div className="buttons">
-                        <a className="button is-primary is-light">
+                        <button className="button is-primary is-light"  onClick={logout}>
                             Log Out
-                        </a>
+                        </button>
                         </div>
                     </div>
                 </div>
@@ -235,7 +216,7 @@ const Tier1Action = () => {
                 defaultColDef={defaultColDef}
                 frameworkComponents={frameworkComponents}
                 onGridReady={onGridReady}
-                rowData={rowData}
+                rowData={getrowdata()}
                 domLayout='autoHeight'
                 rowClassRules={{
                     'highlight': function(params) { return  params.data.invoice === 'KEINV1234'; }
@@ -267,7 +248,7 @@ const Tier1Action = () => {
                 </section>
         
                 <footer class="modal-card-foot">
-                <button class="button is-success" onClick={closemodal} >Approve</button>
+                <button class="button is-success" onClick={changeapprovedstatus}>Approve</button>
                 <button class="button is-danger" onClick={closemodal} >Decline</button>
                 </footer>
             </div>

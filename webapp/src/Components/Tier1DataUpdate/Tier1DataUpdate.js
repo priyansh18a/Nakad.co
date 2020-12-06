@@ -1,4 +1,6 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
+import axios from 'axios';
 import {AgGridReact } from 'ag-grid-react';
 import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
@@ -9,6 +11,7 @@ import './Tier1DataUpdate.scss';
 
 
 const Tier1DataUpdate = () => {
+    const history = useHistory();
     const columnDefs1 = [
         {   headerName:"Invoice",
             field: "invoice",
@@ -180,6 +183,18 @@ const Tier1DataUpdate = () => {
 
     };
 
+    const logout = () => {
+        axios.get('/logout')
+        .then(function (response) {
+            // handle success
+            history.push("/");
+        })
+        .catch(function (error){
+            // handle error
+            console.log(error);
+        })
+    }
+
     const showtablemoreinfo = () => {
         document.getElementById('table-more-info').style.display = "block";
         console.log('it work');
@@ -235,9 +250,9 @@ const Tier1DataUpdate = () => {
             </a>
             <div className="navbar-item">
             <div className="buttons">
-            <a className="button is-primary is-light">
+            <button className="button is-primary is-light"  onClick={logout}>
                 Log Out
-            </a>
+            </button>
             </div>
         </div>
         </div>
