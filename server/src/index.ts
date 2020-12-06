@@ -48,7 +48,7 @@ createConnection()
     app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval);
 
     app.get("/*", (req, res) => {
-      res.sendFile(path.join(__dirname, "../../webapp/build", "index.html"));
+      res.sendFile(path.join(__dirname, "../webapp/build", "index.html"));
     });
     app.listen(PORT, () => {
       console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
