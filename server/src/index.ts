@@ -48,7 +48,7 @@ createConnection()
     app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval);
 
     app.get("/*", (req, res) => {
-      res.sendFile(path.join(__dirname, "../../webapp/build", "index.html"));
+      res.sendFile(path.join(__dirname, "../webapp/build", "index.html"));
     });
     app.listen(PORT, () => {
       console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
@@ -57,9 +57,9 @@ createConnection()
   .catch((error) => console.log(error));
 
 function setupDefaultAndAuthRoutes() {
-  app.get("/", (req, res) => {
-    res.send("Hello World!");
-  });
+  // app.get("/", (req, res) => {
+  //   res.send("Hello World!");
+  // });
 
   app.post("/register", register);
   app.post("/login", passport.authenticate("local", { failureFlash: false }), (req, res) => {
