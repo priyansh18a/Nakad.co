@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import axios from 'axios';
 import Dinero from "dinero.js";
 import logo from './../../Graphics/logo.jpg';
+
 import "./Tier2Upload.scss"
 
 const Tier2Upload =  () => {
@@ -13,9 +14,9 @@ const Tier2Upload =  () => {
     const sendforapproval =  event => {
         event.preventDefault();
         console.log(form);
-        axios.post("/api/Tier2Invoice", {
-            tier1Id: 1,
-            tier2Id: 2,
+        axios.post("/api/Tier2Invoice", {   
+            tier1Id: 1,     // TODO(Priyanshu)
+            tier2Id: 2,      // TODO(Priyanshu)
             invoiceId: form.invoice,
             invoiceAmount : form.invoiceamount.toString(),
             invoiceDate: form.invoicedate,

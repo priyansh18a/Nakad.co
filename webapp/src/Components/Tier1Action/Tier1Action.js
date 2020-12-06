@@ -102,10 +102,9 @@ const Tier1Action = () => {
      
 
     const onGridReady = params => {
-        axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1")
+        axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1") // TODO(Priyanshu)
         .then(function (response) {
-            const data = response.data;
-            setTier2actiondata(data);         
+            setTier2actiondata(response.data);         
         })
         .catch(function (error) {
             history.push({
@@ -114,12 +113,9 @@ const Tier1Action = () => {
             });
             console.log(error);
         })
-        .then(function () {
-            // always executed
-        });
     };
 
-    const sendforapproval = () => {
+    const changeapprovedstatus = () => {
         const tier2invoice =  tier2actiondata.find((element) => {
             return element.invoiceId === invoicetoupdate;
         })
@@ -139,17 +135,6 @@ const Tier1Action = () => {
           });
     }
 
-    const logout = () => {
-        axios.get('/logout')
-        .then(function (response) {
-            // handle success
-            history.push("/");
-        })
-        .catch(function (error){
-            // handle error
-            console.log(error);
-        })
-    }
 
     const closemodal = () => {
         document.getElementById('modal').style.display = "none";
@@ -167,6 +152,17 @@ const Tier1Action = () => {
                 payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00')
             };
         });
+    }
+
+    const logout = () => {
+        axios.get('/logout')
+        .then(function (response) {
+            history.push("/");
+        })
+        .catch(function (error){
+            // handle error
+            console.log(error);
+        })
     }
 
     return (
@@ -252,7 +248,7 @@ const Tier1Action = () => {
                 </section>
         
                 <footer class="modal-card-foot">
-                <button class="button is-success" onClick={() => sendforapproval()}>Approve</button>
+                <button class="button is-success" onClick={changeapprovedstatus}>Approve</button>
                 <button class="button is-danger" onClick={closemodal} >Decline</button>
                 </footer>
             </div>

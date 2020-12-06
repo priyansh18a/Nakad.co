@@ -164,7 +164,7 @@ const Tier2EarlyPayment = () => {
     ]
 
     const onGridReady1 = params => {
-        axios.get("/api/ListTier2InvoicesForDiscounting?tier1Id=1&tier2Id=2")
+        axios.get("/api/ListTier2InvoicesForDiscounting?tier1Id=1&tier2Id=2") // TODO(Priyanshu)
         .then(function (response) {
             const data = response.data;
             setCheckedbytier1(data);         
@@ -172,9 +172,6 @@ const Tier2EarlyPayment = () => {
         .catch(function (error) {
             console.log(error);
         })
-        .then(function () {
-            // always executed
-        });
     };
 
     const onGridReady = params => {
@@ -192,7 +189,7 @@ const Tier2EarlyPayment = () => {
         return approvedbytier1.map(inv => {
              return {
                  invoice: inv.tier2Invoice.invoiceId,
-                 payee: "Maruti",   // need to fix this later
+                 payee: "Maruti",   // TODO(Priyanshu)
                  payment_date: inv.tier2Invoice.dueDate,
                  discount_rate:inv.discountedAnnualRatePercentage,
                  invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
@@ -223,7 +220,7 @@ const Tier2EarlyPayment = () => {
           });
     }
 
-     // Need to confirm to this with Harshil Bhaiya
+     // // TODO(Priyanshu) Need to confirm to this with Harshil Bhaiya
      const getrejectedrowdata = () => {
         const rejectedbytier1 = checkedbytier1.filter((element) => {
               return element.tier2Invoice.approvalStatus === "Rejected";
@@ -232,9 +229,9 @@ const Tier2EarlyPayment = () => {
             return rejectedbytier1.map(inv => {
                 return {
                     invoice: inv.tier2Invoice.invoiceId,
-                    payee: "Maruti",   // need to fix this later
+                    payee: "Maruti",   // TODO(Priyanshu)
                     invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
-                    remark : " abcd"  // need to fix  this
+                    remark : " abcd"  // TODO(Priyanshu)
                 };
             });
      }
@@ -299,9 +296,9 @@ const Tier2EarlyPayment = () => {
                 </a>
                 <div className="navbar-item">
                 <div className="buttons">
-                <a className="button is-primary is-light">
+                <button className="button is-primary is-light" >
                     Log Out
-                </a>
+                </button>
                 </div>
             </div>
             </div>
