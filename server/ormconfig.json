@@ -10,7 +10,7 @@
    "synchronize": false,
    "logging": false,
    "entities": [
-      "build/**/*.entity.js"
+      "build/database/entity/**/*.js"
 
    ],
    "migrations": [
