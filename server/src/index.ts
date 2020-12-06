@@ -57,9 +57,9 @@ createConnection()
   .catch((error) => console.log(error));
 
 function setupDefaultAndAuthRoutes() {
-  app.get("/", (req, res) => {
-    res.send("Hello World!");
-  });
+  // app.get("/", (req, res) => {
+  //   res.send("Hello World!");
+  // });
 
   app.post("/register", register);
   app.post("/login", passport.authenticate("local", { failureFlash: false }), (req, res) => {
