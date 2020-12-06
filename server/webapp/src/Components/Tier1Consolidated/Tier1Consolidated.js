@@ -1,4 +1,6 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
+import axios from 'axios';
 import {  AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
@@ -10,6 +12,7 @@ import CheckboxRenderer from "./CheckboxRenderer.jsx";
 
 
 const Tier1Consolidated = () => {
+    const history = useHistory();
     const columnDefs = [
         {   headerName:"Invoice",
             field: "invoice",
@@ -186,6 +189,18 @@ const Tier1Consolidated = () => {
       document.getElementById('modal').style.display = "none";
     }
 
+    const logout = () => {
+        axios.get('/logout')
+        .then(function (response) {
+            // handle success
+            history.push("/");
+        })
+        .catch(function (error){
+            // handle error
+            console.log(error);
+        })
+    }
+
     const displaytab1 = () => {
         document.getElementById("table-1").style.display = "block";
         document.getElementById("table-2").style.display = "none";
@@ -244,9 +259,9 @@ const Tier1Consolidated = () => {
                 </a>
                 <div className="navbar-item">
                 <div className="buttons">
-                <a className="button is-primary is-light">
+                <button className="button is-primary is-light"  onClick={logout}>
                     Log Out
-                </a>
+                </button>
                 </div>
             </div>
             </div>

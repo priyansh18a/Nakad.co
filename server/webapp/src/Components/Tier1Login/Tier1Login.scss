@@ -1,0 +1,24 @@
+.container{
+    text-align: center;
+}
+.tier-1-login{
+    height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+.title, .has-text-centereds{
+    margin-top: 3rem;
+}   
+
+#flash-msg{
+    right: 0px !important;
+    position: relative !important;
+    display: none;
+}
+
+#flash-msg2{
+    right: 0px !important;
+    position: relative !important;
+    display: none;
+}
