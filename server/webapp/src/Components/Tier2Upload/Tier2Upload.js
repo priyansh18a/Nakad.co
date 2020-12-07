@@ -8,7 +8,7 @@ import "./Tier2Upload.scss"
 
 const Tier2Upload =  () => {
     const history = useHistory(); 
-    const [form, setForm] = useState({invoice: '',payername: '', invoicedate: '', invoiceamount: '' , receivableamount: '' , receivabledate: '' , grn: '' , invoicefile: '', grnfile: ' '  }); // 
+    const [form, setForm] = useState({invoice: '',payername: '', invoicedate: '', invoiceamount: '' , receivableamount: '' , receivabledate: '' , grn: '' , invoicefile: '', grnfile: '' }); // 
     const update = (({ target }) => setForm({ ...form, [target.name]: target.value }))
 
     const uploadinvoiceandgrn =  event => {
@@ -18,13 +18,19 @@ const Tier2Upload =  () => {
             tier1Id: 1,     // TODO(Priyanshu)
             tier2Id: 2,      // TODO(Priyanshu)
             invoiceId: form.invoice,
-            invoiceAmount : form.invoiceamount.toString(),
+            invoiceAmount : { amount : parseInt(form.invoiceamount),
+                              currency: "INR",
+                              precision: 2
+                            },
             invoiceDate: form.invoicedate,
             dueDate: form.receivabledate,
-            grnId: form.grn,
+            grnId: [form.grn],
             approvalStatus:  "Pending",
-            receivableAmount: form.receivableamount.toString()
-        })
+            receivableAmount: { amount:  parseInt(form.receivableamount),
+                                currency:"INR",
+                                precision: 2
+                              }
+          })
           .then(function (response) {
             console.log(response);
             history.push("/tier2/early");
