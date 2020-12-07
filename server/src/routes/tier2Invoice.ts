@@ -1,3 +1,4 @@
+import Dinero from "dinero.js";
 import { Request, Response } from "express";
 import { getConnection } from "typeorm";
 import { Tier2Invoice } from "../database/entity/Tier2Invoice";
@@ -5,6 +6,10 @@ import { Tier2Invoice } from "../database/entity/Tier2Invoice";
 export async function tier2Invoice(req: Request, res: Response): Promise<Response<Tier2Invoice>> {
   console.log(req.body);
   const invoice = req.body as Tier2Invoice;
+
+  // TODO(harshil) - See if there is a better way to fix this.
+  invoice.invoiceAmount = Dinero(invoice.invoiceAmount as Dinero.Options);
+  invoice.receivableAmount = Dinero(invoice.receivableAmount as Dinero.Options);
   await getConnection().getRepository(Tier2Invoice).save(invoice);
   console.log("Tier2Invoice Created");
   return res.json(invoice);
