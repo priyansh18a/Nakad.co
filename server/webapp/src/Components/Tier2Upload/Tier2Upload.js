@@ -11,7 +11,7 @@ const Tier2Upload =  () => {
     const [form, setForm] = useState({invoice: '',payername: '', invoicedate: '', invoiceamount: '' , receivableamount: '' , receivabledate: '' , grn: '' , invoicefile: '', grnfile: ' '  }); // 
     const update = (({ target }) => setForm({ ...form, [target.name]: target.value }))
 
-    const sendforapproval =  event => {
+    const uploadinvoiceandgrn =  event => {
         event.preventDefault();
         console.log(form);
         axios.post("/api/Tier2Invoice", {   
@@ -76,7 +76,7 @@ const Tier2Upload =  () => {
      <p className="title has-text-info tier-2-head">Kamal enterprise Invoice and GRN upload</p>
     <div className="tier-2-login" style={{ height:"auto"}}>
             <div className="column is-4 is-offset-4 ">
-            <form onSubmit={sendforapproval}> 
+            <form onSubmit={uploadinvoiceandgrn}> 
                 <div className="field">
                     <div className="control">
                         <label className="label">Invoice</label>

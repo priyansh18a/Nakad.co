@@ -2,7 +2,6 @@ import React from 'react';
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
 import {AgGridReact } from 'ag-grid-react';
-import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-material.css";
 import CheckboxRenderer from "./CheckboxRenderer.jsx";
@@ -267,7 +266,7 @@ const Tier1DataUpdate = () => {
     <div id="table-more-info" className="has-background-warning"><span className="has-text-info">More Info: </span>Tier 2 has discounted its invoice for early payments<br/>Request to make following changes in your accounting system.</div>
     <div className="table-info has-background-info" style={{width: "300px"}} >ERP entry adjustment<span onMouseOver={showtablemoreinfo} onMouseLeave={hidetablemoreinfo} className="moreinfospan"><i className="fas fa-info-circle" ></i></span></div>
 
-    <div class="tabs is-boxed">
+    <div className="tabs is-boxed">
             <ul>
                 <li className="is-active" onClick={displaypending} id="list-payable">
                     <a><span>Payables</span></a>
