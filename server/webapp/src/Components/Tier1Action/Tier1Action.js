@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useHistory } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import axios from 'axios';
-import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-material.css";
 import BtnCellRenderer from "./BtnCellRenderer.jsx";
@@ -223,20 +222,20 @@ const Tier1Action = () => {
                 }}
             />
             </div>
-            <div class="modal" id="modal">
-            <div class="modal-background" onClick={closemodal}></div>
-            <div class="modal-card"  >
-                <header class="modal-card-head">
-                <p class="modal-card-title">More Details</p>
-                <button class="delete" onClick={closemodal} aria-label="close"></button>
+            <div className="modal" id="modal">
+            <div className="modal-background" onClick={closemodal}></div>
+            <div className="modal-card"  >
+                <header className="modal-card-head">
+                <p className="modal-card-title">More Details</p>
+                <button className="delete" onClick={closemodal} aria-label="close"></button>
                 </header>
                 <section class="modal-card-body">
                 <p className="has-text-info is-size-4 has-text-weight-bold">Invoice</p>
-                <p class="image is-4by3">
+                <p className="image is-4by3">
                 <img src={invoice} alt=""/>
                 </p>
                 <p className="has-text-info is-size-4 has-text-weight-bold">GRN</p>
-                <p class="image is-4by3">
+                <p className="image is-4by3">
                 <img src={invoice} alt=""/>
                 </p>
                 <div className="field">
@@ -247,9 +246,9 @@ const Tier1Action = () => {
                 </div>
                 </section>
         
-                <footer class="modal-card-foot">
-                <button class="button is-success" onClick={changeapprovedstatus}>Approve</button>
-                <button class="button is-danger" onClick={closemodal} >Decline</button>
+                <footer className="modal-card-foot">
+                <button className="button is-success" onClick={changeapprovedstatus}>Approve</button>
+                <button className="button is-danger" onClick={closemodal} >Decline</button>
                 </footer>
             </div>
             </div>
