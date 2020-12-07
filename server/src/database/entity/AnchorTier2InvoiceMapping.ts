@@ -35,7 +35,7 @@ export class AnchorTier2InvoiceMapping {
   @Column("integer", { primary: true, name: "Tier2Id", unique: true })
   tier2Id: number;
 
-  @Column("integer", { primary: true, name: "BankId" })
+  @Column("integer", { name: "BankId", nullable: true })
   bankId: number;
 
   @Column("enum", {
