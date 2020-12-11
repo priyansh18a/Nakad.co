@@ -16,6 +16,7 @@ import { updateTier2InvoiceForApproval } from "./routes/updateTier2InvoiceForApp
 import { updateTier2InvoicesForDiscounting } from "./routes/updateTier2InvoicesForDiscounting";
 import { listInvoicesForBankApproval } from "./routes/listInvoicesForBankApproval";
 import { updateInvoiceForBankApproval } from "./routes/updateInvoiceForBankApproval";
+import {listTier1PayableReceivable} from "./routes/listTier1PayableReceivable";
 import { AssertionError } from "assert";
 import path from "path";
 import { config } from "dotenv";
@@ -46,7 +47,7 @@ createConnection()
     app.post("/api/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
     app.get("/api/ListInvoicesForBankApproval", loginCheck(), listInvoicesForBankApproval);
     app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval);
-
+    app.get("/api/ListTier1PayableReceivable", loginCheck(), listTier1PayableReceivable);
     app.get("/*", (req, res) => {
       res.sendFile(path.join(__dirname, "../webapp/build", "index.html"));
     });
