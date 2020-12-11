@@ -1,4 +1,5 @@
-import React , { useState } from 'react';
+import React , { useState} from 'react';
+import { useHistory } from "react-router-dom";
 import {  AgGridReact } from 'ag-grid-react';
 import axios from 'axios';
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -13,7 +14,9 @@ import BtnCellRenderer3 from "./BtnCellRenderer3.jsx";
 
 
 const Tier2EarlyPayment = () => {
+    const history = useHistory();
     const [checkedbytier1, setCheckedbytier1] = useState([]);
+    const [pendingbytier1, setPendingbytier1] = useState([]);
     const [invoicetoupdate, setInvoicetoupdate] = useState('');
 
     const columnDefs = [
@@ -166,20 +169,30 @@ const Tier2EarlyPayment = () => {
     const onGridReady1 = params => {
         axios.get("/api/ListTier2InvoicesForDiscounting?tier1Id=1&tier2Id=2") // TODO(Priyanshu)
         .then(function (response) {
-            const data = response.data;
-            setCheckedbytier1(data);         
+            setCheckedbytier1(response.data);         
         })
         .catch(function (error) {
             console.log(error);
         })
     };
 
-    const onGridReady = params => {
+    const onGridReady2 = params => {
+
     };
 
-    const closemodal = () => {
-      document.getElementById('modal').style.display = "none";
-    }
+    const onGridReady3 = params => {
+        axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1") // TODO(Priyanshu)
+        .then(function (response) {
+            setPendingbytier1(response.data);         
+        })
+        .catch(function (error) {
+            history.push({
+                pathname: "/tier1",
+                state: { alert: "true" }
+            });
+            console.log(error);
+        })
+    };
 
     const getapprovedrowdata = () => {
         const approvedbytier1 = checkedbytier1.filter((element) => {
@@ -189,8 +202,8 @@ const Tier2EarlyPayment = () => {
         return approvedbytier1.map(inv => {
              return {
                  invoice: inv.tier2Invoice.invoiceId,
-                 payee: "Maruti",   // TODO(Priyanshu)
-                 payment_date: inv.tier2Invoice.dueDate,
+                 payee:"Maruti",   // TODO(Priyanshu)
+                 payment_date: inv.tier2Invoice.dueDate.slice(0,10),
                  discount_rate:inv.discountedAnnualRatePercentage,
                  invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
                  receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
@@ -204,7 +217,7 @@ const Tier2EarlyPayment = () => {
         const discontedtier2 =  checkedbytier1.find((element) => {
             return element.tier2Invoice.invoiceId === invoicetoupdate;
         });
-        discontedtier2.status = "Discounted";          //TODO(Priyanshu)
+        discontedtier2.status = "Discounted";          //TODO(Priyanshu) Need to confirm this
         callapi(discontedtier2);
     }
 
@@ -220,8 +233,21 @@ const Tier2EarlyPayment = () => {
           });
     }
 
-     // // TODO(Priyanshu) Need to confirm to this with Harshil Bhaiya
-     const getrejectedrowdata = () => {
+    const getpendingbytier1data = () => {
+        return pendingbytier1.map(inv => {
+             return {
+                 invoice: inv.invoiceId,
+                 vendor: inv.tier2.actorinfo.name,
+                 invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
+                 date_upload: inv.invoiceDate.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
+                 payee: "Maruti",   // TODO(Priyanshu), Need to fix this withi real data
+             };
+         });
+    }
+
+ 
+     // TODO(Priyanshu) Need to confirm to this with Harshil Bhaiya
+    const getrejectedrowdata = () => {
         const rejectedbytier1 = checkedbytier1.filter((element) => {
               return element.tier2Invoice.approvalStatus === "Rejected";
         })
@@ -235,6 +261,10 @@ const Tier2EarlyPayment = () => {
                 };
             });
      }
+
+    const closemodal = () => {
+        document.getElementById('modal').style.display = "none";
+    }
 
     const displaytab1 = () => {
         document.getElementById("table-1").style.display = "block";
@@ -363,7 +393,7 @@ const Tier2EarlyPayment = () => {
             columnDefs={columnDefs2}
             defaultColDef={defaultColDef}
             frameworkComponents={frameworkComponents2}
-            onGridReady={onGridReady}
+            onGridReady={onGridReady2}
             rowData={rowData2}                    
             domLayout='autoHeight'
             // rowClassRules={{
@@ -378,8 +408,8 @@ const Tier2EarlyPayment = () => {
             columnDefs={columnDefs3}
             defaultColDef={defaultColDef}
             frameworkComponents={frameworkComponents3}
-            onGridReady={onGridReady}
-            rowData={rowData3}
+            onGridReady={onGridReady3}
+            rowData={getpendingbytier1data()}
             domLayout='autoHeight'
           />
     </div>
