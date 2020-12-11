@@ -59,14 +59,7 @@ function setupDefaultAndAuthRoutes() {
 
   app.post("/register", register);
   app.post("/login", passport.authenticate("local", { failureFlash: false }), async (req, res) => {
-    req.user = await getConnection()
-      .getRepository(User)
-      .findOne({
-        where: {
-          username: req.body.username,
-        },
-      });
-    res.json({});
+    res.json(req.user);
     res.end();
   });
   app.get("/logout", (req, res) => {
@@ -110,6 +103,7 @@ function ensureLoggedIn() {
       res.status(401);
       return res.end();
     }
+    console.log(req.user);
     next();
   };
 }
