@@ -36,7 +36,7 @@ export async function listTier2InvoicesForDiscountingInternal(
     .orderBy('"t"."DueDate"', "ASC")
     .getMany();
 
-  console.log("tier2Invoices: " + JSON.stringify(tier2Invoices));
+  // console.log("tier2Invoices: " + JSON.stringify(tier2Invoices));
 
   let j = 0;
   const invoiceToReturn: DiscountedTier2Invoice[] = [];
@@ -48,11 +48,15 @@ export async function listTier2InvoicesForDiscountingInternal(
       tier2Invoice.dueDate <= anchorInvoice.dueDate &&
       tier2Invoice.invoiceAmount.lessThanOrEqual(anchorInvoice.invoiceAmount)
     ) {
-      // TODO(harshil) Add logic for current date etc and calculate discounting amount
+      const interestRate = 15 / 100;
+      const daysPending = Math.floor((anchorInvoice.dueDate.valueOf() - new Date().valueOf()) / 86400000);
+      console.log(daysPending);
+      const hairCut = parseFloat(((Math.max(daysPending, 0) / 365) * interestRate).toFixed(4));
+      const discountedAmount = tier2Invoice.invoiceAmount.subtract(tier2Invoice.invoiceAmount.multiply(hairCut));
       invoiceToReturn.push({
         tier2Invoice,
-        discountedAmount: tier2Invoice.invoiceAmount.multiply(0.85),
-        discountedAnnualRatePercentage: 15,
+        discountedAmount,
+        discountedAnnualRatePercentage: hairCut * 100,
         status: "Pending",
         partAnchorInvoices: [{ anchorInvoice, partialAmount: tier2Invoice.invoiceAmount }],
       });
