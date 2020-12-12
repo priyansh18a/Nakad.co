@@ -1,16 +1,24 @@
-import React from 'react';
+import React , { useState} from 'react';
+import { useHistory } from "react-router-dom";
 import {  AgGridReact } from 'ag-grid-react';
+import axios from 'axios';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import logo from './../../Graphics/logo.jpg';
 import './../Tier1DataUpdate/Tier1DataUpdate.scss';
 import './Tier2EarlyPayment.scss';
+import Dinero from "dinero.js";
 import BtnCellRenderer from "./BtnCellRenderer.jsx";
 import BtnCellRenderer2 from "./BtnCellRenderer2.jsx";
 import BtnCellRenderer3 from "./BtnCellRenderer3.jsx";
 
 
 const Tier2EarlyPayment = () => {
+    const history = useHistory();
+    const [checkedbytier1, setCheckedbytier1] = useState([]);
+    const [pendingbytier1, setPendingbytier1] = useState([]);
+    const [invoicetoupdate, setInvoicetoupdate] = useState('');
+
     const columnDefs = [
         {   headerName:"Invoice Number",
             field: "invoice",
@@ -44,12 +52,13 @@ const Tier2EarlyPayment = () => {
         },
         {   
             headerName:"Take Early Payment",
-            field: "early_payment",
+            field: "invoice",
             minWidth: 180,
             cellRenderer: "btnCellRenderer1",
             cellRendererParams: {
               clicked: function(field) {
-                  // alert(`${field} was clicked`);
+                  console.log(field);
+                  setInvoicetoupdate(field);
                   document.getElementById('modal').style.display = "flex";
               }
             }
@@ -141,65 +150,6 @@ const Tier2EarlyPayment = () => {
         btnCellRenderer3: BtnCellRenderer3
     }
 
-    const rowData =  [ 
-        {   invoice: "KEINV1234",
-            payee: "Shayam International",
-            invoice_amount: "₹30,000", 
-            payment_date: "03/02/2021",
-            receivable_amount: "₹30,000",
-            discount_rate: "2.66%",
-            payment_amount:"₹29,200"
-        },
-        {   invoice: "ASINV4963",
-            payee: "Metalmen Auto",
-            invoice_amount: "₹80,000", 
-            payment_date: "07/02/2021",
-            receivable_amount: "₹80,000",
-            discount_rate: "2.88%",
-            payment_amount:"₹77,696"
-        },
-        {   invoice: "DFINV9727",
-            payee: "Metalmen Auto",
-            invoice_amount: "₹70,000", 
-            payment_date: "12/02/2021",
-            receivable_amount: "₹70,000",
-            discount_rate: "2.27%",
-            payment_amount:"₹68,411"
-        },
-        {   invoice: "CVINV3357",
-            payee: "Swift Works",
-            invoice_amount: "₹10,000", 
-            payment_date: "17/02/2021",
-            receivable_amount: "₹10,000",
-            discount_rate: "2.66%",
-            payment_amount:"₹9,725"
-        },
-        {   invoice: "RTINV6290",
-            payee: "Auto Wondor",
-            invoice_amount: "₹50,000",
-            payment_date: "18/02/2021",
-            receivable_amount: "₹50,000",
-            discount_rate: "2.92%",
-            payment_amount:"₹48,540"
-        },
-        {   invoice: "SWINV7714",
-            payee: "Swift Works",
-            invoice_amount: "₹60,000", 
-            payment_date: "22/02/2021",
-            receivable_amount: "₹60,000",
-            discount_rate: "2.54%",
-            payment_amount:"₹58,476"
-        },
-        {   invoice: "XCINV8470",
-            payee: "Swift Works",
-            invoice_amount: "₹40,000", 
-            payment_date: "20/02/2021",
-            receivable_amount: "₹40,000",
-            discount_rate: "2.79%",
-            payment_amount:"₹38,884"
-        }
-    ]
-
     const rowData2 =  [ 
         {   invoice: "HERO54286",
             payee: "Hero Motercycle",
@@ -216,14 +166,104 @@ const Tier2EarlyPayment = () => {
         }
     ]
 
-    const onGridReady = params => {
-        // const gridApi = params.api;
-        // const gridColumnApi = params.columnApi;
+    const onGridReady1 = params => {
+        axios.get("/api/ListTier2InvoicesForDiscounting?tier1Id=1&tier2Id=2") // TODO(Priyanshu)
+        .then(function (response) {
+            setCheckedbytier1(response.data);         
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    };
+
+    const onGridReady2 = params => {
 
     };
 
+    const onGridReady3 = params => {
+        axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1") // TODO(Priyanshu)
+        .then(function (response) {
+            setPendingbytier1(response.data);         
+        })
+        .catch(function (error) {
+            history.push({
+                pathname: "/tier1",
+                state: { alert: "true" }
+            });
+            console.log(error);
+        })
+    };
+
+    const getapprovedrowdata = () => {
+        const approvedbytier1 = checkedbytier1.filter((element) => {
+              return element.tier2Invoice.approvalStatus === "Approved";
+        })
+        // console.log(approvedbytier1);
+        return approvedbytier1.map(inv => {
+             return {
+                 invoice: inv.tier2Invoice.invoiceId,
+                 payee:"Maruti",   // TODO(Priyanshu)
+                 payment_date: inv.tier2Invoice.dueDate.slice(0,10),
+                 discount_rate:inv.discountedAnnualRatePercentage,
+                 invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
+                 receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
+                 payment_amount:Dinero(inv.discountedAmount).toFormat('$0.00')
+             };
+         });
+     }
+
+
+    const confirmearlypayment = () => {
+        const discontedtier2 =  checkedbytier1.find((element) => {
+            return element.tier2Invoice.invoiceId === invoicetoupdate;
+        });
+        discontedtier2.status = "Discounted";          //TODO(Priyanshu) Need to confirm this
+        callapi(discontedtier2);
+    }
+
+    const callapi = discontedtier2 => {
+        console.log(discontedtier2);
+        axios.post("/api/UpdateTier2InvoiceForDiscounting", discontedtier2)
+          .then(function (response) {
+            console.log(response);
+            window.location.reload(); 
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+    }
+
+    const getpendingbytier1data = () => {
+        return pendingbytier1.map(inv => {
+             return {
+                 invoice: inv.invoiceId,
+                 vendor: inv.tier2.actorinfo.name,
+                 invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
+                 date_upload: inv.invoiceDate.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
+                 payee: "Maruti",   // TODO(Priyanshu), Need to fix this withi real data
+             };
+         });
+    }
+
+ 
+     // TODO(Priyanshu) Need to confirm to this with Harshil Bhaiya
+    const getrejectedrowdata = () => {
+        const rejectedbytier1 = checkedbytier1.filter((element) => {
+              return element.tier2Invoice.approvalStatus === "Rejected";
+        })
+          // console.log(rejectedbytier1);
+            return rejectedbytier1.map(inv => {
+                return {
+                    invoice: inv.tier2Invoice.invoiceId,
+                    payee: "Maruti",   // TODO(Priyanshu)
+                    invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
+                    remark : " abcd"  // TODO(Priyanshu)
+                };
+            });
+     }
+
     const closemodal = () => {
-      document.getElementById('modal').style.display = "none";
+        document.getElementById('modal').style.display = "none";
     }
 
     const displaytab1 = () => {
@@ -286,9 +326,9 @@ const Tier2EarlyPayment = () => {
                 </a>
                 <div className="navbar-item">
                 <div className="buttons">
-                <a className="button is-primary is-light">
+                <button className="button is-primary is-light" >
                     Log Out
-                </a>
+                </button>
                 </div>
             </div>
             </div>
@@ -321,8 +361,8 @@ const Tier2EarlyPayment = () => {
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             frameworkComponents={frameworkComponents1}
-            onGridReady={onGridReady}
-            rowData={rowData}
+            onGridReady={onGridReady1}
+            rowData={getapprovedrowdata()}
             domLayout='autoHeight'
             rowClassRules={{
                 'highlight': function(params) { return  params.data.invoice === 'KEINV1234'; }
@@ -340,7 +380,7 @@ const Tier2EarlyPayment = () => {
                  <p>Are you sure you have taken early payment?</p>
                 </section>
                 <footer class="modal-card-foot">
-                    <button class="button is-success" onClick={closemodal} >Confirm</button>
+                    <button class="button is-success" onClick={confirmearlypayment} >Confirm</button>
                     <button class="button is-danger" onClick={closemodal} >Decline</button>
                 </footer>
             </div>
@@ -353,8 +393,8 @@ const Tier2EarlyPayment = () => {
             columnDefs={columnDefs2}
             defaultColDef={defaultColDef}
             frameworkComponents={frameworkComponents2}
-            onGridReady={onGridReady}
-            rowData={rowData2}
+            onGridReady={onGridReady2}
+            rowData={rowData2}                    
             domLayout='autoHeight'
             // rowClassRules={{
             //     'highlight': function(params) { return  params.data.invoice === 'KEINV1234'; }
@@ -368,8 +408,8 @@ const Tier2EarlyPayment = () => {
             columnDefs={columnDefs3}
             defaultColDef={defaultColDef}
             frameworkComponents={frameworkComponents3}
-            onGridReady={onGridReady}
-            rowData={rowData3}
+            onGridReady={onGridReady3}
+            rowData={getpendingbytier1data()}
             domLayout='autoHeight'
           />
     </div>

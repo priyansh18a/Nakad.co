@@ -1,17 +1,42 @@
 import React, { useState} from 'react';
 import { useHistory } from "react-router-dom";
+import axios from 'axios';
 import logo from './../../Graphics/logo.jpg';
+
 import "./Tier2Upload.scss"
 
 const Tier2Upload =  () => {
-    const history = useHistory();
-    const [form, setForm] = useState({ invoice: 'KEINV1234',payername: 'Shyam international', invoicedate: '03/11/2020', invoiceamount: '30000' , receivableamount: '30000' , receivabledate: '03/02/2021' , grn: 'KEGRN1234' , invoicefile: '', grnfile: ' ' });
+    const history = useHistory(); 
+    const [form, setForm] = useState({invoice: '',payername: '', invoicedate: '', invoiceamount: '' , receivableamount: '' , receivabledate: '' , grn: '' , invoicefile: '', grnfile: '' }); // 
     const update = (({ target }) => setForm({ ...form, [target.name]: target.value }))
 
-    const sendforapproval =  event => {
+    const uploadinvoiceandgrn =  event => {
         event.preventDefault();
-        // const { invoice, password } = event.target.elements;
-        history.push("/tier2/early");
+        console.log(form);
+        axios.post("/api/Tier2Invoice", {   
+            tier1Id: 1,     // TODO(Priyanshu)
+            tier2Id: 2,      // TODO(Priyanshu)
+            invoiceId: form.invoice,
+            invoiceAmount : { amount : parseInt(form.invoiceamount),
+                              currency: "INR",
+                              precision: 2
+                            },
+            invoiceDate: form.invoicedate,
+            dueDate: form.receivabledate,
+            grnId: [form.grn],
+            approvalStatus:  "Pending",
+            receivableAmount: { amount:  parseInt(form.receivableamount),
+                                currency:"INR",
+                                precision: 2
+                              }
+          })
+          .then(function (response) {
+            console.log(response);
+            history.push("/tier2/early");
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
     }
     return (
     <div>
@@ -56,7 +81,7 @@ const Tier2Upload =  () => {
      <p className="title has-text-info tier-2-head">Kamal enterprise Invoice and GRN upload</p>
     <div className="tier-2-login" style={{ height:"auto"}}>
             <div className="column is-4 is-offset-4 ">
-            <form onSubmit={sendforapproval}> 
+            <form onSubmit={uploadinvoiceandgrn}> 
                 <div className="field">
                     <div className="control">
                         <label className="label">Invoice</label>
@@ -101,7 +126,7 @@ const Tier2Upload =  () => {
                 </div> 
                 <div id="file-js-example" class=" field file has-name is-dark">
                     <label class="file-label">
-                        <input class="file-input" type="file" name="invoicefile" required/>
+                        <input class="file-input" type="file" name="invoicefile"/>
                         <span class="file-cta">
                         <span class="file-icon">
                             <i class="fas fa-upload"></i>
@@ -117,7 +142,7 @@ const Tier2Upload =  () => {
                 </div>
                 <div id="file-js-example2" class=" field file has-name is-dark">
                     <label class="file-label">
-                        <input class="file-input" type="file" name="grnfile" required/>
+                        <input class="file-input" type="file" name="grnfile"/>
                         <span class="file-cta">
                         <span class="file-icon">
                             <i class="fas fa-upload"></i>

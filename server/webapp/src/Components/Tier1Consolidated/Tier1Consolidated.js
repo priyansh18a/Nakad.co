@@ -1,15 +1,21 @@
-import React from 'react';
+import React ,  { useState}from 'react';
+import { useHistory } from "react-router-dom";
+import axios from 'axios';
 import {  AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import logo from './../../Graphics/logo.jpg';
 import './../Tier1DataUpdate/Tier1DataUpdate.scss';
 import '../Tier2EarlyPayment/Tier2EarlyPayment.scss';
-import CheckboxRenderer from "./CheckboxRenderer.jsx";
+import Dinero from "dinero.js";
+import BtnCellRenderer from "./BtnCellRenderer.jsx";
 
 
 
 const Tier1Consolidated = () => {
+    const history = useHistory();
+    const [approvedtier2invoice, setApprovedtier2invoice] = useState([]);
+    const [invoicetodisapprove, setInvoicetodisapprove] = useState('');
     const columnDefs = [
         {   headerName:"Invoice",
             field: "invoice",
@@ -109,10 +115,18 @@ const Tier1Consolidated = () => {
             minWidth: 180
         },
         {   headerName:"Disapprove",
-            field: "disapprove",
+            field: "invoice",
             minWidth: 150,
-            cellRenderer: "checkboxRenderer"
+            cellRenderer: "btnCellRenderer",
+            cellRendererParams: {
+                clicked: function(field) {
+                    console.log(field);
+                    setInvoicetodisapprove(field);
+                    document.getElementById('modal').style.display = "flex";
+                }
+              }
         }
+       
       ]
 
     const defaultColDef = {
@@ -141,7 +155,7 @@ const Tier1Consolidated = () => {
     
 
     const frameworkComponents =  {
-        checkboxRenderer: CheckboxRenderer 
+        btnCellRenderer: BtnCellRenderer       
     }
     const rowData =  [ 
         {   invoice: "KEINV1234",
@@ -165,16 +179,6 @@ const Tier1Consolidated = () => {
         }
     ]
 
-    const rowData3 =  [ 
-        {   invoice: "KEINV1234",
-            vendor: "Maruti",
-            invoice_date: "03/12/2020", 
-            payable_date: "03/02/2021",
-            invoice_amount: "₹70,000",
-            payable_amount: "₹30,000",
-            approval_date: "10/01/2021"
-        }
-    ]
 
     const onGridReady = params => {
         // const gridApi = params.api;
@@ -182,8 +186,65 @@ const Tier1Consolidated = () => {
 
     };
 
+    const onGridReady3 = params => {
+        axios.get("/api/ListTier2InvoicesForDiscounting?tier1Id=1&tier2Id=2") // TODO(Priyanshu)
+        .then(function (response) {
+            setApprovedtier2invoice(response.data);         
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+
+    };
+
+    const getrowdata = () => {
+        return approvedtier2invoice.map(inv => {
+             return {
+                 invoice: inv.tier2Invoice.invoiceId,
+                 vendor: "Maruti", //TODO(Priyanshu)
+                 invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
+                 payable_date: inv.tier2Invoice.dueDate.slice(0,10),
+                 invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
+                 payable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
+                 approval_date : inv.tier2Invoice.invoiceDate.slice(0,10) //TODO(Priyanshu)
+             };
+         });
+     }
+
+    const changeapprovedstatus = () => {
+        const disapprovetier2invoice =  approvedtier2invoice.find((element) => {
+            return element.tier2Invoice.invoiceId === invoicetodisapprove;
+        })
+        disapprovetier2invoice.tier2Invoice.approvalStatus = "Pending";
+        console.log(disapprovetier2invoice.tier2Invoice);
+        callapi(disapprovetier2invoice.tier2Invoice);
+    }
+
+    const callapi = tier2invoice => {
+        axios.post("/api/UpdateTier2InvoiceForApproval", tier2invoice)
+          .then(function (response) {
+            console.log(response);
+            window.location.reload(); 
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+    }
+
     const closemodal = () => {
       document.getElementById('modal').style.display = "none";
+    }
+
+    const logout = () => {
+        axios.get('/logout')
+        .then(function (response) {
+            // handle success
+            history.push("/");
+        })
+        .catch(function (error){
+            // handle error
+            console.log(error);
+        })
     }
 
     const displaytab1 = () => {
@@ -244,9 +305,9 @@ const Tier1Consolidated = () => {
                 </a>
                 <div className="navbar-item">
                 <div className="buttons">
-                <a className="button is-primary is-light">
+                <button className="button is-primary is-light"  onClick={logout}>
                     Log Out
-                </a>
+                </button>
                 </div>
             </div>
             </div>
@@ -306,13 +367,10 @@ const Tier1Consolidated = () => {
                 columnDefs={columnDefs3}
                 defaultColDef={defaultColDef}
                 frameworkComponents={frameworkComponents}
-                onGridReady={onGridReady}
-                rowData={rowData3}
+                onGridReady={onGridReady3}
+                rowData={getrowdata()}
                 rowSelection="multiple"
                 domLayout='autoHeight'
-                rowClassRules={{
-                    'highlight': function(params) { return  params.data.invoice === 'KEINV1234'; }
-                }}
             />
         </div>
         <div class="modal" id="modal">
@@ -323,10 +381,10 @@ const Tier1Consolidated = () => {
                     <button class="delete" aria-label="close" onClick={closemodal} ></button>
                     </header>
                     <section class="modal-card-body">
-                    <p>Are you sure you have taken Total Early Payment?</p>
+                    <p>Are you sure you want to Disapprove?</p>
                     </section>
                     <footer class="modal-card-foot">
-                        <button class="button is-success" onClick={closemodal} >Confirm</button>
+                        <button class="button is-success" onClick={changeapprovedstatus} >Confirm</button>
                         <button class="button is-danger" onClick={closemodal} >Decline</button>
                     </footer>
                 </div>

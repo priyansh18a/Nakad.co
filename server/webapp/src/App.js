@@ -19,6 +19,7 @@ import BankCollection from './Components/BankCollection/BankCollection';
 import BankDisbursement from './Components/BankDisbursement/BankDisbursement';
 import Tier1Consolidated from './Components/Tier1Consolidated/Tier1Consolidated';
 import Tier2Consolidated from './Components/Tier2Consolidated/Tier2Consolidated';
+import Register from './Components/Register/Register';
 
 
 
@@ -29,6 +30,9 @@ const App = () => {
       <Switch>
         <Route exact path="/" >
           <ChooseType/>
+        </Route>
+        <Route exact path="/register" >
+          <Register/>
         </Route>
         <Route exact path="/tier1" >
           <Tier1Login/>
