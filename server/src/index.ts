@@ -14,7 +14,8 @@ import { listTier2InvoicesForApproval } from "./routes/listTier2InvoicesForAppro
 import { listTier2InvoicesForDiscounting } from "./routes/listTier2InvoicesForDiscounting";
 import { updateTier2InvoiceForApproval } from "./routes/updateTier2InvoiceForApproval";
 import { updateTier2InvoicesForDiscounting } from "./routes/updateTier2InvoicesForDiscounting";
-import { listInvoicesForBankApproval, listInvoicesAfterBankApproval } from "./routes/listInvoicesForBankApproval";
+import { listInvoicesForBankApproval } from "./routes/listInvoicesForBankApproval";
+import { listInvoicesPostBankApproval } from "./routes/listInvoicesPostBankApproval";
 import { updateInvoiceForBankApproval } from "./routes/updateInvoiceForBankApproval";
 import { AssertionError } from "assert";
 import path from "path";
@@ -41,7 +42,7 @@ createConnection()
     app.post("/api/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
     app.get("/api/ListInvoicesForBankApproval", loginCheck(), listInvoicesForBankApproval);
     app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval);
-    app.get("/api/ListInvoicesAfterBankApproval", loginCheck(), listInvoicesAfterBankApproval);
+    app.get("/api/ListInvoicesPostBankApproval", loginCheck(), listInvoicesPostBankApproval);
 
     app.get("/*", (req, res) => {
       res.sendFile(path.join(__dirname, "../clientbuild", "index.html"));
@@ -103,7 +104,6 @@ function ensureLoggedIn() {
       res.status(401);
       return res.end();
     }
-    console.log(req.user);
     next();
   };
 }

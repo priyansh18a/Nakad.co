@@ -33,12 +33,11 @@ export function initializePassportConfig() {
 
   passport.use(strategy);
   passport.serializeUser((user, done) => {
-    const userS = user as User;
-    done(null, userS.username);
+    const userSerialize = user as User;
+    done(null, userSerialize.username);
   });
 
   passport.deserializeUser(async (username, done) => {
-    // TODO:(Fix this by checking the user in DB)
     const u = await getConnection().getRepository(User).findOne({
       where: {
         username,
