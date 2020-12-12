@@ -1,16 +1,22 @@
-import React from 'react';
+import React,  { useState} from 'react';
 import {  AgGridReact } from 'ag-grid-react';
+import axios from 'axios';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import logo from './../../Graphics/logo.jpg';
 import './../Tier1DataUpdate/Tier1DataUpdate.scss';
 import '../Tier2EarlyPayment/Tier2EarlyPayment.scss';
-import CheckboxRenderer from "./CheckboxRenderer.jsx";
+import Dinero from "dinero.js";
+import BtnCellRenderer from "./BtnCellRenderer.jsx";
 
 
 
 
 const Tier2Consolidated = () => {
+    const [tier2adjustmentpending, setTier2adjustmentpending] = useState([]);
+    const [tier2adjustmentdone, setTier2adjustmentdone] = useState([]);
+    const [invoicetoremove, setInvoicetoremove] = useState('');
+
     const columnDefs = [
         {   headerName:"Invoice Number",
             field: "invoice",
@@ -35,18 +41,25 @@ const Tier2Consolidated = () => {
             minWidth: 180
         },
         {   headerName:"Early Payment Amount",
-            field: "payment_amount",
+            field: "early_payment_amount",
             minWidth: 200
         },
         {   headerName:"Date of Early Payment",
-            field: "early_payment",
+            field: "early_payment_date",
             minWidth: 200,
             sortable:true
         },
 
         {   headerName:"Adjusted in Tally",
-            field: "tally_adjusted",
-            cellRenderer: "checkboxRenderer"
+            field: "invoice",
+            cellRenderer: "btnCellRenderer1",
+            cellRendererParams: {
+              clicked: function(field) {
+                  console.log(field);
+                  setInvoicetoremove(field);
+                  document.getElementById('modal').style.display = "flex";
+              }
+            }
         }
       ]
 
@@ -74,7 +87,7 @@ const Tier2Consolidated = () => {
             minWidth: 200
         },
         {   headerName:"Date of Early Payment",
-            field: "early_payment",
+            field: "early_payment_date",
             minWidth: 200,
             sortable:true
         }
@@ -105,36 +118,49 @@ const Tier2Consolidated = () => {
       }
 
     const frameworkComponents =  {
-        checkboxRenderer: CheckboxRenderer 
+            btnCellRenderer1: BtnCellRenderer
+            
     }
 
-    const rowData =  [ 
-        {   invoice: "KEINV1234",
-            payee: "Shayam International",
-            invoice_amount: "₹30,000", 
-            payment_date: "03/02/2021",
-            receivable_amount: "₹30,000",
-            payment_amount:"₹29,200",
-            early_payment:"03/02/2021"
-        }
-    ]
 
-    const rowData2 =  [ 
-        {   invoice: "OEMINV1234",
-            payee: "Maruti",
-            invoice_amount: "₹40,000", 
-            payment_date: "03/07/2020",
-            receivable_amount: "₹30,000",
-            payment_amount:"₹29,200",
-            early_payment:"03/10/2020"
-        }
-    ]
 
     const onGridReady = params => {
-        // const gridApi = params.api;
-        // const gridColumnApi = params.columnApi;
-
+        axios.get("/api/ListTier2EarlyPaymentReceived?tier2Id=2") // TODO(Priyanshu)
+        .then(function (response) {   
+            const rowdata1 =  response.data.map(inv => {
+                return {
+                    invoice: inv.tier2Invoice.invoiceId,
+                    payee: "Maruti", //TODO(Priyanshu)
+                    invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
+                    payment_date: inv.tier2Invoice.dueDate.slice(0,10),
+                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
+                    early_payment_amount: Dinero(inv.discountedAmount).toFormat('$0.00'),
+                    early_payment_date: inv.tier2Invoice.invoiceDate.slice(0,10),  //TODO(Priyanshu)  Need to update this
+                };
+            });
+            // console.log(rowdata1);
+            setTier2adjustmentpending(rowdata1);
+        });
     };
+
+    const tallyadjustmentdone = () => {
+        const newRowData = tier2adjustmentpending.filter(element => {
+            return element.invoice !== invoicetoremove;
+        });
+        setTier2adjustmentpending(newRowData);
+        const newRowData2 = tier2adjustmentpending.find(element => {
+            return element.invoice === invoicetoremove;
+        });
+        setTier2adjustmentdone([...tier2adjustmentdone, newRowData2]);
+        document.getElementById('modal').style.display = "none";
+    }
+
+    const onGridReady2 = params => {
+    }
+
+    const closemodal = () => {
+        document.getElementById('modal').style.display = "none";
+    }
 
     const displaypending = () => {
         document.getElementById("adjustment-pending").style.display = "block";
@@ -211,17 +237,33 @@ const Tier2Consolidated = () => {
                 defaultColDef={defaultColDef}
                 frameworkComponents={frameworkComponents}
                 onGridReady={onGridReady}
-                rowData={rowData}
+                rowData={tier2adjustmentpending}
                 rowSelection="multiple"
                 domLayout='autoHeight'
             />
         </div>  
+        <div className="modal" id="modal"  >
+            <div className="modal-background" onClick={closemodal}></div>
+            <div className="modal-card">
+                <header className="modal-card-head">
+                <p className="modal-card-title">Confirmation</p>
+                <button className="delete" aria-label="close" onClick={closemodal} ></button>
+                </header>
+                <section className="modal-card-body">
+                 <p>Are you sure you have done tally adjustment?</p>
+                </section>
+                <footer className="modal-card-foot">
+                    <button className="button is-success" onClick={tallyadjustmentdone} >Confirm</button>
+                    <button className="button is-danger" onClick={closemodal} >Decline</button>
+                </footer>
+            </div>
+        </div>
         <div className="ag-theme-material mygrid"  id="adjustment-done" style={{display:"none"}}>
             <AgGridReact
                 columnDefs={columnDefs2}
                 defaultColDef={defaultColDef}
-                onGridReady={onGridReady}
-                rowData={rowData2}
+                onGridReady={onGridReady2}
+                rowData={tier2adjustmentdone}
                 domLayout='autoHeight'
             />
         </div>

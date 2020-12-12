@@ -17,7 +17,7 @@ const Tier2Upload =  () => {
             tier1Id: 1,     // TODO(Priyanshu)
             tier2Id: 2,      // TODO(Priyanshu)
             invoiceId: form.invoice,
-            invoiceAmount : { amount : parseInt(form.invoiceamount),
+            invoiceAmount : { amount : parseInt(form.invoiceamount)*100, //to provide 2 digit precision
                               currency: "INR",
                               precision: 2
                             },
@@ -25,7 +25,7 @@ const Tier2Upload =  () => {
             dueDate: form.receivabledate,
             grnId: [form.grn],
             approvalStatus:  "Pending",
-            receivableAmount: { amount:  parseInt(form.receivableamount),
+            receivableAmount: { amount:  parseInt(form.receivableamount)*100,
                                 currency:"INR",
                                 precision: 2
                               }

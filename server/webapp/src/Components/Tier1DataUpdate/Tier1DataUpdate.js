@@ -13,7 +13,8 @@ import BtnCellRenderer2 from "./BtnCellRenderer2.jsx";
 
 const Tier1DataUpdate = () => {
     const history = useHistory();
-    const [tier1payablereceivable, setTier1payablereceivable] = useState([]);
+    const [tier1payable, setTier1payable] = useState([]);
+    const [tier1receivable, setTier1receivable] = useState([]);
     const [invoicetoremove, setInvoicetoremove] = useState('');
 
     const columnDefs1 = [
@@ -83,7 +84,7 @@ const Tier1DataUpdate = () => {
             sortable:true
         },
         {   headerName:"Confirm",
-            field: "cofirm",
+            field: "invoice",
             minWidth: 150,
             cellRenderer: "btnCellRenderer2",
             cellRendererParams: {
@@ -132,56 +133,56 @@ const Tier1DataUpdate = () => {
 
     const onGridReady = params => {
         axios.get("/api/ListTier1PayableReceivable?tier1Id=1") // TODO(Priyanshu)
-        .then(function (response) {
-            setTier1payablereceivable(response.data);      
+        .then(function (response) {   
+            const rowdata1 =  response.data.map(inv => {
+                return {
+                    invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
+                    vendor: "Maruti", //TODO(Priyanshu)
+                    invoice_date: inv.partAnchorInvoices.anchorInvoice.invoiceDate.slice(0,10),
+                    discounted_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.partAnchorInvoices.partialAmount)).toFormat('$0.00'),
+                    payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0.00'),
+                    remaining_payable: Dinero(inv.partAnchorInvoices.partialAmount).toFormat('$0.00'),
+                };
+            });
+            // console.log(rowdata1);
+            setTier1payable(rowdata1);
+            const rowdata2 = response.data.map(inv => {
+                return {
+                    invoice: inv.tier2Invoice.invoiceId,
+                    payer: "Maruti", //TODO(Priyanshu)
+                    invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
+                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
+                    discounted_amount: Dinero(inv.discountedAmount).toFormat('$0.00'),
+                    remaining_receivable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00'),
+                };
+            });
+            setTier1receivable(rowdata2);
         })
         .catch(function (error) {
             console.log(error);
         })
+       
     };
 
     const onGridReady2 = params => {
 
     };
 
-    const getpayabledata = () => {
-        return tier1payablereceivable.map(inv => {
-             return {
-                 invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
-                 vendor: "Maruti", //TODO(Priyanshu)
-                 invoice_date: inv.partAnchorInvoices.anchorInvoice.invoiceDate.slice(0,10),
-                 discounted_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.partAnchorInvoices.partialAmount)).toFormat('$0.00'),
-                 payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0.00'),
-                 remaining_payable: Dinero(inv.partAnchorInvoices.partialAmount).toFormat('$0.00'),
-             };
-         });
-     }
-
-    const getreceivabledata = () => {
-        return tier1payablereceivable.map(inv => {
-             return {
-                 invoice: inv.tier2Invoice.invoiceId,
-                 payer: "Maruti", //TODO(Priyanshu)
-                 invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
-                 receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
-                 discounted_amount: Dinero(inv.discountedAmount).toFormat('$0.00'),
-                 remaining_receivable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00'),
-             };
-         });
-    }
-
-
     // TODO (Priyanshu) Need to complete this
     const removepayableentry = () => {
-        const anchortoremove =  tier1payablereceivable.find((element) => {
-            return element.partAnchorInvoices.anchorInvoice.invoiceId === invoicetoremove;
+        const newRowData = tier1payable.filter(element => {
+            return element.invoice !== invoicetoremove;
         });
+        setTier1payable(newRowData);
+        document.getElementById('modal').style.display = "none";
+    }
 
-        var index = tier1payablereceivable.indexOf(anchortoremove);
-        if (index > -1) { //Make sure item is present in the array, without if condition, -n indexes will be considered from the end of the array.
-            tier1payablereceivable.splice(index, 1);
-        }
-        console.log(tier1payablereceivable);
+    const removereceivableentry = () => {
+        const newRowData = tier1receivable.filter(element => {
+            return element.invoice !== invoicetoremove;
+        });
+        setTier1receivable(newRowData);
+        document.getElementById('modal2').style.display = "none";
     }
 
     const logout = () => {
@@ -293,24 +294,24 @@ const Tier1DataUpdate = () => {
                 defaultColDef={defaultColDef}
                 frameworkComponents={frameworkComponents1}
                 onGridReady={onGridReady}
-                rowData={getpayabledata()}
+                rowData={tier1payable}
                 rowSelection="multiple"
                 domLayout='autoHeight'
             />
     </div>
-    <div class="modal" id="modal"  >
-            <div class="modal-background" onClick={closemodal}></div>
-            <div class="modal-card">
-                <header class="modal-card-head">
-                <p class="modal-card-title">Confirmation</p>
-                <button class="delete" aria-label="close" onClick={closemodal} ></button>
+    <div className="modal" id="modal"  >
+            <div className="modal-background" onClick={closemodal}></div>
+            <div className="modal-card">
+                <header className="modal-card-head">
+                <p className="modal-card-title">Confirmation</p>
+                <button className="delete" aria-label="close" onClick={closemodal} ></button>
                 </header>
-                <section class="modal-card-body">
+                <section className="modal-card-body">
                  <p>Are you sure you have completed the payment?</p>
                 </section>
-                <footer class="modal-card-foot">
-                    <button class="button is-success" onClick={removepayableentry} >Confirm</button>
-                    <button class="button is-danger" onClick={closemodal} >Decline</button>
+                <footer className="modal-card-foot">
+                    <button className="button is-success" onClick={removepayableentry} >Confirm</button>
+                    <button className="button is-danger" onClick={closemodal} >Decline</button>
                 </footer>
             </div>
         </div>
@@ -321,24 +322,24 @@ const Tier1DataUpdate = () => {
                 defaultColDef={defaultColDef}
                 frameworkComponents={frameworkComponents2}
                 onGridReady={onGridReady2}
-                rowData={getreceivabledata()}
+                rowData={tier1receivable}
                 rowSelection="multiple"
                 domLayout='autoHeight'
             />
     </div>
-    <div class="modal" id="modal2"  >
-            <div class="modal-background" onClick={closemodal2}></div>
-            <div class="modal-card">
-                <header class="modal-card-head">
-                <p class="modal-card-title">Confirmation</p>
-                <button class="delete" aria-label="close" onClick={closemodal2} ></button>
+    <div className="modal" id="modal2"  >
+            <div className="modal-background" onClick={closemodal2}></div>
+            <div className="modal-card">
+                <header className="modal-card-head">
+                <p className="modal-card-title">Confirmation</p>
+                <button className="delete" aria-label="close" onClick={closemodal2} ></button>
                 </header>
-                <section class="modal-card-body">
+                <section className="modal-card-body">
                  <p>Are you sure you have updated in your database?</p>
                 </section>
-                <footer class="modal-card-foot">
-                    <button class="button is-success" onClick={closemodal2} >Confirm</button>
-                    <button class="button is-danger" onClick={closemodal2} >Decline</button>
+                <footer className="modal-card-foot">
+                    <button className="button is-success" onClick={removereceivableentry} >Confirm</button>
+                    <button className="button is-danger" onClick={closemodal2} >Decline</button>
                 </footer>
             </div>
         </div>
