@@ -19,6 +19,6 @@ async function listTier2InvoicesForApprovalInternal(tier1Id: number): Promise<Ti
       relations: ["tier2"],
     });
 
-  console.log("tier2Invoices: " + JSON.stringify(tier2Invoices));
+  // console.log("tier2Invoices: " + JSON.stringify(tier2Invoices));
   return tier2Invoices;
 }

@@ -2,6 +2,14 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { MoneyTransformer } from "../util/MoneyTransformer";
 import { Actor } from "./Actor";
 
+interface Tier2InvoiceDetails {
+  data: Image[];
+}
+
+interface Image {
+  link: string;
+}
+
 @Index("tier2_unqiue", ["invoiceId", "tier1Id", "tier2Id"], { unique: true })
 @Index("tier2invoice_pk", ["invoiceId", "tier1Id", "tier2Id"], { unique: true })
 @Entity("tier2invoice", { schema: "public" })
@@ -25,6 +33,12 @@ export class Tier2Invoice {
     transformer: new MoneyTransformer(),
   })
   invoiceAmount: Dinero.Dinero | null;
+
+  @Column("jsonb", {
+    name: "Tier2InvoiceDetails",
+    nullable: true,
+  })
+  tier2InvoiceDetails: Tier2InvoiceDetails | null;
 
   @Column("timestamp with time zone", { name: "InvoiceDate", nullable: true })
   invoiceDate: Date | null;

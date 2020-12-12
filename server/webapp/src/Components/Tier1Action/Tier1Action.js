@@ -145,8 +145,8 @@ const Tier1Action = () => {
             return {
                 invoice: inv.invoiceId,
                 vendor: inv.tier2.actorinfo.name,
-                invoice_date: inv.invoiceDate,
-                payable_date: inv.dueDate,
+                invoice_date: inv.invoiceDate.slice(0,10),
+                payable_date: inv.dueDate.slice(0,10),
                 invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
                 payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00')
             };
