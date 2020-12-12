@@ -45,7 +45,7 @@ export async function listTier2InvoicesForDiscountingInternal(
     if (j >= anchorInvoices.length) break;
     const anchorInvoice = anchorInvoices[j];
     if (
-      tier2Invoice.dueDate <= anchorInvoice.dueDate  &&
+      tier2Invoice.dueDate <= anchorInvoice.dueDate &&
       tier2Invoice.invoiceAmount.lessThanOrEqual(anchorInvoice.invoiceAmount)
     ) {
       const interestRate = 15 / 100;

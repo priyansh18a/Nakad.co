@@ -16,7 +16,7 @@ import { updateTier2InvoiceForApproval } from "./routes/updateTier2InvoiceForApp
 import { updateTier2InvoicesForDiscounting } from "./routes/updateTier2InvoicesForDiscounting";
 import { listInvoicesForBankApproval } from "./routes/listInvoicesForBankApproval";
 import { updateInvoiceForBankApproval } from "./routes/updateInvoiceForBankApproval";
-import {listTier1PayableReceivable} from "./routes/listTier1PayableReceivable";
+import { listTier1PayableReceivable } from "./routes/listTier1PayableReceivable";
 import { AssertionError } from "assert";
 import path from "path";
 import { config } from "dotenv";

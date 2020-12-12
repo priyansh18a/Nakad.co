@@ -35,7 +35,7 @@ router.post("/upload", uploadStrategy, async (req: Request, res: Response) => {
     const response = await containerClient.uploadBlockBlob(blobName, req.file.buffer, streamLength, {
       blobHTTPHeaders: { blobContentType: contentType },
     });
-    
+
     // const blobSAS = generateBlobSASQueryParameters(
     //   {
     //     containerName, // Required
@@ -47,7 +47,7 @@ router.post("/upload", uploadStrategy, async (req: Request, res: Response) => {
     //   storageSharedKeyCredential
     // ).toString();
 
-    res.json({ fileUrl: containerClient.getBlobClient(blobName).url});
+    res.json({ fileUrl: containerClient.getBlobClient(blobName).url });
     res.end();
   } catch (error) {
     console.log(error);

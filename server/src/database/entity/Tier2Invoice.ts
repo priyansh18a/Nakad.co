@@ -2,12 +2,12 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { MoneyTransformer } from "../util/MoneyTransformer";
 import { Actor } from "./Actor";
 
-interface tier2InvoiceDetails{
-  data: image[]
+interface Tier2InvoiceDetails {
+  data: Image[];
 }
 
-interface image {
-  link : string
+interface Image {
+  link: string;
 }
 
 @Index("tier2_unqiue", ["invoiceId", "tier1Id", "tier2Id"], { unique: true })
@@ -38,7 +38,7 @@ export class Tier2Invoice {
     name: "Tier2InvoiceDetails",
     nullable: true,
   })
-  tier2InvoiceDetails: tier2InvoiceDetails | null;
+  tier2InvoiceDetails: Tier2InvoiceDetails | null;
 
   @Column("timestamp with time zone", { name: "InvoiceDate", nullable: true })
   invoiceDate: Date | null;
