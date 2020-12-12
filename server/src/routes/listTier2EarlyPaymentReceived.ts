@@ -5,7 +5,6 @@ import { AnchorTier2InvoiceMapping } from "../database/entity/AnchorTier2Invoice
 import { Tier2Invoice } from "../database/entity/Tier2Invoice";
 import { Tier1PayableReceivable } from "../models/Tier1PayableReceivable";
 
-
 // Request has query param named tier2Id
 export async function listTier2EarlyPaymentReceived(
   req: Request,
