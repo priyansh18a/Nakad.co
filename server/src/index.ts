@@ -49,7 +49,7 @@ createConnection()
     app.get("/api/ListTier2InvoicesForDiscounting", loginCheck(), listTier2InvoicesForDiscounting);
     app.post("/api/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
     app.get("/api/ListInvoicesForBankApproval", loginCheck(), listInvoicesForBankApproval);
-    app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval)
+    app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval);
     app.get("/api/ListInvoicesPostBankApproval", loginCheck(), listInvoicesPostBankApproval);
     app.get("/api/ListTier1PayableReceivable", loginCheck(), listTier1PayableReceivable);
     app.get("/*", (req, res) => {
