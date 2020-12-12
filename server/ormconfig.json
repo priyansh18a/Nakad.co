@@ -1,18 +1,26 @@
 {
-  "name": "default",
-  "type": "postgres",
-  "host": "harshil-blog.southindia.cloudapp.azure.com",
-  "port": 5432,
-  "username": "postgres",
-  "password": "harshillodhipostgres",
-  "database": "billcoin",
-  "schema": "public",
-  "synchronize": false,
-  "logging": false,
-  "entities": ["src/database/entity/**/*.ts"],
-  "migrations": ["src/database/migration/**/*.ts"],
-  "cli": {
-    "entitiesDir": "src/database/entity",
-    "migrationsDir": "src/database/migration"
-  }
+
+   "name": "default",
+   "type": "postgres",
+   "host": "harshil-blog.southindia.cloudapp.azure.com",
+   "port": 5432,
+   "username": "postgres",
+   "password": "harshillodhipostgres",
+   "database": "billcoin",
+   "schema": "public",
+   "synchronize": false,
+   "logging": false,
+   "entities": [
+      "build/database/entity/**/*.js"
+
+   ],
+   "migrations": [
+      "src/database/migration/**/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "src/database/entity",
+      "migrationsDir": "src/database/migration"
+   }
 }
+
+

@@ -17,18 +17,26 @@ import { updateTier2InvoicesForDiscounting } from "./routes/updateTier2InvoicesF
 import { listInvoicesForBankApproval } from "./routes/listInvoicesForBankApproval";
 import { listInvoicesPostBankApproval } from "./routes/listInvoicesPostBankApproval";
 import { updateInvoiceForBankApproval } from "./routes/updateInvoiceForBankApproval";
+import { listTier1PayableReceivable } from "./routes/listTier1PayableReceivable";
 import { AssertionError } from "assert";
 import path from "path";
+
 import { User } from "./database/entity/User";
+import { config } from "dotenv";
+import { router as uploadRouter } from "./routes/upload";
+
+// Loads .env file to process
+config();
 
 // Create a new express application instance
 const app: express.Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(express.static(path.join(__dirname, "../clientbuild")));
+app.use(express.static(path.join(__dirname, "../webapp/build")));
+app.use(uploadRouter);
 
-const PORT = 8082;
+const PORT = process.env.PORT || 8082;
 createConnection()
   .then((connection) => {
     setupSessionAndPassport(connection);
@@ -41,11 +49,11 @@ createConnection()
     app.get("/api/ListTier2InvoicesForDiscounting", loginCheck(), listTier2InvoicesForDiscounting);
     app.post("/api/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
     app.get("/api/ListInvoicesForBankApproval", loginCheck(), listInvoicesForBankApproval);
-    app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval);
+    app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval)
     app.get("/api/ListInvoicesPostBankApproval", loginCheck(), listInvoicesPostBankApproval);
-
+    app.get("/api/ListTier1PayableReceivable", loginCheck(), listTier1PayableReceivable);
     app.get("/*", (req, res) => {
-      res.sendFile(path.join(__dirname, "../clientbuild", "index.html"));
+      res.sendFile(path.join(__dirname, "../webapp/build", "index.html"));
     });
     app.listen(PORT, () => {
       console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
@@ -54,9 +62,9 @@ createConnection()
   .catch((error) => console.log(error));
 
 function setupDefaultAndAuthRoutes() {
-  app.get("/", (req, res) => {
-    res.send("Hello World!");
-  });
+  // app.get("/", (req, res) => {
+  //   res.send("Hello World!");
+  // });
 
   app.post("/register", register);
   app.post("/login", passport.authenticate("local", { failureFlash: false }), async (req, res) => {
@@ -65,6 +73,7 @@ function setupDefaultAndAuthRoutes() {
   });
   app.get("/logout", (req, res) => {
     req.logout();
+    res.status(200);
     res.end();
   });
 }
@@ -107,3 +116,8 @@ function ensureLoggedIn() {
     next();
   };
 }
+
+process.on("uncaughtException", (err) => {
+  console.error(err, "Uncaught Exception thrown");
+  process.exit(1);
+});

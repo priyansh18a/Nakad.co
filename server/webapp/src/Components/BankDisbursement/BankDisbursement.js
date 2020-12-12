@@ -1,6 +1,5 @@
 import React from 'react';
-import {AgGridReact } from 'ag-grid-react';
-import 'ag-grid-enterprise';
+import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import logo from './../../Graphics/logo.jpg';
@@ -10,36 +9,57 @@ import BtnCellRenderer from "./BtnCellRenderer.jsx";
 import invoice from '../../Graphics/invoice.jpeg'
 
 
-const BankCollection = () => {
+const BankDisbursement = () => {
     const columnDefs = [
-        {   headerName:"Loan number",
+        {   headerName:"Loan Number",
             field: "loan_number",
             minWidth: 155,
             maxWidth:200
         },
-        {   headerName:"Loan amount",
-            field: "loan_amount",
-            minWidth: 150,
-            sortable:true
-        },
-        {   headerName:"Repayment date",
-            field: "repayment_date",
-            minWidth: 200,
-            sortable:true
-        },
-        {   headerName:"Linked invoice amount",
-            field: "invoice_amount",
+        {   headerName:"Requesting Party Name",
+            field: "party_name",
             minWidth: 200
         },
-        {   headerName:"Invoice Payee",
-            field: "invoice_payee",
-            minWidth: 180
+        {   headerName:"Requesting Party Account",
+            field: "party_account",
+            minWidth: 200
         },
-        {   headerName:"Amount appropriated to bank in Invoice Payee name SAP (Yes/No)",
-            field: "amount_bank",
+        {   headerName:"Loan Amount to be Disbursed",
+            field: "loan_amount",
+            minWidth: 200
+        },
+        {   headerName:"Annualized IRR",
+            field:"annualized_irr",
+            minWidth: 200
+        },
+        {   headerName:"Repayment Date",
+            field: "repayment_date",
+            minWidth: 170,
+            sortable:true
+        },
+        {   headerName:"Linked Invoice Amount",
+            field: "invoice_amount",
+            minWidth: 170,
+            sortable:true
+        },
+        {   headerName:"Invoice Payee Name",
+            field: "payee_name",
+            minWidth: 170,
+            sortable:true
+        },
+        {   headerName:"Loan already issued against invoice",
+            field: "loan_issued",
+            minWidth: 205
+        },
+        {   headerName:"GRN issued against the linked invoice(Yes/No)",
+            field: "grn_issued",
+            minWidth: 230
+        },
+        {   headerName:"Rupee value of debit note(s) issued against the linked invoice",
+            field: "rupee_value",
             minWidth: 300
         },
-        {   headerName: "Details",
+        {   headerName:"Details",
             field: "details",
             cellRenderer: "btnCellRenderer",
             cellRendererParams: {
@@ -79,45 +99,81 @@ const BankCollection = () => {
 
     const frameworkComponents =  {
         btnCellRenderer: BtnCellRenderer
-      }
+    }
 
     const rowData =  [ 
         {   loan_number: "1",
-            loan_amount: "₹30,000",
-            repayment_date: "06/02/2021", 
-            invoice_amount: "₹100,000", 
-            invoice_payee: "OEM -1",
-            amount_bank: "Yes"
+            party_name: "Kamal Enterprises",
+            party_account:"120967123456",
+            loan_amount:"₹29,200",
+            annualized_irr:"11.40%",
+            repayment_date: "06/02/2021",
+            invoice_amount: "OEMINV1234",
+            payee_name:"OEM -1", 
+            loan_issued:"₹0",
+            grn_issued: "Yes",
+            rupee_value:"₹0"
         },
         {   loan_number: "2",
-            loan_amount: "₹30,000",
-            repayment_date: "12/02/2021", 
-            invoice_amount: "₹120,000", 
-            invoice_payee: "OEM -1",
-            amount_bank: "Yes"
+            party_name: "S.Ram & Sons",
+            party_account:"166165845222",
+            loan_amount:"₹83,100",
+            annualized_irr:"11.06%",
+            repayment_date: "18/02/2021",
+            invoice_amount: "OEMINV4963",
+            payee_name:"OEM -1", 
+            loan_issued:"₹0",
+            grn_issued: "Yes",
+            rupee_value:"₹0"
         },
         {   loan_number: "3",
-            loan_amount: "₹20,000",
-            repayment_date: "17/02/2021", 
-            invoice_amount: "₹130,000", 
-            invoice_payee: "OEM -1",
-            amount_bank: "Yes"
+            party_name: "Abhinav Traders",
+            party_account:"178779074688",
+            loan_amount:"₹73,300",
+            annualized_irr:"11.35%",
+            repayment_date: "21/02/2021",
+            invoice_amount: "OEMINV9727",
+            payee_name:"OEM -1", 
+            loan_issued:"₹0",
+            grn_issued: "Yes",
+            rupee_value:"₹0"
         },
         {   loan_number: "4",
-            loan_amount: "₹80,000",
-            repayment_date: "18/02/2021", 
-            invoice_amount: "₹80,000", 
-            invoice_payee: "OEM -1",
-            amount_bank: "Yes"
+            party_name: "UMEX",
+            party_account:"158875651126",
+            loan_amount:"₹41,000",
+            annualized_irr:"11.14%",
+            repayment_date: "02/03/2021",
+            invoice_amount: "OEMINV3357",
+            payee_name:"OEM -1", 
+            loan_issued:"₹0",
+            grn_issued: "Yes",
+            rupee_value:"₹0"
         },
         {   loan_number: "5",
-            loan_amount: "₹20,000",
-            repayment_date: "22/02/2021", 
-            invoice_amount: "₹120,000", 
-            invoice_payee: "OEM -2",
-            amount_bank: "Yes"
+            party_name: "Kamal Enterprises",
+            party_account:"156026129563",
+            loan_amount:"₹38,500",
+            annualized_irr:"11.61%",
+            repayment_date: "05/03/2021",
+            invoice_amount: "OEMINV6290",
+            payee_name:"OEM -2", 
+            loan_issued:"₹0",
+            grn_issued: "Yes",
+            rupee_value:"₹0"
+        },
+        {   loan_number: "6",
+            party_name: "Kamal Enterprises",
+            party_account:"148525035541",
+            loan_amount:"₹25,400",
+            annualized_irr:"11.37%",
+            repayment_date: "26/02/2021",
+            invoice_amount: "OEMINV7714",
+            payee_name:"OEM -2", 
+            loan_issued:"₹0",
+            grn_issued: "Yes",
+            rupee_value:"₹0"
         }
-
     ]
 
     const onGridReady = params => {
@@ -150,11 +206,11 @@ const BankCollection = () => {
             <div id="navbarBasicExample" className="navbar-menu">
         
             <div className="navbar-end">
-                <a className="navbar-item" href="/bank/disbursement">
-                Disbursement Screen
-                </a>
                 <a className="navbar-item" href="/bank/collection">
                 Collection Screen
+                </a>
+                <a className="navbar-item" href="/bank/disbursement">
+                Disbursement Screen
                 </a>
                 <div className="navbar-item">
                     <div className="buttons">
@@ -167,7 +223,7 @@ const BankCollection = () => {
         </div>
     </nav>
     <div className="actiontop">
-        <p className="title has-text-info tier-2-action" style={{marginBottom:"20px"}}>Bank collection screen</p>
+        <p className="title has-text-info tier-2-action" style={{marginBottom:"20px"}}>Bank Disbursement Screen</p>
     </div>
     <div>
         <div  className="ag-theme-material mygrid">
@@ -179,8 +235,8 @@ const BankCollection = () => {
             rowData={rowData}
             domLayout='autoHeight'
             rowClassRules={{
-              'highlight': function(params) { return  params.data.loan_number === "1"; }
-          }}
+                'highlight': function(params) { return  params.data.party_account === "120967123456"; }
+            }}
           />
         </div>
         <div class="modal" id="modal">
@@ -199,14 +255,6 @@ const BankCollection = () => {
             <p class="image is-4by3">
               <img src={invoice} alt=""/>
             </p>
-            <p className="has-text-info is-size-4 has-text-weight-bold">Proof of Approval</p>
-            <p class="image is-4by3">
-              <img src={invoice} alt=""/>
-            </p>
-            <p className="has-text-info is-size-4 has-text-weight-bold">Debit Note</p>
-            <p class="image is-4by3">
-              <img src={invoice} alt=""/>
-            </p>
             </section>
      
             <footer class="modal-card-foot">
@@ -222,4 +270,4 @@ const BankCollection = () => {
 
 }
 
-export default BankCollection;
+export default BankDisbursement;

@@ -2,4 +2,9 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.tslint": true
   },
+  "appService.zipIgnorePattern": [
+    "node_modules{,/**}",
+    ".vscode{,/**}"
+  ],
+  "appService.defaultWebAppToDeploy": "None",
 }

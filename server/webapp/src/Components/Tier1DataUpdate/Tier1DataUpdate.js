@@ -1,14 +1,21 @@
-import React from 'react';
+import React,  { useState} from 'react';
+import { useHistory } from "react-router-dom";
+import axios from 'axios';
 import {AgGridReact } from 'ag-grid-react';
-import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-material.css";
-import CheckboxRenderer from "./CheckboxRenderer.jsx";
 import logo from './../../Graphics/logo.jpg';
+import Dinero from "dinero.js";
 import './Tier1DataUpdate.scss';
+import BtnCellRenderer from "./BtnCellRenderer.jsx";
+import BtnCellRenderer2 from "./BtnCellRenderer2.jsx";
 
 
 const Tier1DataUpdate = () => {
+    const history = useHistory();
+    const [tier1payablereceivable, setTier1payablereceivable] = useState([]);
+    const [invoicetoremove, setInvoicetoremove] = useState('');
+
     const columnDefs1 = [
         {   headerName:"Invoice",
             field: "invoice",
@@ -36,9 +43,16 @@ const Tier1DataUpdate = () => {
             sortable:true
         },
         {   headerName:"Confirm",
-            field: "cofirm",
+            field: "invoice",
             minWidth: 150,
-            cellRenderer: "checkboxRenderer"
+            cellRenderer: "btnCellRenderer1",
+            cellRendererParams: {
+              clicked: function(field) {
+                  console.log(field);
+                  setInvoicetoremove(field);
+                  document.getElementById('modal').style.display = "flex";
+              }
+            }
         }
     ]
 
@@ -71,79 +85,16 @@ const Tier1DataUpdate = () => {
         {   headerName:"Confirm",
             field: "cofirm",
             minWidth: 150,
-            cellRenderer: "checkboxRenderer",
+            cellRenderer: "btnCellRenderer2",
+            cellRendererParams: {
+                clicked: function(field) {
+                    console.log(field);
+                    setInvoicetoremove(field);
+                    document.getElementById('modal2').style.display = "flex";
+                }
+              }
            
         }
-    ]
-
-    const rowData1 = [
-       {   invoice: "KEINV1234",
-            vendor: "Kamal Enterprises", 
-            invoice_date: "3/11/2020",
-            payable_amount: "₹30,000",
-            discounted_amount: "₹30,000",
-            remaining_payable: "₹0"
-        },
-        {   invoice: "DFINV9727",
-            vendor: "Abhinav Traders", 
-            invoice_date: "18/11/2020",
-            payable_amount: "₹20,000",
-            discounted_amount: "₹20,000",
-            remaining_payable: "₹0"
-        },
-        {   invoice: "RTINV6290",
-            vendor: "UMEX", 
-            invoice_date: "22/11/2020",
-            payable_amount: "₹80,000",
-            discounted_amount: "₹80,000",
-            remaining_payable: "₹0"
-        },
-        {   invoice: "SWINV7714",
-            vendor: "Jai Bhavani Auto", 
-            invoice_date: "20/11/2020",
-            payable_amount: "₹60,000",
-            discounted_amount: "₹60,000",
-            remaining_payable: "₹0"
-        }
-    ]
-
-    const rowData2 = [
-        {   invoice: "OEMINV1234",
-            payer: "OEM-1",
-            invoice_date: "6/11/2020",
-            receivable_amount: "₹100,000",
-            discounted_amount: "₹30,000",
-            remaining_receivable: "₹70,000"
-        },
-        {   invoice: "OEMINV9727",
-            payer: "OEM-1",
-            invoice_date: "17/11/2020",
-            receivable_amount: "₹120,000",
-            discounted_amount: "₹20,000",
-            remaining_receivable: "₹100,000"
-        },
-        {   invoice: "OEMINV7714",
-            payer: "OEM-1",
-            invoice_date: "18/11/2020",
-            receivable_amount: "₹130,000",
-            discounted_amount: "₹80,000",
-            remaining_receivable: "₹50,000"
-        },
-        {   invoice: "OEMINV3357",
-            payer: "OEM-2",
-            invoice_date: "22/11/2020",
-            receivable_amount: "₹80,000",
-            discounted_amount: "₹60,000",
-            remaining_receivable: "₹20,000"
-        },
-        {   invoice: "OEMINV6290",
-            payer: "OEM-2",
-            invoice_date: "20/11/2020",
-            receivable_amount: "₹120,000",
-            discounted_amount: "₹80,000",
-            remaining_receivable: "₹40,000"
-        }
-
     ]
 
     const defaultColDef = {
@@ -170,15 +121,88 @@ const Tier1DataUpdate = () => {
           }
     }
     
-    const frameworkComponents =  {
-        checkboxRenderer: CheckboxRenderer
+    const frameworkComponents1 =  {
+        btnCellRenderer1: BtnCellRenderer
+        
+    }
+
+    const frameworkComponents2 =  {
+        btnCellRenderer2: BtnCellRenderer2
     }
 
     const onGridReady = params => {
-        // const gridApi = params.api;
-        // const gridColumnApi = params.columnApi;
+        axios.get("/api/ListTier1PayableReceivable?tier1Id=1") // TODO(Priyanshu)
+        .then(function (response) {
+            setTier1payablereceivable(response.data);      
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    };
+
+    const onGridReady2 = params => {
 
     };
+
+    const getpayabledata = () => {
+        return tier1payablereceivable.map(inv => {
+             return {
+                 invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
+                 vendor: "Maruti", //TODO(Priyanshu)
+                 invoice_date: inv.partAnchorInvoices.anchorInvoice.invoiceDate.slice(0,10),
+                 discounted_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.partAnchorInvoices.partialAmount)).toFormat('$0.00'),
+                 payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0.00'),
+                 remaining_payable: Dinero(inv.partAnchorInvoices.partialAmount).toFormat('$0.00'),
+             };
+         });
+     }
+
+    const getreceivabledata = () => {
+        return tier1payablereceivable.map(inv => {
+             return {
+                 invoice: inv.tier2Invoice.invoiceId,
+                 payer: "Maruti", //TODO(Priyanshu)
+                 invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
+                 receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
+                 discounted_amount: Dinero(inv.discountedAmount).toFormat('$0.00'),
+                 remaining_receivable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00'),
+             };
+         });
+    }
+
+
+    // TODO (Priyanshu) Need to complete this
+    const removepayableentry = () => {
+        const anchortoremove =  tier1payablereceivable.find((element) => {
+            return element.partAnchorInvoices.anchorInvoice.invoiceId === invoicetoremove;
+        });
+
+        var index = tier1payablereceivable.indexOf(anchortoremove);
+        if (index > -1) { //Make sure item is present in the array, without if condition, -n indexes will be considered from the end of the array.
+            tier1payablereceivable.splice(index, 1);
+        }
+        console.log(tier1payablereceivable);
+    }
+
+    const logout = () => {
+        axios.get('/logout')
+        .then(function (response) {
+            // handle success
+            history.push("/");
+        })
+        .catch(function (error){
+            // handle error
+            console.log(error);
+        })
+    }
+
+    const closemodal = () => {
+        document.getElementById('modal').style.display = "none";
+    }
+
+    const closemodal2 = () => {
+        document.getElementById('modal2').style.display = "none";
+    }
 
     const showtablemoreinfo = () => {
         document.getElementById('table-more-info').style.display = "block";
@@ -235,9 +259,9 @@ const Tier1DataUpdate = () => {
             </a>
             <div className="navbar-item">
             <div className="buttons">
-            <a className="button is-primary is-light">
+            <button className="button is-primary is-light"  onClick={logout}>
                 Log Out
-            </a>
+            </button>
             </div>
         </div>
         </div>
@@ -252,7 +276,7 @@ const Tier1DataUpdate = () => {
     <div id="table-more-info" className="has-background-warning"><span className="has-text-info">More Info: </span>Tier 2 has discounted its invoice for early payments<br/>Request to make following changes in your accounting system.</div>
     <div className="table-info has-background-info" style={{width: "300px"}} >ERP entry adjustment<span onMouseOver={showtablemoreinfo} onMouseLeave={hidetablemoreinfo} className="moreinfospan"><i className="fas fa-info-circle" ></i></span></div>
 
-    <div class="tabs is-boxed">
+    <div className="tabs is-boxed">
             <ul>
                 <li className="is-active" onClick={displaypending} id="list-payable">
                     <a><span>Payables</span></a>
@@ -267,31 +291,57 @@ const Tier1DataUpdate = () => {
             <AgGridReact
                 columnDefs={columnDefs1}
                 defaultColDef={defaultColDef}
-                frameworkComponents={frameworkComponents}
+                frameworkComponents={frameworkComponents1}
                 onGridReady={onGridReady}
-                rowData={rowData1}
+                rowData={getpayabledata()}
                 rowSelection="multiple"
                 domLayout='autoHeight'
-                rowClassRules={{
-                    'highlight': function(params) { return  params.data.invoice === 'KEINV1234'; }
-                }}
             />
     </div>
+    <div class="modal" id="modal"  >
+            <div class="modal-background" onClick={closemodal}></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                <p class="modal-card-title">Confirmation</p>
+                <button class="delete" aria-label="close" onClick={closemodal} ></button>
+                </header>
+                <section class="modal-card-body">
+                 <p>Are you sure you have completed the payment?</p>
+                </section>
+                <footer class="modal-card-foot">
+                    <button class="button is-success" onClick={removepayableentry} >Confirm</button>
+                    <button class="button is-danger" onClick={closemodal} >Decline</button>
+                </footer>
+            </div>
+        </div>
     {/* <div className="container has-background-grey-dark payables" style={{ width: 116, marginTop: "50px"}}>Receivables</div> */}
     <div className="ag-theme-material mygrid" id="receivables"  style={{display:"none"}}>
             <AgGridReact
                 columnDefs={columnDefs2}
                 defaultColDef={defaultColDef}
-                frameworkComponents={frameworkComponents}
-                onGridReady={onGridReady}
-                rowData={rowData2}
+                frameworkComponents={frameworkComponents2}
+                onGridReady={onGridReady2}
+                rowData={getreceivabledata()}
                 rowSelection="multiple"
                 domLayout='autoHeight'
-                rowClassRules={{
-                    'highlight': function(params) { return  params.data.invoice === 'OEMINV1234'; }
-                }}
             />
     </div>
+    <div class="modal" id="modal2"  >
+            <div class="modal-background" onClick={closemodal2}></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                <p class="modal-card-title">Confirmation</p>
+                <button class="delete" aria-label="close" onClick={closemodal2} ></button>
+                </header>
+                <section class="modal-card-body">
+                 <p>Are you sure you have updated in your database?</p>
+                </section>
+                <footer class="modal-card-foot">
+                    <button class="button is-success" onClick={closemodal2} >Confirm</button>
+                    <button class="button is-danger" onClick={closemodal2} >Decline</button>
+                </footer>
+            </div>
+        </div>
     </div>
     );
 
