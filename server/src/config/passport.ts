@@ -32,13 +32,17 @@ export function initializePassportConfig() {
   const strategy = new LocalStrategy(verifyCallback);
 
   passport.use(strategy);
-
   passport.serializeUser((user, done) => {
-    done(null, user);
+    const userSerialize = user as User;
+    done(null, userSerialize.username);
   });
 
-  passport.deserializeUser((user, done) => {
-    // TODO:(Fix this by checking the user in DB)
-    done(null, user);
+  passport.deserializeUser(async (username, done) => {
+    const u = await getConnection().getRepository(User).findOne({
+      where: {
+        username,
+      },
+    });
+    done(null, u);
   });
 }

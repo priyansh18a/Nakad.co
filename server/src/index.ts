@@ -1,4 +1,4 @@
-import { Connection, createConnection } from "typeorm";
+import { Connection, createConnection, getConnection } from "typeorm";
 import express, { Request, Response } from "express";
 import session from "express-session";
 import passport from "passport";
@@ -15,10 +15,13 @@ import { listTier2InvoicesForDiscounting } from "./routes/listTier2InvoicesForDi
 import { updateTier2InvoiceForApproval } from "./routes/updateTier2InvoiceForApproval";
 import { updateTier2InvoicesForDiscounting } from "./routes/updateTier2InvoicesForDiscounting";
 import { listInvoicesForBankApproval } from "./routes/listInvoicesForBankApproval";
+import { listInvoicesPostBankApproval } from "./routes/listInvoicesPostBankApproval";
 import { updateInvoiceForBankApproval } from "./routes/updateInvoiceForBankApproval";
 import { listTier1PayableReceivable } from "./routes/listTier1PayableReceivable";
 import { AssertionError } from "assert";
 import path from "path";
+
+import { User } from "./database/entity/User";
 import { config } from "dotenv";
 import { router as uploadRouter } from "./routes/upload";
 
@@ -47,6 +50,7 @@ createConnection()
     app.post("/api/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
     app.get("/api/ListInvoicesForBankApproval", loginCheck(), listInvoicesForBankApproval);
     app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval);
+    app.get("/api/ListInvoicesPostBankApproval", loginCheck(), listInvoicesPostBankApproval);
     app.get("/api/ListTier1PayableReceivable", loginCheck(), listTier1PayableReceivable);
     app.get("/*", (req, res) => {
       res.sendFile(path.join(__dirname, "../webapp/build", "index.html"));
@@ -63,8 +67,8 @@ function setupDefaultAndAuthRoutes() {
   // });
 
   app.post("/register", register);
-  app.post("/login", passport.authenticate("local", { failureFlash: false }), (req, res) => {
-    res.json({});
+  app.post("/login", passport.authenticate("local", { failureFlash: false }), async (req, res) => {
+    res.json(req.user);
     res.end();
   });
   app.get("/logout", (req, res) => {
@@ -93,7 +97,9 @@ function setupSessionAndPassport(connection: Connection) {
     app.use(passport.session());
     initializePassportConfig();
   } else {
-    throw new AssertionError({ message: "connection driver has to be of type postgres" });
+    throw new AssertionError({
+      message: "connection driver has to be of type postgres",
+    });
   }
 }
 
@@ -102,7 +108,7 @@ function loginCheck() {
 }
 
 function ensureLoggedIn() {
-  return (req: Request, res: Response, next) => {
+  return async (req: Request, res: Response, next) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401);
       return res.end();
