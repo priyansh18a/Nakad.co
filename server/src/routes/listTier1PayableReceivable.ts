@@ -20,7 +20,7 @@ export async function listTier1PayableReceivable(
     .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"T2"."InvoiceId" = "ATM"."Tier2InvoiceId"')
     .where('"ATM"."BankApprovalStatus" = \'Approved\'')
     .andWhere('"ATM"."Tier1Id" = :id', { id: tier1Id })
-    .getMany(); 
+    .getMany();
 
   const anchorInvoices = await getConnection()
     .createQueryBuilder()
@@ -29,8 +29,8 @@ export async function listTier1PayableReceivable(
     .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"AI"."InvoiceId" = "ATM"."AnchorInvoiceId"')
     .where('"ATM"."BankApprovalStatus" = \'Approved\'')
     .andWhere('"ATM"."Tier1Id" = :id', { id: tier1Id })
-    .getMany(); 
-    const invoiceToReturn: Tier1PayableReceivable[] = [];
+    .getMany();
+  const invoiceToReturn: Tier1PayableReceivable[] = [];
 
   let j = 0;
   for (const tier2Invoice of tier2Invoices) {

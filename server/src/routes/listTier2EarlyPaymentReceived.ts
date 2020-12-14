@@ -11,7 +11,7 @@ export async function listTier2EarlyPaymentReceived(
   res: Response
 ): Promise<Response<Tier1PayableReceivable[]>> {
   const tier2Id = parseInt(req.query.tier2Id[0], 10);
-  
+
   const tier2Invoices = await getConnection()
     .createQueryBuilder()
     .select("T2")
@@ -19,7 +19,7 @@ export async function listTier2EarlyPaymentReceived(
     .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"T2"."InvoiceId" = "ATM"."Tier2InvoiceId"')
     .where('"ATM"."BankApprovalStatus" = \'Approved\'')
     .andWhere('"ATM"."Tier2Id" = :id', { id: tier2Id })
-    .getMany(); 
+    .getMany();
 
   const anchorInvoices = await getConnection()
     .createQueryBuilder()
@@ -28,7 +28,7 @@ export async function listTier2EarlyPaymentReceived(
     .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"AI"."InvoiceId" = "ATM"."AnchorInvoiceId"')
     .where('"ATM"."BankApprovalStatus" = \'Approved\'')
     .andWhere('"ATM"."Tier2Id" = :id', { id: tier2Id })
-    .getMany(); 
+    .getMany();
 
   const invoiceToReturn: Tier1PayableReceivable[] = [];
 
@@ -37,8 +37,8 @@ export async function listTier2EarlyPaymentReceived(
     if (j >= anchorInvoices.length) break;
     const anchorInvoice = anchorInvoices[j];
     invoiceToReturn.push({
-      tier2Invoice, 
-      discountedAmount: tier2Invoice.invoiceAmount.multiply(0.85),         //TODO(Priyanshu) Disconted amount need to fetch from database
+      tier2Invoice,
+      discountedAmount: tier2Invoice.invoiceAmount.multiply(0.85), // TODO(Priyanshu) Disconted amount need to fetch from database
       partAnchorInvoices: { anchorInvoice, partialAmount: tier2Invoice.invoiceAmount },
     });
     j++;
