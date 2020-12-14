@@ -12,36 +12,25 @@ export async function listTier1PayableReceivable(
   res: Response
 ): Promise<Response<Tier1PayableReceivable[]>> {
   const tier1Id = parseInt(req.query.tier1Id[0], 10);
-  const approvedbybank = await getConnection()
-    .getRepository(AnchorTier2InvoiceMapping)
-    .find({
-      where: { bankApprovalStatus: "Approved", tier1Id },
-    });
-  // console.log("approvedbybank: " + JSON.stringify(approvedbybank));
 
-  const tier2Invoices: Tier2Invoice[] = [];
+  const tier2Invoices = await getConnection()
+    .createQueryBuilder()
+    .select("T2")
+    .from(Tier2Invoice, "T2")
+    .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"T2"."InvoiceId" = "ATM"."Tier2InvoiceId"')
+    .where('"ATM"."BankApprovalStatus" = \'Approved\'')
+    .andWhere('"ATM"."Tier1Id" = :id', { id: tier1Id })
+    .getMany(); 
 
-  for (const tier2mapping of approvedbybank) {
-    const tier2Invoice = await getConnection()
-      .getRepository(Tier2Invoice)
-      .findOne({
-        where: { invoiceId: tier2mapping.tier2InvoiceId },
-      });
-    tier2Invoices.push(tier2Invoice);
-  }
-
-  const anchorInvoices: AnchorInvoice[] = [];
-
-  for (const anchormapping of approvedbybank) {
-    const anchorInvoice = await getConnection()
-      .getRepository(AnchorInvoice)
-      .findOne({
-        where: { invoiceId: anchormapping.anchorInvoiceId },
-      });
-    anchorInvoices.push(anchorInvoice);
-  }
-
-  const invoiceToReturn: Tier1PayableReceivable[] = [];
+  const anchorInvoices = await getConnection()
+    .createQueryBuilder()
+    .select("AI")
+    .from(AnchorInvoice, "AI")
+    .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"AI"."InvoiceId" = "ATM"."AnchorInvoiceId"')
+    .where('"ATM"."BankApprovalStatus" = \'Approved\'')
+    .andWhere('"ATM"."Tier1Id" = :id', { id: tier1Id })
+    .getMany(); 
+    const invoiceToReturn: Tier1PayableReceivable[] = [];
 
   let j = 0;
   for (const tier2Invoice of tier2Invoices) {
