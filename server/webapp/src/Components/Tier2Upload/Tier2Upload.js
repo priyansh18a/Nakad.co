@@ -1,6 +1,7 @@
 import React, { useState} from 'react';
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
+import FormData from 'form-data'
 import logo from './../../Graphics/logo.jpg';
 
 import "./Tier2Upload.scss"
@@ -37,6 +38,27 @@ const Tier2Upload =  () => {
           .catch(function (error) {
             console.log(error);
           });
+    }
+
+    const uploadtier2invoice = event => {
+        const file = event.target.files[0];
+        console.log(file);
+        const data = new FormData();
+        data.append('file', file, file.fileName);
+        axios.post("/upload", data,  {
+            headers: {
+                'accept': 'application/json',
+                'Accept-Language': 'en-US,en;q=0.8',
+                'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+            }
+          }) 
+        .then(function (response) {
+            console.log(response.data);         
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+
     }
     return (
     <div>
@@ -126,7 +148,7 @@ const Tier2Upload =  () => {
                 </div> 
                 <div id="file-js-example" class=" field file has-name is-dark">
                     <label class="file-label">
-                        <input class="file-input" type="file" name="invoicefile"/>
+                        <input class="file-input" type="file" name="invoicefile" onChange={uploadtier2invoice}/>
                         <span class="file-cta">
                         <span class="file-icon">
                             <i class="fas fa-upload"></i>
