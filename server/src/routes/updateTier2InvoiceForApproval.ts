@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { getConnection } from "typeorm";
 import { Tier2Invoice } from "../database/entity/Tier2Invoice";
 
-//For Both Approval and Rejection this invoice wil be used
+// For Both Approval and Rejection this invoice wil be used
 // Request is a Tier2Invoice with status of Approved or Rejected
 export async function updateTier2InvoiceForApproval(req: Request, res: Response): Promise<Response<Tier2Invoice>> {
   console.log("TIER2Invoice" + JSON.stringify(req.body));
