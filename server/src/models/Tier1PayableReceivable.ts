@@ -6,4 +6,5 @@ export interface Tier1PayableReceivable {
   tier2Invoice: Tier2Invoice;
   partAnchorInvoices: PartAnchorInvoice;
   discountedAmount: Dinero.Dinero;
+  entryadjustment: "Pending" | "Done" | null ;
 }

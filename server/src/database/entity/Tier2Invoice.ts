@@ -4,6 +4,7 @@ import { Actor } from "./Actor";
 
 interface Tier2InvoiceDetails {
   data: Image[];
+  remark : string;
 }
 
 interface Image {

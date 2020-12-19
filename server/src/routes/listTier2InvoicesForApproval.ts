@@ -14,7 +14,7 @@ async function listTier2InvoicesForApprovalInternal(tier1Id: number): Promise<Ti
     .find({
       where: { approvalStatus: "Pending", tier1Id },
       order: {
-        creationTimestamp: "ASC",
+        creationTimestamp: "DESC",
       },
       relations: ["tier2"],
     });

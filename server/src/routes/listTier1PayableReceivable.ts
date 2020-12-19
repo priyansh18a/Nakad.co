@@ -40,6 +40,7 @@ export async function listTier1PayableReceivable(
       tier2Invoice,
       discountedAmount: tier2Invoice.invoiceAmount.multiply(0.85),
       partAnchorInvoices: { anchorInvoice, partialAmount: tier2Invoice.invoiceAmount },
+      entryadjustment: "Pending"
     });
     j++;
   }

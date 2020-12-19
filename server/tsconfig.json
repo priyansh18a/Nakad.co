@@ -24,6 +24,7 @@
       ]
    },
    "exclude": [
-      "webapp/**/*"
+      "webapp/**/*",
+      "tools/**/*"
    ]
 }

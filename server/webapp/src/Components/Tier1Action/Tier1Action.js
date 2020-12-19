@@ -17,6 +17,8 @@ const Tier1Action = () => {
     const [invoicetoupdate, setInvoicetoupdate] = useState([]);
     const [tier2Invoiceurl, setTier2Invoiceurl] = useState('');
     const [tier2GRNurl, setTier2GRNurl] = useState('');
+    const [remark, setRemark] = useState('');
+    const updateremark = (({ target }) => setRemark(target.value));
 
     const showtablemoreinfo = () => {
         document.getElementById('table-more-info').style.display = "block";
@@ -135,7 +137,8 @@ const Tier1Action = () => {
             return element.invoiceId === invoicetoupdate;
         })
         tier2invoice.approvalStatus = "Rejected";
-        console.log(tier2invoice);
+        console.log(remark);
+        tier2invoice.tier2InvoiceDetails.remark = remark;
         callapi(tier2invoice);
     }
 
@@ -143,7 +146,7 @@ const Tier1Action = () => {
         axios.post("/api/UpdateTier2InvoiceForApproval", tier2invoice)
           .then(function (response) {
             console.log(response);
-            window.location.reload(); 
+            // window.location.reload(); 
           })
           .catch(function (error) {
             console.log(error);
@@ -259,8 +262,8 @@ const Tier1Action = () => {
                 <p className="modal-card-title">More Details</p>
                 <button className="delete" onClick={closemodal} aria-label="close"></button>
                 </header>
-                <section class="modal-card-body">
-                <div class="tabs is-toggle">
+                <section className="modal-card-body">
+                <div className="tabs is-toggle">
                         <ul>
                             <li className="is-active" onClick={displaytab1} id="tab-1">
                                 <a><span>Invoice</span></a>
@@ -279,7 +282,7 @@ const Tier1Action = () => {
                 <div className="field">
                     <div className="control">
                         <label className="label">Remark</label>
-                        <textarea className="input" type="text" name="remark" placeholder="Write your remark here(if any)" style={{height:"80px"}}  />
+                        <textarea className="input" type="text" name="remark" placeholder="Write your remark here(if any)" style={{height:"80px"}} value={remark} onChange={updateremark} />
                     </div>
                 </div>
                 </section>

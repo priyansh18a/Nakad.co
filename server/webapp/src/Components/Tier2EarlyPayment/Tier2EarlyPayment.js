@@ -82,7 +82,8 @@ const Tier2EarlyPayment = () => {
         },
         {   headerName:"Remark",
             field: "remark",
-          
+            cellClass: "remark-class",
+            tooltipField:"remark"
         },
         {   headerName:"Reupload Invoice",
             field: "reupload",
@@ -227,7 +228,7 @@ const Tier2EarlyPayment = () => {
                  invoice: inv.invoiceId,
                  vendor: inv.tier2.actorinfo.name,
                  invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
-                 date_upload: inv.invoiceDate.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
+                 date_upload: inv.creationTimestamp.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
                  payee: "Maruti",   // TODO(Priyanshu), Need to fix this withi real data
              };
          });
@@ -241,7 +242,7 @@ const Tier2EarlyPayment = () => {
                     invoice: inv.invoiceId,
                     payee: "Maruti",   // TODO(Priyanshu)
                     invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
-                    remark : " abcd"  // TODO(Priyanshu)
+                    remark : inv.tier2InvoiceDetails.remark  // TODO(Priyanshu)
                 };
             });
      }
@@ -324,7 +325,7 @@ const Tier2EarlyPayment = () => {
         {/* <div className="total-benefit has-background-info">Total Benefit: ₹10000</div> */}
     </div>
 
-    <div class="tabs is-boxed">
+    <div className="tabs is-boxed">
             <ul>
                 <li className="is-active" onClick={displaytab1} id="tab-1">
                     <a><span>Invoices approved by tier 1</span></a>
@@ -377,12 +378,10 @@ const Tier2EarlyPayment = () => {
             columnDefs={columnDefs2}
             defaultColDef={defaultColDef}
             frameworkComponents={frameworkComponents2}
+            enableBrowserTooltips={true}
             onGridReady={onGridReady2}
             rowData={getrejectedrowdata()}                    
             domLayout='autoHeight'
-            // rowClassRules={{
-            //     'highlight': function(params) { return  params.data.invoice === 'KEINV1234'; }
-            // }}
           />
     </div>
 
