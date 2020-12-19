@@ -6,8 +6,8 @@
         "type": "node",
         "request": "launch",
         "runtimeExecutable": "node",
-        "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
-        "args": ["src/index.ts"],
+        //"runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+        "args": ["build/index.js"],
         "cwd": "${workspaceRoot}/server",
         "internalConsoleOptions": "openOnSessionStart",
         "skipFiles": ["<node_internals>/**", "node_modules/**"]
