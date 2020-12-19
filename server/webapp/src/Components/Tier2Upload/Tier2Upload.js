@@ -9,11 +9,13 @@ import "./Tier2Upload.scss"
 const Tier2Upload =  () => {
     const history = useHistory(); 
     const [form, setForm] = useState({invoice: '',payername: '', invoicedate: '', invoiceamount: '' , receivableamount: '' , receivabledate: '' , grn: '' , invoicefile: '', grnfile: '' }); // 
-    const update = (({ target }) => setForm({ ...form, [target.name]: target.value }))
+    const update = (({ target }) => setForm({ ...form, [target.name]: target.value }));
+    const [invoiceurl, setInvoiceurl] = useState('');
+    const [grnurl, setGrnurl] = useState('');
+    
 
     const uploadinvoiceandgrn =  event => {
         event.preventDefault();
-        console.log(form);
         axios.post("/api/Tier2Invoice", {   
             tier1Id: 1,     // TODO(Priyanshu)
             tier2Id: 2,      // TODO(Priyanshu)
@@ -29,7 +31,10 @@ const Tier2Upload =  () => {
             receivableAmount: { amount:  parseInt(form.receivableamount)*100,
                                 currency:"INR",
                                 precision: 2
-                              }
+                              },
+            tier2InvoiceDetails:{  data: [  
+                                   invoiceurl, grnurl   
+                                ]}
           })
           .then(function (response) {
             console.log(response);
@@ -44,7 +49,7 @@ const Tier2Upload =  () => {
         const file = event.target.files[0];
         console.log(file);
         const data = new FormData();
-        data.append('file', file, file.fileName);
+        data.append('image', file, file.fileName);
         axios.post("/upload", data,  {
             headers: {
                 'accept': 'application/json',
@@ -52,8 +57,31 @@ const Tier2Upload =  () => {
                 'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
             }
           }) 
-        .then(function (response) {
-            console.log(response.data);         
+        .then(function (response){
+            console.log("Upload Successful");
+            setInvoiceurl(response.data.fileUrl);     
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+
+    }
+
+    const uploadtier2grn = event => {
+        const file = event.target.files[0];
+        console.log(file);
+        const data = new FormData();
+        data.append('image', file, file.fileName);
+        axios.post("/upload", data,  {
+            headers: {
+                'accept': 'application/json',
+                'Accept-Language': 'en-US,en;q=0.8',
+                'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+            }
+          }) 
+        .then(function (response){
+            alert("Upload Successful");
+            setGrnurl(response.data.fileUrl);     
         })
         .catch(function (error) {
             console.log(error);
@@ -164,7 +192,7 @@ const Tier2Upload =  () => {
                 </div>
                 <div id="file-js-example2" class=" field file has-name is-dark">
                     <label class="file-label">
-                        <input class="file-input" type="file" name="grnfile"/>
+                        <input class="file-input" type="file" name="grnfile" onChange={uploadtier2grn}/>
                         <span class="file-cta">
                         <span class="file-icon">
                             <i class="fas fa-upload"></i>

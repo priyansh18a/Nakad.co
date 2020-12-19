@@ -18,6 +18,7 @@ import { listInvoicesForBankApproval } from "./routes/listInvoicesForBankApprova
 import { updateInvoiceForBankApproval } from "./routes/updateInvoiceForBankApproval";
 import { listTier1PayableReceivable } from "./routes/listTier1PayableReceivable";
 import { listTier2EarlyPaymentReceived } from "./routes/listTier2EarlyPaymentReceived";
+import { listTier2RejectedInvoice } from "./routes/listTier2RejectedInvoice";
 import { AssertionError } from "assert";
 import path from "path";
 import { config } from "dotenv";
@@ -50,6 +51,7 @@ createConnection()
     app.post("/api/UpdateInvoiceForBankApproval", loginCheck(), updateInvoiceForBankApproval);
     app.get("/api/ListTier1PayableReceivable", loginCheck(), listTier1PayableReceivable);
     app.get("/api/ListTier2EarlyPaymentReceived", loginCheck(), listTier2EarlyPaymentReceived);
+    app.get("/api/ListTier2RejectedInvoice", loginCheck(), listTier2RejectedInvoice);
     app.get("/*", (req, res) => {
       res.sendFile(path.join(__dirname, "../webapp/build", "index.html"));
     });
