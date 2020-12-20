@@ -20,7 +20,7 @@ export async function updateTier2InvoicesForDiscounting(req: Request, res: Respo
       _.isEqual(dInv.tier2Invoice.invoiceId, invoiceToDiscount.tier2Invoice.invoiceId) && dInv.status === "Pending"
   );
 
-  invoiceToDiscount.tier2Invoice.lastUpdateTimestamp = new Date();;
+  invoiceToDiscount.tier2Invoice.lastUpdateTimestamp = new Date();
   await getConnection().getRepository(Tier2Invoice).save(invoiceToDiscount.tier2Invoice);
 
   assert.ok(

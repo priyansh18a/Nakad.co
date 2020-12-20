@@ -19,8 +19,8 @@ export async function listTier1PayableReceivable(
 
   for (const mapping of mappings) {
     invoiceToReturn.push({
-      tier1PayableEntry:mapping.tier1PayableEntry,
-      tier1ReceivableEntry:mapping.tier1ReceivableEntry,
+      tier1PayableEntry: mapping.tier1PayableEntry,
+      tier1ReceivableEntry: mapping.tier1ReceivableEntry,
       tier2Invoice: mapping.tier2Invoice,
       discountedAmount: mapping.discountedAmount,
       partAnchorInvoices: { partialAmount: mapping.discountedAmount, anchorInvoice: mapping.anchorInvoice },

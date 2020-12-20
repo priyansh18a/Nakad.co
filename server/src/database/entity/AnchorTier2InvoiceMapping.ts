@@ -48,7 +48,6 @@ export class AnchorTier2InvoiceMapping {
   })
   bankApprovalStatus: "Approved" | "Rejected" | "Pending" | null;
 
-
   @Column("enum", {
     name: "Tier1ReceivableEntry",
     nullable: true,
@@ -69,7 +68,6 @@ export class AnchorTier2InvoiceMapping {
     enum: ["Pending", "Done"],
   })
   tier2Entry: "Pending" | "Done" | null;
-
 
   @Column("bigint", {
     name: "DiscountedAmount",

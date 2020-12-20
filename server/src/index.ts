@@ -60,7 +60,7 @@ createConnection()
     app.get("/api/ListTier2EarlyPaymentReceived", loginCheck(), listTier2EarlyPaymentReceived);
     app.post("/api/UpdateTier2EarlyPaymentReceived", loginCheck(), updateTier2EarlyPaymentReceived);
     app.get("/api/ListTier2RejectedInvoice", loginCheck(), listTier2RejectedInvoice);
-    
+
     app.get("/*", (req, res) => {
       res.sendFile(path.join(__dirname, "../webapp/build", "index.html"));
     });
