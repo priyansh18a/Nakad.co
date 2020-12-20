@@ -18,6 +18,7 @@ export async function listTier2EarlyPaymentReceived(
     .from(Tier2Invoice, "T2")
     .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"T2"."InvoiceId" = "ATM"."Tier2InvoiceId"')
     .where('"ATM"."BankApprovalStatus" = \'Approved\'')
+    .andWhere('"ATM"."Tier2Entry" = \'Pending\'')
     .andWhere('"ATM"."Tier2Id" = :id', { id: tier2Id })
     .getMany();
 
@@ -27,6 +28,7 @@ export async function listTier2EarlyPaymentReceived(
     .from(AnchorInvoice, "AI")
     .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"AI"."InvoiceId" = "ATM"."AnchorInvoiceId"')
     .where('"ATM"."BankApprovalStatus" = \'Approved\'')
+    .andWhere('"ATM"."Tier2Entry" = \'Pending\'')
     .andWhere('"ATM"."Tier2Id" = :id', { id: tier2Id })
     .getMany();
 
@@ -39,7 +41,8 @@ export async function listTier2EarlyPaymentReceived(
     invoiceToReturn.push({
       tier2Invoice,
       discountedAmount: tier2Invoice.invoiceAmount.multiply(0.85), // TODO(Priyanshu) Disconted amount need to fetch from database
-      partAnchorInvoices: { anchorInvoice, partialAmount: tier2Invoice.invoiceAmount },
+      partAnchorInvoices: { anchorInvoice, partialAmount: tier2Invoice.invoiceAmount 
+      },
     });
     j++;
   }

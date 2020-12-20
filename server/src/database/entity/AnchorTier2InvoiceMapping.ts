@@ -45,6 +45,27 @@ export class AnchorTier2InvoiceMapping {
   })
   bankApprovalStatus: "Approved" | "Rejected" | "Pending" | null;
 
+  @Column("enum", {
+    name: "Tier1ReceivableEntry",
+    nullable: true,
+    enum: ["Pending", "Done"],
+  })
+  tier1ReceivableEntry: "Pending" | "Done" | null;
+
+  @Column("enum", {
+    name: "Tier1PayableEntry",
+    nullable: true,
+    enum: ["Pending", "Done"],
+  })
+  tier1PayableEntry: "Pending" | "Done" | null;
+
+  @Column("enum", {
+    name: "Tier2Entry",
+    nullable: true,
+    enum: ["Pending", "Done"],
+  })
+  tier2Entry: "Pending" | "Done" | null;
+
   @ManyToOne(() => Actor, (actor) => actor.anchorTier2InvoiceMappings)
   @JoinColumn([{ name: "AnchorId", referencedColumnName: "actorid" }])
   anchor: Actor;
