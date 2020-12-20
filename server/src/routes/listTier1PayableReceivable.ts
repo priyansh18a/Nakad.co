@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
 import { getConnection } from "typeorm";
-import { AnchorInvoice } from "../database/entity/AnchorInvoice";
 import { AnchorTier2InvoiceMapping } from "../database/entity/AnchorTier2InvoiceMapping";
-import { Tier2Invoice } from "../database/entity/Tier2Invoice";
-import { DiscountedTier2Invoice } from "../models/DiscountedTier2Invoice";
 import { Tier1PayableReceivable } from "../models/Tier1PayableReceivable";
 import * as MoneyUtil from "../util/MoneyUtil";
 
