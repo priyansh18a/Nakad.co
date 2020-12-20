@@ -1,3 +1,4 @@
+import { DineroObject } from "dinero.js";
 import { Column, Entity, Index, OneToMany } from "typeorm";
 import { MoneyTransformer } from "../util/MoneyTransformer";
 import { AnchorTier2InvoiceMapping } from "./AnchorTier2InvoiceMapping";
@@ -25,7 +26,7 @@ export class AnchorInvoice {
   invoiceDate: Date | null;
 
   @Column("bigint", { name: "InvoiceAmount", nullable: true, transformer: new MoneyTransformer() })
-  invoiceAmount: Dinero.Dinero | null;
+  invoiceAmount: DineroObject | null;
 
   @Column("integer", { primary: true, name: "AnchorId", unique: true })
   anchorId: number;

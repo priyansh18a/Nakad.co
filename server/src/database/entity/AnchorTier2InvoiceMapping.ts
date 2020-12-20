@@ -1,4 +1,6 @@
+import { DineroObject } from "dinero.js";
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import { MoneyTransformer } from "../util/MoneyTransformer";
 import { Actor } from "./Actor";
 import { AnchorInvoice } from "./AnchorInvoice";
 
@@ -44,6 +46,13 @@ export class AnchorTier2InvoiceMapping {
     enum: ["Approved", "Rejected", "Pending"],
   })
   bankApprovalStatus: "Approved" | "Rejected" | "Pending" | null;
+
+  @Column("bigint", {
+    name: "DiscountedAmount",
+    nullable: true,
+    transformer: new MoneyTransformer(),
+  })
+  discountedAmount: DineroObject | null;
 
   @ManyToOne(() => Actor, (actor) => actor.anchorTier2InvoiceMappings)
   @JoinColumn([{ name: "AnchorId", referencedColumnName: "actorid" }])

@@ -4,6 +4,7 @@ import { AnchorInvoice } from "../database/entity/AnchorInvoice";
 import { AnchorTier2InvoiceMapping } from "../database/entity/AnchorTier2InvoiceMapping";
 import { Tier2Invoice } from "../database/entity/Tier2Invoice";
 import { DiscountedTier2Invoice } from "../models/DiscountedTier2Invoice";
+import * as MoneyUtil from "../util/MoneyUtil";
 
 // Request has query param named tier2Id
 export async function listTier2InvoicesForDiscounting(req: Request, res: Response) {
@@ -46,13 +47,16 @@ export async function listTier2InvoicesForDiscountingInternal(
     const anchorInvoice = anchorInvoices[j];
     if (
       tier2Invoice.dueDate <= anchorInvoice.dueDate &&
-      tier2Invoice.invoiceAmount.lessThanOrEqual(anchorInvoice.invoiceAmount)
+      MoneyUtil.lessThanOrEqual(tier2Invoice.invoiceAmount, anchorInvoice.invoiceAmount)
     ) {
       const interestRate = 15 / 100;
       const daysPending = Math.floor((anchorInvoice.dueDate.valueOf() - new Date().valueOf()) / 86400000);
       console.log(daysPending);
       const hairCut = parseFloat(((Math.max(daysPending, 0) / 365) * interestRate).toFixed(4));
-      const discountedAmount = tier2Invoice.invoiceAmount.subtract(tier2Invoice.invoiceAmount.multiply(hairCut));
+      const discountedAmount = MoneyUtil.subtract(
+        tier2Invoice.invoiceAmount,
+        MoneyUtil.multiply(tier2Invoice.invoiceAmount, hairCut)
+      );
       invoiceToReturn.push({
         tier2Invoice,
         discountedAmount,

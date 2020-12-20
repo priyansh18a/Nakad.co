@@ -1,3 +1,4 @@
+import { DineroObject } from "dinero.js";
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { MoneyTransformer } from "../util/MoneyTransformer";
 import { Actor } from "./Actor";
@@ -33,7 +34,7 @@ export class Tier2Invoice {
     nullable: true,
     transformer: new MoneyTransformer(),
   })
-  invoiceAmount: Dinero.Dinero | null;
+  invoiceAmount: DineroObject | null;
 
   @Column("jsonb", {
     name: "Tier2InvoiceDetails",
@@ -74,7 +75,7 @@ export class Tier2Invoice {
     nullable: true,
     transformer: new MoneyTransformer(),
   })
-  receivableAmount: Dinero.Dinero | null;
+  receivableAmount: DineroObject | null;
 
   @ManyToOne(() => Actor, (actor) => actor.tier2Invoices)
   @JoinColumn([{ name: "Tier1Id", referencedColumnName: "actorid" }])

@@ -5,6 +5,7 @@ import { AnchorTier2InvoiceMapping } from "../database/entity/AnchorTier2Invoice
 import { Tier2Invoice } from "../database/entity/Tier2Invoice";
 import { DiscountedTier2Invoice } from "../models/DiscountedTier2Invoice";
 import { Tier1PayableReceivable } from "../models/Tier1PayableReceivable";
+import * as MoneyUtil from "../util/MoneyUtil";
 
 // Request has query param named tier2Id
 export async function listTier1PayableReceivable(
@@ -38,7 +39,7 @@ export async function listTier1PayableReceivable(
     const anchorInvoice = anchorInvoices[j];
     invoiceToReturn.push({
       tier2Invoice,
-      discountedAmount: tier2Invoice.invoiceAmount.multiply(0.85),
+      discountedAmount: MoneyUtil.multiply(tier2Invoice.invoiceAmount, 0.85),
       partAnchorInvoices: { anchorInvoice, partialAmount: tier2Invoice.invoiceAmount },
     });
     j++;

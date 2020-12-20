@@ -4,6 +4,7 @@ import { AnchorInvoice } from "../database/entity/AnchorInvoice";
 import { AnchorTier2InvoiceMapping } from "../database/entity/AnchorTier2InvoiceMapping";
 import { Tier2Invoice } from "../database/entity/Tier2Invoice";
 import { Tier1PayableReceivable } from "../models/Tier1PayableReceivable";
+import * as MoneyUtil from "../util/MoneyUtil";
 
 // Request has query param named tier2Id
 export async function listTier2EarlyPaymentReceived(
@@ -38,7 +39,7 @@ export async function listTier2EarlyPaymentReceived(
     const anchorInvoice = anchorInvoices[j];
     invoiceToReturn.push({
       tier2Invoice,
-      discountedAmount: tier2Invoice.invoiceAmount.multiply(0.85), // TODO(Priyanshu) Disconted amount need to fetch from database
+      discountedAmount: MoneyUtil.multiply(tier2Invoice.invoiceAmount, 0.85), // TODO(Priyanshu) Disconted amount need to fetch from database
       partAnchorInvoices: { anchorInvoice, partialAmount: tier2Invoice.invoiceAmount },
     });
     j++;
