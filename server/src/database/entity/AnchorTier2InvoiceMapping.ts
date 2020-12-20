@@ -3,6 +3,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { MoneyTransformer } from "../util/MoneyTransformer";
 import { Actor } from "./Actor";
 import { AnchorInvoice } from "./AnchorInvoice";
+import { Tier2Invoice } from "./Tier2Invoice";
 
 @Index("main", ["anchorId", "anchorInvoiceId", "tier1Id", "tier2Id", "tier2InvoiceId"], {
   unique: true,
@@ -76,4 +77,11 @@ export class AnchorTier2InvoiceMapping {
     { name: "AnchorId", referencedColumnName: "anchorId" },
   ])
   anchorInvoice: AnchorInvoice;
+
+  @ManyToOne(() => Tier2Invoice, (tier2Invoice) => tier2Invoice.anchorTier2InvoiceMappings)
+  @JoinColumn([
+    { name: "Tier2InvoiceId", referencedColumnName: "invoiceId" },
+    { name: "Tier2Id", referencedColumnName: "tier2Id" },
+  ])
+  tier2Invoice: Tier2Invoice;
 }

@@ -1,7 +1,8 @@
 import { DineroObject } from "dinero.js";
-import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { MoneyTransformer } from "../util/MoneyTransformer";
 import { Actor } from "./Actor";
+import { AnchorTier2InvoiceMapping } from "./AnchorTier2InvoiceMapping";
 
 interface Tier2InvoiceDetails {
   data: Image[];
@@ -84,4 +85,7 @@ export class Tier2Invoice {
   @ManyToOne(() => Actor, (actor) => actor.tier2Invoices2)
   @JoinColumn([{ name: "Tier2Id", referencedColumnName: "actorid" }])
   tier2: Actor;
+
+  @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.tier2Invoice)
+  anchorTier2InvoiceMappings: AnchorTier2InvoiceMapping[];
 }

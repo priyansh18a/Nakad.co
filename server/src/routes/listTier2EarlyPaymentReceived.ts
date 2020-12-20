@@ -13,36 +13,18 @@ export async function listTier2EarlyPaymentReceived(
 ): Promise<Response<Tier1PayableReceivable[]>> {
   const tier2Id = parseInt(req.query.tier2Id[0], 10);
 
-  const tier2Invoices = await getConnection()
-    .createQueryBuilder()
-    .select("T2")
-    .from(Tier2Invoice, "T2")
-    .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"T2"."InvoiceId" = "ATM"."Tier2InvoiceId"')
-    .where('"ATM"."BankApprovalStatus" = \'Approved\'')
-    .andWhere('"ATM"."Tier2Id" = :id', { id: tier2Id })
-    .getMany();
-
-  const anchorInvoices = await getConnection()
-    .createQueryBuilder()
-    .select("AI")
-    .from(AnchorInvoice, "AI")
-    .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"AI"."InvoiceId" = "ATM"."AnchorInvoiceId"')
-    .where('"ATM"."BankApprovalStatus" = \'Approved\'')
-    .andWhere('"ATM"."Tier2Id" = :id', { id: tier2Id })
-    .getMany();
+  const mappings = await getConnection()
+    .getRepository(AnchorTier2InvoiceMapping)
+    .find({ where: { tier2Id, bankApprovalStatus: "Approved" }, relations: ["anchorInvoice", "tier2Invoice"] });
 
   const invoiceToReturn: Tier1PayableReceivable[] = [];
 
-  let j = 0;
-  for (const tier2Invoice of tier2Invoices) {
-    if (j >= anchorInvoices.length) break;
-    const anchorInvoice = anchorInvoices[j];
+  for (const mapping of mappings) {
     invoiceToReturn.push({
-      tier2Invoice,
-      discountedAmount: MoneyUtil.multiply(tier2Invoice.invoiceAmount, 0.85), // TODO(Priyanshu) Disconted amount need to fetch from database
-      partAnchorInvoices: { anchorInvoice, partialAmount: tier2Invoice.invoiceAmount },
+      tier2Invoice: mapping.tier2Invoice,
+      discountedAmount: mapping.discountedAmount,
+      partAnchorInvoices: { partialAmount: mapping.discountedAmount, anchorInvoice: mapping.anchorInvoice },
     });
-    j++;
   }
 
   return res.json(invoiceToReturn);

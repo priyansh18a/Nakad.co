@@ -7,6 +7,9 @@ export class MoneyTransformer implements ValueTransformer {
   }
 
   from(value: string): DineroObject {
+    if (value === null) {
+      return null;
+    }
     return Dinero({ amount: parseInt(value, 10), currency: "INR" }).toObject();
   }
 }
