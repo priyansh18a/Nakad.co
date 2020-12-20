@@ -318,7 +318,7 @@ const Tier1Consolidated = () => {
         {/* <div className="total-benefit has-background-info">Total Benefit: ₹10000</div> */}
     </div>
 
-    <div class="tabs is-boxed">
+    <div className="tabs is-boxed">
             <ul>
                 <li className="is-active" onClick={displaytab1} id="tab-1">
                     <a><span>Receivables invoices for which Loan taken by Tier 2</span></a>
@@ -373,19 +373,19 @@ const Tier1Consolidated = () => {
                 domLayout='autoHeight'
             />
         </div>
-        <div class="modal" id="modal">
-                <div class="modal-background" onClick={closemodal}></div>
-                <div class="modal-card">
-                    <header class="modal-card-head">
-                    <p class="modal-card-title">Confirmation</p>
-                    <button class="delete" aria-label="close" onClick={closemodal} ></button>
+        <div className="modal" id="modal">
+                <div className="modal-background" onClick={closemodal}></div>
+                <div className="modal-card">
+                    <header className="modal-card-head">
+                    <p className="modal-card-title">Confirmation</p>
+                    <button className="delete" aria-label="close" onClick={closemodal} ></button>
                     </header>
-                    <section class="modal-card-body">
+                    <section className="modal-card-body">
                     <p>Are you sure you want to Disapprove?</p>
                     </section>
-                    <footer class="modal-card-foot">
-                        <button class="button is-success" onClick={changeapprovedstatus} >Confirm</button>
-                        <button class="button is-danger" onClick={closemodal} >Decline</button>
+                    <footer className="modal-card-foot">
+                        <button className="button is-success" onClick={changeapprovedstatus} >Confirm</button>
+                        <button className="button is-danger" onClick={closemodal} >Decline</button>
                     </footer>
                 </div>
             </div>

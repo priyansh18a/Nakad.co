@@ -69,8 +69,13 @@
     cursor: pointer;
 }
 
+
 .highlight{
     background-color: rgb(243, 243, 147) !important;
+}
+
+#grn{
+    display: none;
 }
 
 @media(max-width:1120px){

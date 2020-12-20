@@ -52,5 +52,6 @@ router.post("/upload", uploadStrategy, async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
+    res.end();
   }
 });

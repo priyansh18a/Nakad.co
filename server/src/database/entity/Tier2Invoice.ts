@@ -4,6 +4,7 @@ import { Actor } from "./Actor";
 
 interface Tier2InvoiceDetails {
   data: Image[];
+  remark: string;
 }
 
 interface Image {
@@ -45,6 +46,18 @@ export class Tier2Invoice {
 
   @Column("timestamp with time zone", { name: "DueDate", nullable: true })
   dueDate: Date | null;
+
+  @Column("timestamp with time zone", {
+    name: "CreationTimestamp",
+    nullable: true,
+  })
+  creationTimestamp: Date | null;
+
+  @Column("timestamp with time zone", {
+    name: " LastUpdateTimestamp",
+    nullable: true,
+  })
+  lastUpdateTimestamp: Date | null;
 
   @Column("varchar", { name: "GRNId", nullable: true, array: true })
   grnId: string[] | null;

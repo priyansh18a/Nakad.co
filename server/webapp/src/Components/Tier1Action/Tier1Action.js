@@ -14,7 +14,12 @@ import Dinero from "dinero.js";
 const Tier1Action = () => {
     const history = useHistory();
     const [tier2actiondata, setTier2actiondata] = useState([]);
-    const [invoicetoupdate, setInvoicetoupdate] = useState('');
+    const [invoicetoupdate, setInvoicetoupdate] = useState([]);
+    const [tier2Invoiceurl, setTier2Invoiceurl] = useState('');
+    const [tier2GRNurl, setTier2GRNurl] = useState('');
+    const [remark, setRemark] = useState('');
+    const updateremark = (({ target }) => setRemark(target.value));
+
     const showtablemoreinfo = () => {
         document.getElementById('table-more-info').style.display = "block";
         console.log('it work');
@@ -52,13 +57,17 @@ const Tier1Action = () => {
             minWidth: 180
         },
         {   headerName:"Details",
-            field: "invoice",
+            field: "details",
             cellRenderer: "btnCellRenderer",
             cellRendererParams: {
               clicked: function(field) {
                   console.log(field);
-                  setInvoicetoupdate(field);
-                  document.getElementById('modal').style.display = "flex";
+                 setInvoicetoupdate(field[0]);
+                 if(field[1]){
+                    setTier2Invoiceurl(field[1].data[0]);
+                    setTier2GRNurl(field[1].data[1])
+                 } 
+              document.getElementById('modal').style.display = "flex";
               }
             },
             minWidth: 150
@@ -103,7 +112,7 @@ const Tier1Action = () => {
     const onGridReady = params => {
         axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1") // TODO(Priyanshu)
         .then(function (response) {
-            setTier2actiondata(response.data);         
+            setTier2actiondata(response.data);       
         })
         .catch(function (error) {
             history.push({
@@ -114,7 +123,7 @@ const Tier1Action = () => {
         })
     };
 
-    const changeapprovedstatus = () => {
+    const changestatustoapproved = () => {
         const tier2invoice =  tier2actiondata.find((element) => {
             return element.invoiceId === invoicetoupdate;
         })
@@ -123,22 +132,30 @@ const Tier1Action = () => {
         callapi(tier2invoice);
     }
 
+    const changestatustoreject = () => {
+        const tier2invoice =  tier2actiondata.find((element) => {
+            return element.invoiceId === invoicetoupdate;
+        })
+        tier2invoice.approvalStatus = "Rejected";
+        console.log(remark);
+        tier2invoice.tier2InvoiceDetails.remark = remark;
+        callapi(tier2invoice);
+    }
+
     const callapi = tier2invoice => {
         axios.post("/api/UpdateTier2InvoiceForApproval", tier2invoice)
           .then(function (response) {
             console.log(response);
-            window.location.reload(); 
+            // window.location.reload(); 
           })
           .catch(function (error) {
             console.log(error);
           });
     }
 
-
     const closemodal = () => {
         document.getElementById('modal').style.display = "none";
     }
-
 
     const getrowdata = () => {
        return tier2actiondata.map(inv => {
@@ -148,7 +165,8 @@ const Tier1Action = () => {
                 invoice_date: inv.invoiceDate.slice(0,10),
                 payable_date: inv.dueDate.slice(0,10),
                 invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
-                payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00')
+                payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00'),
+                details: [inv.invoiceId, inv.tier2InvoiceDetails]
             };
         });
     }
@@ -162,6 +180,21 @@ const Tier1Action = () => {
             // handle error
             console.log(error);
         })
+    }
+
+
+    const displaytab1 = () => {
+        document.getElementById("invoice").style.display = "block";
+        document.getElementById("grn").style.display = "none";
+        document.getElementById("tab-2").classList.remove("is-active");
+        document.getElementById("tab-1").classList.add("is-active");
+    }
+
+    const displaytab2 = () => {
+        document.getElementById("invoice").style.display = "none";
+        document.getElementById("grn").style.display = "block";
+        document.getElementById("tab-1").classList.remove("is-active");
+        document.getElementById("tab-2").classList.add("is-active");
     }
 
     return (
@@ -229,26 +262,34 @@ const Tier1Action = () => {
                 <p className="modal-card-title">More Details</p>
                 <button className="delete" onClick={closemodal} aria-label="close"></button>
                 </header>
-                <section class="modal-card-body">
-                <p className="has-text-info is-size-4 has-text-weight-bold">Invoice</p>
-                <p className="image is-4by3">
-                <img src={invoice} alt=""/>
+                <section className="modal-card-body">
+                <div className="tabs is-toggle">
+                        <ul>
+                            <li className="is-active" onClick={displaytab1} id="tab-1">
+                                <a><span>Invoice</span></a>
+                            </li>
+                            <li  onClick={displaytab2} id="tab-2">
+                                <a><span>GRN</span></a>
+                            </li>
+                        </ul>
+                </div>
+                <p className="image is-4by3" id="invoice">
+                <img src={tier2Invoiceurl} alt="" crossOrigin = "Anonymous"/>
                 </p>
-                <p className="has-text-info is-size-4 has-text-weight-bold">GRN</p>
-                <p className="image is-4by3">
-                <img src={invoice} alt=""/>
+                <p className="image is-4by3" id="grn">
+                <img src={tier2GRNurl} alt="" crossOrigin = "Anonymous" />
                 </p>
                 <div className="field">
                     <div className="control">
                         <label className="label">Remark</label>
-                        <textarea className="input" type="text" name="remark" placeholder="Write your remark here(if any)" style={{height:"80px"}}  />
+                        <textarea className="input" type="text" name="remark" placeholder="Write your remark here(if any)" style={{height:"80px"}} value={remark} onChange={updateremark} />
                     </div>
                 </div>
                 </section>
         
                 <footer className="modal-card-foot">
-                <button className="button is-success" onClick={changeapprovedstatus}>Approve</button>
-                <button className="button is-danger" onClick={closemodal} >Decline</button>
+                <button className="button is-success" onClick={changestatustoapproved}>Approve</button>
+                <button className="button is-danger" onClick={changestatustoreject} >Decline</button>
                 </footer>
             </div>
             </div>
