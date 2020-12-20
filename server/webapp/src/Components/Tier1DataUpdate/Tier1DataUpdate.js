@@ -15,7 +15,7 @@ const Tier1DataUpdate = () => {
     const history = useHistory();
     const [tier1payable, setTier1payable] = useState([]);
     const [tier1receivable, setTier1receivable] = useState([]);
-    const [invoicetoremove, setInvoicetoremove] = useState('');
+    const [anchortier2mappingtoupdate,  setAnchortier2mappingtoupdate] = useState('');
 
     const columnDefs1 = [
         {   headerName:"Invoice",
@@ -44,13 +44,13 @@ const Tier1DataUpdate = () => {
             sortable:true
         },
         {   headerName:"Confirm",
-            field: "invoice",
+            field: "details",
             minWidth: 150,
             cellRenderer: "btnCellRenderer1",
             cellRendererParams: {
               clicked: function(field) {
                   console.log(field);
-                  setInvoicetoremove(field);
+                  setAnchortier2mappingtoupdate(field);
                   document.getElementById('modal').style.display = "flex";
               }
             }
@@ -84,13 +84,13 @@ const Tier1DataUpdate = () => {
             sortable:true
         },
         {   headerName:"Confirm",
-            field: "invoice",
+            field: "details",
             minWidth: 150,
             cellRenderer: "btnCellRenderer2",
             cellRendererParams: {
                 clicked: function(field) {
                     console.log(field);
-                    setInvoicetoremove(field);
+                    setAnchortier2mappingtoupdate(field);
                     document.getElementById('modal2').style.display = "flex";
                 }
               }
@@ -133,20 +133,26 @@ const Tier1DataUpdate = () => {
 
     const onGridReady = params => {
         axios.get("/api/ListTier1PayableReceivable?tier1Id=1") // TODO(Priyanshu)
-        .then(function (response) {   
-            const rowdata1 =  response.data.map(inv => {
+        .then(function (response) {  
+            const pendingpayable = response.data.filter(element => {
+                return element.tier1PayableEntry === "Pending";
+            });
+            const rowdata1 =  pendingpayable.map(inv => {
                 return {
                     invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
                     vendor: "Maruti", //TODO(Priyanshu)
                     invoice_date: inv.partAnchorInvoices.anchorInvoice.invoiceDate.slice(0,10),
-                    discounted_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.partAnchorInvoices.partialAmount)).toFormat('$0.00'),
+                    discounted_amount: Dinero(inv.discountedAmount).toFormat('$0.00'),
                     payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0.00'),
-                    remaining_payable: Dinero(inv.partAnchorInvoices.partialAmount).toFormat('$0.00'),
+                    remaining_payable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00'),
+                    details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId]
                 };
             });
-            // console.log(rowdata1);
             setTier1payable(rowdata1);
-            const rowdata2 = response.data.map(inv => {
+            const pendingreceivable = response.data.filter(element => {
+                return element.tier1ReceivableEntry === "Pending";
+            });
+            const rowdata2 = pendingreceivable.map(inv => {
                 return {
                     invoice: inv.tier2Invoice.invoiceId,
                     payer: "Maruti", //TODO(Priyanshu)
@@ -154,6 +160,7 @@ const Tier1DataUpdate = () => {
                     receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
                     discounted_amount: Dinero(inv.discountedAmount).toFormat('$0.00'),
                     remaining_receivable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00'),
+                    details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId]
                 };
             });
             setTier1receivable(rowdata2);
@@ -171,18 +178,42 @@ const Tier1DataUpdate = () => {
     // TODO (Priyanshu) Need to complete this
     const removepayableentry = () => {
         const newRowData = tier1payable.filter(element => {
-            return element.invoice !== invoicetoremove;
+            return element.invoice !== anchortier2mappingtoupdate[1];
         });
         setTier1payable(newRowData);
         document.getElementById('modal').style.display = "none";
+        axios.post("/api/UpdateTier1PayableReceivable", {
+            anchorInvoiceId:anchortier2mappingtoupdate[1],
+            tier2InvoiceId:anchortier2mappingtoupdate[0],
+            tier1PayableEntry:"Done",
+            tier1ReceivableEntry:"Nochange"
+        }) 
+        .then(function (response) { 
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
     }
 
     const removereceivableentry = () => {
         const newRowData = tier1receivable.filter(element => {
-            return element.invoice !== invoicetoremove;
+            return element.invoice !== anchortier2mappingtoupdate[0];
         });
         setTier1receivable(newRowData);
         document.getElementById('modal2').style.display = "none";
+        axios.post("/api/UpdateTier1PayableReceivable", {
+            anchorInvoiceId:anchortier2mappingtoupdate[1],
+            tier2InvoiceId:anchortier2mappingtoupdate[0],
+            tier1PayableEntry:"Nochange",
+            tier1ReceivableEntry:"Done"
+        }) 
+        .then(function (response) { 
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
     }
 
     const logout = () => {

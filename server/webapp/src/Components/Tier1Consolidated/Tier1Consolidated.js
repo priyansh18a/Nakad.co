@@ -16,6 +16,10 @@ const Tier1Consolidated = () => {
     const history = useHistory();
     const [approvedtier2invoice, setApprovedtier2invoice] = useState([]);
     const [invoicetodisapprove, setInvoicetodisapprove] = useState('');
+    const [tier1payable, setTier1payable] = useState([]);
+    const [tier1receivable, setTier1receivable] = useState([]);
+    const [tier2approvedinvoicetabledata, setTier2approvedinvoicetabledata] = useState([]);
+
     const columnDefs = [
         {   headerName:"Invoice",
             field: "invoice",
@@ -157,39 +161,65 @@ const Tier1Consolidated = () => {
     const frameworkComponents =  {
         btnCellRenderer: BtnCellRenderer       
     }
-    const rowData =  [ 
-        {   invoice: "KEINV1234",
-            payer: "Shayam International",
-            invoice_date: "03/11/2020", 
-            receivable_date: "03/02/2021",
-            invoice_amount: "₹70,000",
-            receivable_amount: "₹30,000",
-            new_receivable: "₹40,000"
-        }
-    ]
-
-    const rowData2 =  [ 
-        {   invoice: "KEINV1234",
-            vendor: "Maruti",
-            payable_date: "03/01/2021",
-            buffer_days: "10",
-            payable_amount: "₹80,000",
-            amount_discounted: "₹20,000",
-            new_payable: "₹60,000"
-        }
-    ]
-
 
     const onGridReady = params => {
-        // const gridApi = params.api;
-        // const gridColumnApi = params.columnApi;
+        axios.get("/api/ListTier1PayableReceivable?tier1Id=1") // TODO(Priyanshu)
+        .then(function (response) {  
+            const takenpayable = response.data.filter(element => {
+                return element.tier1PayableEntry === "Done";
+            });
+            const rowdata1 =  takenpayable.map(inv => {
+                return {
+                    invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
+                    vendor: "Maruti", //TODO(Priyanshu)
+                    invoice_date: inv.partAnchorInvoices.anchorInvoice.invoiceDate.slice(0,10),
+                    payable_date:  inv.partAnchorInvoices.anchorInvoice.dueDate.slice(0,10),
+                    payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0.00'),
+                    amount_discounted: Dinero(inv.discountedAmount).toFormat('$0.00'),
+                    new_payable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00')                };
+            });
+            setTier1payable(rowdata1);
+            const takenreceivable = response.data.filter(element => {
+                return element.tier1ReceivableEntry === "Done";
+            });
+            const rowdata2 = takenreceivable.map(inv => {
+                return {
+                    invoice: inv.tier2Invoice.invoiceId,
+                    payer: "Maruti", //TODO(Priyanshu)
+                    invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
+                    invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
+                    receivable_date:inv.tier2Invoice.dueDate.slice(0,10),
+                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
+                    new_receivable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00')
+                };
+            });
+            setTier1receivable(rowdata2);
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+       
 
     };
+    const onGridReady2 = params => {
+    }
 
     const onGridReady3 = params => {
         axios.get("/api/ListTier2InvoicesForDiscounting?tier1Id=1&tier2Id=2") // TODO(Priyanshu)
         .then(function (response) {
-            setApprovedtier2invoice(response.data);         
+            setApprovedtier2invoice(response.data); 
+            const rowdata3 = response.data.map(inv => {
+                return {
+                    invoice: inv.tier2Invoice.invoiceId,
+                    vendor: "Maruti", //TODO(Priyanshu)
+                    invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
+                    payable_date: inv.tier2Invoice.dueDate.slice(0,10),
+                    invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
+                    payable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
+                    approval_date : inv.tier2Invoice.lastUpdateTimestamp.slice(0,10) //TODO(Priyanshu)
+                };
+            });
+            setTier2approvedinvoicetabledata(rowdata3);        
         })
         .catch(function (error) {
             console.log(error);
@@ -197,26 +227,16 @@ const Tier1Consolidated = () => {
 
     };
 
-    const getrowdata = () => {
-        return approvedtier2invoice.map(inv => {
-             return {
-                 invoice: inv.tier2Invoice.invoiceId,
-                 vendor: "Maruti", //TODO(Priyanshu)
-                 invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
-                 payable_date: inv.tier2Invoice.dueDate.slice(0,10),
-                 invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
-                 payable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
-                 approval_date : inv.tier2Invoice.invoiceDate.slice(0,10) //TODO(Priyanshu)
-             };
-         });
-     }
-
     const changeapprovedstatus = () => {
         const disapprovetier2invoice =  approvedtier2invoice.find((element) => {
             return element.tier2Invoice.invoiceId === invoicetodisapprove;
         })
-        disapprovetier2invoice.tier2Invoice.approvalStatus = "Pending";
-        console.log(disapprovetier2invoice.tier2Invoice);
+        const newRowData = tier2approvedinvoicetabledata.filter(element => {
+            return element.invoice !== invoicetodisapprove;
+        });
+        setTier2approvedinvoicetabledata(newRowData);
+        document.getElementById('modal').style.display = "none";
+        disapprovetier2invoice.tier2Invoice.approvalStatus = "Rejected";
         callapi(disapprovetier2invoice.tier2Invoice);
     }
 
@@ -224,7 +244,6 @@ const Tier1Consolidated = () => {
         axios.post("/api/UpdateTier2InvoiceForApproval", tier2invoice)
           .then(function (response) {
             console.log(response);
-            window.location.reload(); 
           })
           .catch(function (error) {
             console.log(error);
@@ -340,11 +359,8 @@ const Tier1Consolidated = () => {
             defaultColDef={defaultColDef}
             frameworkComponents={frameworkComponents}
             onGridReady={onGridReady}
-            rowData={rowData}
+            rowData={tier1receivable}
             domLayout='autoHeight'
-            rowClassRules={{
-                'highlight': function(params) { return  params.data.invoice === 'KEINV1234'; }
-            }}
           />
         </div>
     {/* <div className="container has-background-grey-dark payables">Payables</div> */}
@@ -352,12 +368,9 @@ const Tier1Consolidated = () => {
             <AgGridReact
                 columnDefs={columnDefs2}
                 defaultColDef={defaultColDef}
-                onGridReady={onGridReady}
-                rowData={rowData2}
+                onGridReady={onGridReady2}
+                rowData={tier1payable}
                 domLayout='autoHeight'
-                rowClassRules={{
-                    'highlight': function(params) { return  params.data.invoice === 'KEINV1234'; }
-                }}
             />
         </div>
     {/* <div className="table-info has-background-info invoice-approved" >Tier 2 Invoices approved</div> */}
@@ -368,7 +381,7 @@ const Tier1Consolidated = () => {
                 defaultColDef={defaultColDef}
                 frameworkComponents={frameworkComponents}
                 onGridReady={onGridReady3}
-                rowData={getrowdata()}
+                rowData={tier2approvedinvoicetabledata}
                 rowSelection="multiple"
                 domLayout='autoHeight'
             />

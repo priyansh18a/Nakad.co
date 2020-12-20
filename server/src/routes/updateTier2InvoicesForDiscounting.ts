@@ -2,6 +2,7 @@ import assert from "assert";
 import { Request, Response } from "express";
 import { DeepPartial, getConnection } from "typeorm";
 import { DiscountedTier2Invoice } from "../models/DiscountedTier2Invoice";
+import { Tier2Invoice } from "../database/entity/Tier2Invoice";
 import { listTier2InvoicesForDiscountingInternal } from "./listTier2InvoicesForDiscounting";
 import _ from "lodash";
 import { AnchorTier2InvoiceMapping } from "../database/entity/AnchorTier2InvoiceMapping";
@@ -18,6 +19,9 @@ export async function updateTier2InvoicesForDiscounting(req: Request, res: Respo
     (dInv) =>
       _.isEqual(dInv.tier2Invoice.invoiceId, invoiceToDiscount.tier2Invoice.invoiceId) && dInv.status === "Pending"
   );
+
+  invoiceToDiscount.tier2Invoice.lastUpdateTimestamp = new Date();;
+  await getConnection().getRepository(Tier2Invoice).save(invoiceToDiscount.tier2Invoice);
 
   assert.ok(
     foundInvoices.length === 1 && foundInvoices[0].partAnchorInvoices.length === 1,
