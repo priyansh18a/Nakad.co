@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
 import { getConnection } from "typeorm";
-import { AnchorInvoice } from "../database/entity/AnchorInvoice";
 import { AnchorTier2InvoiceMapping } from "../database/entity/AnchorTier2InvoiceMapping";
-import { Tier2Invoice } from "../database/entity/Tier2Invoice";
-import { DiscountedTier2Invoice } from "../models/DiscountedTier2Invoice";
 import { Tier1PayableReceivable } from "../models/Tier1PayableReceivable";
 import * as MoneyUtil from "../util/MoneyUtil";
 
@@ -22,6 +19,8 @@ export async function listTier1PayableReceivable(
 
   for (const mapping of mappings) {
     invoiceToReturn.push({
+      tier1PayableEntry: mapping.tier1PayableEntry,
+      tier1ReceivableEntry: mapping.tier1ReceivableEntry,
       tier2Invoice: mapping.tier2Invoice,
       discountedAmount: mapping.discountedAmount,
       partAnchorInvoices: { partialAmount: mapping.discountedAmount, anchorInvoice: mapping.anchorInvoice },

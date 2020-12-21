@@ -15,7 +15,7 @@ import BtnCellRenderer from "./BtnCellRenderer.jsx";
 const Tier2Consolidated = () => {
     const [tier2adjustmentpending, setTier2adjustmentpending] = useState([]);
     const [tier2adjustmentdone, setTier2adjustmentdone] = useState([]);
-    const [invoicetoremove, setInvoicetoremove] = useState('');
+    const [anchortier2mappingtoupdate,  setAnchortier2mappingtoupdate] = useState('');
 
     const columnDefs = [
         {   headerName:"Invoice Number",
@@ -51,12 +51,12 @@ const Tier2Consolidated = () => {
         },
 
         {   headerName:"Adjusted in Tally",
-            field: "invoice",
+            field: "details",
             cellRenderer: "btnCellRenderer1",
             cellRendererParams: {
               clicked: function(field) {
                   console.log(field);
-                  setInvoicetoremove(field);
+                  setAnchortier2mappingtoupdate(field);
                   document.getElementById('modal').style.display = "flex";
               }
             }
@@ -126,8 +126,11 @@ const Tier2Consolidated = () => {
 
     const onGridReady = params => {
         axios.get("/api/ListTier2EarlyPaymentReceived?tier2Id=2") // TODO(Priyanshu)
-        .then(function (response) {   
-            const rowdata1 =  response.data.map(inv => {
+        .then(function (response) { 
+            const adjustmentpending = response.data.filter(element => {
+                return element.tier2Entry === "Pending";
+            });  
+            const rowdata1 =  adjustmentpending.map(inv => {
                 return {
                     invoice: inv.tier2Invoice.invoiceId,
                     payee: "Maruti", //TODO(Priyanshu)
@@ -135,24 +138,49 @@ const Tier2Consolidated = () => {
                     payment_date: inv.tier2Invoice.dueDate.slice(0,10),
                     receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
                     early_payment_amount: Dinero(inv.discountedAmount).toFormat('$0.00'),
-                    early_payment_date: inv.tier2Invoice.invoiceDate.slice(0,10),  //TODO(Priyanshu)  Need to update this
+                    early_payment_date: inv.tier2Invoice.lastUpdateTimestamp.slice(0,10),  //TODO(Priyanshu)  Need to update this
+                    details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId]
                 };
             });
-            // console.log(rowdata1);
             setTier2adjustmentpending(rowdata1);
+            const adjustmentdone = response.data.filter(element => {
+                return element.tier2Entry === "Done";
+            });  
+            const rowdata2 =  adjustmentdone.map(inv => {
+                return {
+                    invoice: inv.tier2Invoice.invoiceId,
+                    payee: "Maruti", //TODO(Priyanshu)
+                    invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
+                    payment_date: inv.tier2Invoice.dueDate.slice(0,10),
+                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
+                    early_payment_date: inv.tier2Invoice.lastUpdateTimestamp.slice(0,10),  
+                };
+            });
+            setTier2adjustmentdone(rowdata2);
         });
     };
 
     const tallyadjustmentdone = () => {
         const newRowData = tier2adjustmentpending.filter(element => {
-            return element.invoice !== invoicetoremove;
+            return element.invoice !== anchortier2mappingtoupdate[0];
         });
         setTier2adjustmentpending(newRowData);
         const newRowData2 = tier2adjustmentpending.find(element => {
-            return element.invoice === invoicetoremove;
+            return element.invoice === anchortier2mappingtoupdate[0];
         });
         setTier2adjustmentdone([...tier2adjustmentdone, newRowData2]);
         document.getElementById('modal').style.display = "none";
+        axios.post("/api/UpdateTier2EarlyPaymentReceived", {
+            anchorInvoiceId:anchortier2mappingtoupdate[1],
+            tier2InvoiceId:anchortier2mappingtoupdate[0],
+            tier2Entry:"Done"
+        }) 
+        .then(function (response) { 
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
     }
 
     const onGridReady2 = params => {
@@ -193,13 +221,13 @@ const Tier2Consolidated = () => {
     
             <div id="navbarBasicExample" className="navbar-menu">
                 <div className="navbar-end">
-                    <a class="navbar-item" href="/tier2/early">
+                    <a className="navbar-item" href="/tier2/early">
                     Early Payment 
                     </a>
-                    <a class="navbar-item" href="/tier2/consolidated">
+                    <a className="navbar-item" href="/tier2/consolidated">
                     Consolidated View
                     </a>
-                    <a class="navbar-item" href="/tier2/upload">
+                    <a className="navbar-item" href="/tier2/upload">
                     Upload Invoice
                     </a>
                     <a className="navbar-item" href="/tier2/account">
@@ -220,7 +248,7 @@ const Tier2Consolidated = () => {
             <p className="title has-text-info tier-2-action" style={{marginBottom:"40px"}}>Kamal enterprise consolidated view</p>
         </div>
 
-        <div class="tabs is-boxed">
+        <div className="tabs is-boxed">
             <ul>
                 <li className="is-active" onClick={displaypending} id="list-pending">
                     <a><span>Early payment received but Tally adjustment pending</span></a>

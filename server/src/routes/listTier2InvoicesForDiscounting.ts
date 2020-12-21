@@ -26,7 +26,7 @@ export async function listTier2InvoicesForDiscountingInternal(
     .andWhere('"AI"."Tier1Id" = :id', { id: tier1Id })
     .orderBy('"AI"."DueDate"', "ASC")
     .getMany();
-  console.log("anchorInvoices: " + JSON.stringify(anchorInvoices));
+  // console.log("anchorInvoices: " + JSON.stringify(anchorInvoices));
 
   const tier2Invoices = await getConnection()
     .createQueryBuilder()
