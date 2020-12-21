@@ -1,9 +1,12 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import { DineroObject } from "dinero.js";
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { MoneyTransformer } from "../util/MoneyTransformer";
 import { Actor } from "./Actor";
+import { AnchorTier2InvoiceMapping } from "./AnchorTier2InvoiceMapping";
 
 interface Tier2InvoiceDetails {
   data: Image[];
+  remark: string;
 }
 
 interface Image {
@@ -32,7 +35,7 @@ export class Tier2Invoice {
     nullable: true,
     transformer: new MoneyTransformer(),
   })
-  invoiceAmount: Dinero.Dinero | null;
+  invoiceAmount: DineroObject | null;
 
   @Column("jsonb", {
     name: "Tier2InvoiceDetails",
@@ -45,6 +48,18 @@ export class Tier2Invoice {
 
   @Column("timestamp with time zone", { name: "DueDate", nullable: true })
   dueDate: Date | null;
+
+  @Column("timestamp with time zone", {
+    name: "CreationTimestamp",
+    nullable: true,
+  })
+  creationTimestamp: Date | null;
+
+  @Column("timestamp with time zone", {
+    name: "LastUpdateTimestamp",
+    nullable: true,
+  })
+  lastUpdateTimestamp: Date | null;
 
   @Column("varchar", { name: "GRNId", nullable: true, array: true })
   grnId: string[] | null;
@@ -61,7 +76,7 @@ export class Tier2Invoice {
     nullable: true,
     transformer: new MoneyTransformer(),
   })
-  receivableAmount: Dinero.Dinero | null;
+  receivableAmount: DineroObject | null;
 
   @ManyToOne(() => Actor, (actor) => actor.tier2Invoices)
   @JoinColumn([{ name: "Tier1Id", referencedColumnName: "actorid" }])
@@ -70,4 +85,7 @@ export class Tier2Invoice {
   @ManyToOne(() => Actor, (actor) => actor.tier2Invoices2)
   @JoinColumn([{ name: "Tier2Id", referencedColumnName: "actorid" }])
   tier2: Actor;
+
+  @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.tier2Invoice)
+  anchorTier2InvoiceMappings: AnchorTier2InvoiceMapping[];
 }

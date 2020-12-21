@@ -16,6 +16,7 @@ import BtnCellRenderer3 from "./BtnCellRenderer3.jsx";
 const Tier2EarlyPayment = () => {
     const history = useHistory();
     const [checkedbytier1, setCheckedbytier1] = useState([]);
+    const [rejectedbytier1, setRejectedbytier1] = useState([]);
     const [pendingbytier1, setPendingbytier1] = useState([]);
     const [invoicetoupdate, setInvoicetoupdate] = useState('');
 
@@ -81,7 +82,8 @@ const Tier2EarlyPayment = () => {
         },
         {   headerName:"Remark",
             field: "remark",
-          
+            cellClass: "remark-class",
+            tooltipField:"remark"
         },
         {   headerName:"Reupload Invoice",
             field: "reupload",
@@ -150,40 +152,10 @@ const Tier2EarlyPayment = () => {
         btnCellRenderer3: BtnCellRenderer3
     }
 
-    const rowData2 =  [ 
-        {   invoice: "HERO54286",
-            payee: "Hero Motercycle",
-            invoice_amount: "₹20,000",
-            remark: "debit note details not added"
-        }
-    ]
-
-    const rowData3 =  [ 
-        {   invoice: "SWINV7714",
-            payee: "Swift Works",
-            invoice_amount: "₹10,000",
-            date_upload: "02/02/2021"
-        }
-    ]
-
     const onGridReady1 = params => {
         axios.get("/api/ListTier2InvoicesForDiscounting?tier1Id=1&tier2Id=2") // TODO(Priyanshu)
         .then(function (response) {
             setCheckedbytier1(response.data);         
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
-    };
-
-    const onGridReady2 = params => {
-
-    };
-
-    const onGridReady3 = params => {
-        axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1") // TODO(Priyanshu)
-        .then(function (response) {
-            setPendingbytier1(response.data);         
         })
         .catch(function (error) {
             history.push({
@@ -194,12 +166,29 @@ const Tier2EarlyPayment = () => {
         })
     };
 
-    const getapprovedrowdata = () => {
-        const approvedbytier1 = checkedbytier1.filter((element) => {
-              return element.tier2Invoice.approvalStatus === "Approved";
+    const onGridReady2 = params => {
+       axios.get("/api/ListTier2RejectedInvoice?tier1Id=1") // TODO(Priyanshu)
+        .then(function (response) {
+            setRejectedbytier1(response.data);         
         })
-        // console.log(approvedbytier1);
-        return approvedbytier1.map(inv => {
+        .catch(function (error) {
+            console.log(error);
+        })
+
+    };
+
+    const onGridReady3 = params => {
+        axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1") // TODO(Priyanshu)
+        .then(function (response) {
+            setPendingbytier1(response.data);         
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    };
+
+    const getapprovedrowdata = () => {
+        return checkedbytier1.map(inv => {
              return {
                  invoice: inv.tier2Invoice.invoiceId,
                  payee:"Maruti",   // TODO(Priyanshu)
@@ -239,7 +228,7 @@ const Tier2EarlyPayment = () => {
                  invoice: inv.invoiceId,
                  vendor: inv.tier2.actorinfo.name,
                  invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
-                 date_upload: inv.invoiceDate.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
+                 date_upload: inv.creationTimestamp.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
                  payee: "Maruti",   // TODO(Priyanshu), Need to fix this withi real data
              };
          });
@@ -248,16 +237,12 @@ const Tier2EarlyPayment = () => {
  
      // TODO(Priyanshu) Need to confirm to this with Harshil Bhaiya
     const getrejectedrowdata = () => {
-        const rejectedbytier1 = checkedbytier1.filter((element) => {
-              return element.tier2Invoice.approvalStatus === "Rejected";
-        })
-          // console.log(rejectedbytier1);
             return rejectedbytier1.map(inv => {
                 return {
-                    invoice: inv.tier2Invoice.invoiceId,
+                    invoice: inv.invoiceId,
                     payee: "Maruti",   // TODO(Priyanshu)
-                    invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
-                    remark : " abcd"  // TODO(Priyanshu)
+                    invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
+                    remark : inv.tier2InvoiceDetails.remark  // TODO(Priyanshu)
                 };
             });
      }
@@ -312,13 +297,13 @@ const Tier2EarlyPayment = () => {
             <div id="navbarBasicExample" className="navbar-menu">
         
             <div className="navbar-end">
-                <a class="navbar-item" href="/tier2/early">
+                <a className="navbar-item" href="/tier2/early">
                 Early Payment 
                 </a>
-                <a class="navbar-item" href="/tier2/consolidated">
+                <a className="navbar-item" href="/tier2/consolidated">
                 Consolidated View
                 </a>
-                <a class="navbar-item" href="/tier2/upload">
+                <a className="navbar-item" href="/tier2/upload">
                 Upload Invoice
                 </a>
                 <a className="navbar-item" href="/tier2/account">
@@ -340,7 +325,7 @@ const Tier2EarlyPayment = () => {
         {/* <div className="total-benefit has-background-info">Total Benefit: ₹10000</div> */}
     </div>
 
-    <div class="tabs is-boxed">
+    <div className="tabs is-boxed">
             <ul>
                 <li className="is-active" onClick={displaytab1} id="tab-1">
                     <a><span>Invoices approved by tier 1</span></a>
@@ -369,19 +354,19 @@ const Tier2EarlyPayment = () => {
             }}
           />
         </div>
-        <div class="modal" id="modal"  >
-            <div class="modal-background" onClick={closemodal}></div>
-            <div class="modal-card">
-                <header class="modal-card-head">
-                <p class="modal-card-title">Confirmation</p>
-                <button class="delete" aria-label="close" onClick={closemodal} ></button>
+        <div className="modal" id="modal"  >
+            <div className="modal-background" onClick={closemodal}></div>
+            <div className="modal-card">
+                <header className="modal-card-head">
+                <p className="modal-card-title">Confirmation</p>
+                <button className="delete" aria-label="close" onClick={closemodal} ></button>
                 </header>
-                <section class="modal-card-body">
+                <section className="modal-card-body">
                  <p>Are you sure you have taken early payment?</p>
                 </section>
-                <footer class="modal-card-foot">
-                    <button class="button is-success" onClick={confirmearlypayment} >Confirm</button>
-                    <button class="button is-danger" onClick={closemodal} >Decline</button>
+                <footer className="modal-card-foot">
+                    <button className="button is-success" onClick={confirmearlypayment} >Confirm</button>
+                    <button className="button is-danger" onClick={closemodal} >Decline</button>
                 </footer>
             </div>
         </div>
@@ -393,12 +378,10 @@ const Tier2EarlyPayment = () => {
             columnDefs={columnDefs2}
             defaultColDef={defaultColDef}
             frameworkComponents={frameworkComponents2}
+            enableBrowserTooltips={true}
             onGridReady={onGridReady2}
-            rowData={rowData2}                    
+            rowData={getrejectedrowdata()}                    
             domLayout='autoHeight'
-            // rowClassRules={{
-            //     'highlight': function(params) { return  params.data.invoice === 'KEINV1234'; }
-            // }}
           />
     </div>
 

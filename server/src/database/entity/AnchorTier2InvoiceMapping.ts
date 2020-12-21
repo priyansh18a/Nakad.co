@@ -1,6 +1,9 @@
+import { DineroObject } from "dinero.js";
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import { MoneyTransformer } from "../util/MoneyTransformer";
 import { Actor } from "./Actor";
 import { AnchorInvoice } from "./AnchorInvoice";
+import { Tier2Invoice } from "./Tier2Invoice";
 
 @Index("main", ["anchorId", "anchorInvoiceId", "tier1Id", "tier2Id", "tier2InvoiceId"], {
   unique: true,
@@ -45,6 +48,34 @@ export class AnchorTier2InvoiceMapping {
   })
   bankApprovalStatus: "Approved" | "Rejected" | "Pending" | null;
 
+  @Column("enum", {
+    name: "Tier1ReceivableEntry",
+    nullable: true,
+    enum: ["Pending", "Done"],
+  })
+  tier1ReceivableEntry: "Pending" | "Done" | null;
+
+  @Column("enum", {
+    name: "Tier1PayableEntry",
+    nullable: true,
+    enum: ["Pending", "Done"],
+  })
+  tier1PayableEntry: "Pending" | "Done" | null;
+
+  @Column("enum", {
+    name: "Tier2Entry",
+    nullable: true,
+    enum: ["Pending", "Done"],
+  })
+  tier2Entry: "Pending" | "Done" | null;
+
+  @Column("bigint", {
+    name: "DiscountedAmount",
+    nullable: true,
+    transformer: new MoneyTransformer(),
+  })
+  discountedAmount: DineroObject | null;
+
   @ManyToOne(() => Actor, (actor) => actor.anchorTier2InvoiceMappings)
   @JoinColumn([{ name: "AnchorId", referencedColumnName: "actorid" }])
   anchor: Actor;
@@ -67,4 +98,11 @@ export class AnchorTier2InvoiceMapping {
     { name: "AnchorId", referencedColumnName: "anchorId" },
   ])
   anchorInvoice: AnchorInvoice;
+
+  @ManyToOne(() => Tier2Invoice, (tier2Invoice) => tier2Invoice.anchorTier2InvoiceMappings)
+  @JoinColumn([
+    { name: "Tier2InvoiceId", referencedColumnName: "invoiceId" },
+    { name: "Tier2Id", referencedColumnName: "tier2Id" },
+  ])
+  tier2Invoice: Tier2Invoice;
 }

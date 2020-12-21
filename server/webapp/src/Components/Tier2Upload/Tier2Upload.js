@@ -1,6 +1,7 @@
 import React, { useState} from 'react';
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
+import FormData from 'form-data'
 import logo from './../../Graphics/logo.jpg';
 
 import "./Tier2Upload.scss"
@@ -8,16 +9,21 @@ import "./Tier2Upload.scss"
 const Tier2Upload =  () => {
     const history = useHistory(); 
     const [form, setForm] = useState({invoice: '',payername: '', invoicedate: '', invoiceamount: '' , receivableamount: '' , receivabledate: '' , grn: '' , invoicefile: '', grnfile: '' }); // 
-    const update = (({ target }) => setForm({ ...form, [target.name]: target.value }))
+    const update = (({ target }) => setForm({ ...form, [target.name]: target.value }));
+    const [invoiceurl, setInvoiceurl] = useState('');
+    const [grnurl, setGrnurl] = useState('');
+    const  [uploading, setUploading] = useState(false);
+    const  [buttonText, setButtonText] = useState('Send for Approval');
+    const dateObj = new Date();
+    const uploadtime = dateObj.getFullYear() + '-' + (dateObj.getMonth() + 1) + '-' + dateObj.getDate()+ " " +  dateObj.getHours() + ':' + dateObj.getMinutes() + ':' + dateObj.getSeconds();
 
     const uploadinvoiceandgrn =  event => {
         event.preventDefault();
-        console.log(form);
         axios.post("/api/Tier2Invoice", {   
             tier1Id: 1,     // TODO(Priyanshu)
             tier2Id: 2,      // TODO(Priyanshu)
             invoiceId: form.invoice,
-            invoiceAmount : { amount : parseInt(form.invoiceamount),
+            invoiceAmount : { amount : parseInt(form.invoiceamount)*100, //to provide 2 digit precision
                               currency: "INR",
                               precision: 2
                             },
@@ -25,10 +31,15 @@ const Tier2Upload =  () => {
             dueDate: form.receivabledate,
             grnId: [form.grn],
             approvalStatus:  "Pending",
-            receivableAmount: { amount:  parseInt(form.receivableamount),
+            receivableAmount: { amount:  parseInt(form.receivableamount)*100,
                                 currency:"INR",
                                 precision: 2
-                              }
+                              },
+            tier2InvoiceDetails:{  data: [  
+                                   invoiceurl, grnurl   
+                                ]},
+            creationTimestamp: uploadtime,
+            lastUpdateTimestamp:uploadtime
           })
           .then(function (response) {
             console.log(response);
@@ -38,38 +49,92 @@ const Tier2Upload =  () => {
             console.log(error);
           });
     }
+
+    const uploadtier2invoice = event => {
+        setUploading(true);
+        setButtonText("Uploading...")
+        const file = event.target.files[0];
+        console.log(file);
+        const data = new FormData();
+        data.append('image', file, file.fileName);
+        axios.post("/upload", data,  {
+            headers: {
+                'accept': 'application/json',
+                'Accept-Language': 'en-US,en;q=0.8',
+                'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+            }
+          }) 
+        .then(function (response){
+            setUploading(false);
+            setButtonText("Send for Approval");
+            setInvoiceurl(response.data.fileUrl);     
+        })
+        .catch(function (error) {
+            setButtonText("Uploading Failed! Try Again");
+            console.log(error);
+        })
+
+    }
+
+    const uploadtier2grn = event => {
+        setUploading(true);
+        setButtonText("Uploading...")
+        const file = event.target.files[0];
+        console.log(file);
+        const data = new FormData();
+        data.append('image', file, file.fileName);
+        axios.post("/upload", data,  {
+            headers: {
+                'accept': 'application/json',
+                'Accept-Language': 'en-US,en;q=0.8',
+                'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+            }
+          }) 
+        .then(function (response){
+            // alert("Upload Successful");
+            setUploading(false);
+            setButtonText("Send for Approval");
+            setGrnurl(response.data.fileUrl);     
+        })
+        .catch(function (error) {
+            setUploading(false);
+            setButtonText("Uploading Failed");
+            console.log(error);
+        })
+
+    }
     return (
     <div>
-    <nav class="navbar is-info" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-        <a class="navbar-item" href="/">
+    <nav className="navbar is-info" role="navigation" aria-label="main navigation">
+        <div className="navbar-brand">
+        <a className="navbar-item" href="/">
             <img src={logo} width="150"  alt="" />
         </a>
     
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <a role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
         </a>
         </div>
     
-        <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-end">
-                <a class="navbar-item" href="/tier2/early">
+        <div id="navbarBasicExample" className="navbar-menu">
+            <div className="navbar-end">
+                <a className="navbar-item" href="/tier2/early">
                 Early Payment 
                 </a>
-                <a class="navbar-item" href="/tier2/consolidated">
+                <a className="navbar-item" href="/tier2/consolidated">
                 Consolidated View
                 </a>
-                <a class="navbar-item" href="/tier2/upload">
+                <a className="navbar-item" href="/tier2/upload">
                 Upload Invoice
                 </a>
                 <a className="navbar-item" href="/tier2/account">
                 Account 
                 </a>
-                <div class="navbar-item">
-                    <div class="buttons">
-                        <a class="button is-primary is-light">
+                <div className="navbar-item">
+                    <div className="buttons">
+                        <a className="button is-primary is-light">
                             Log Out
                         </a>
                     </div>
@@ -124,41 +189,41 @@ const Tier2Upload =  () => {
                         <input className="input" type="text" name="grn" placeholder="GRN #" value={form.grn} onChange={update} required/>
                     </div>
                 </div> 
-                <div id="file-js-example" class=" field file has-name is-dark">
-                    <label class="file-label">
-                        <input class="file-input" type="file" name="invoicefile"/>
-                        <span class="file-cta">
-                        <span class="file-icon">
-                            <i class="fas fa-upload"></i>
+                <div id="file-js-example" className=" field file has-name is-dark">
+                    <label className="file-label">
+                        <input className="file-input" type="file" name="invoicefile" onChange={uploadtier2invoice}  required/>
+                        <span className="file-cta">
+                        <span className="file-icon">
+                            <i className="fas fa-upload"></i>
                         </span>
-                        <span class="file-label">
+                        <span className="file-label">
                             Upload Invoice
                         </span>
                         </span>
-                        <span class="file-name">
+                        <span className="file-name">
                         No file uploaded
                         </span>
                     </label>
                 </div>
-                <div id="file-js-example2" class=" field file has-name is-dark">
-                    <label class="file-label">
-                        <input class="file-input" type="file" name="grnfile"/>
-                        <span class="file-cta">
-                        <span class="file-icon">
-                            <i class="fas fa-upload"></i>
+                <div id="file-js-example2" className=" field file has-name is-dark">
+                    <label className="file-label">
+                        <input className="file-input" type="file" name="grnfile" onChange={uploadtier2grn} required/>
+                        <span className="file-cta">
+                        <span className="file-icon">
+                            <i className="fas fa-upload"></i>
                         </span>
-                        <span class="file-label">
+                        <span className="file-label">
                             Upload GRN
                         </span>
                         </span>
-                        <span class="file-name">
+                        <span className="file-name">
                         No file uploaded
                         </span>
                     </label>
                 </div>
                 <div className="field is-grouped is-grouped-centered">
                     <div className="buttons">
-                        <button className="is-info button is-bold "><strong>Send for Approval</strong></button>
+                        <button className="is-info button is-bold " disabled={uploading}><strong>{buttonText}</strong></button>
                     </div>
                 </div>
                 </form>

@@ -10,11 +10,6 @@ export async function updateInvoiceForBankApproval(
 ): Promise<Response<AnchorTier2InvoiceMapping>> {
   const request = req.body as AnchorTier2InvoiceMapping;
 
-  // await getConnection()
-  //   .getRepository(AnchorTier2InvoiceMapping)
-  //   .remove(invoiceForApproval);
-
-  // console.log(JSON.stringify(invoiceForApproval));
   await getConnection().getRepository(AnchorTier2InvoiceMapping).update(
     {
       anchorId: request.anchorId,

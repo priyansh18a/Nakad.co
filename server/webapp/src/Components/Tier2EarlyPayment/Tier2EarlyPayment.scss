@@ -32,3 +32,19 @@
     margin-right: 8vw;
     text-align: center;
 }
+
+.ag-row{
+    max-height: 50px !important;
+}
+
+.ag-theme-material .ag-cell {
+    max-height: 50px !important;
+}
+
+.ag-row.ag-row-odd.ag-row-level-0.ag-row-position-absolute.ag-row-focus.ag-row-hover {
+    max-height: 50px !important;
+}
+
+// .remark-class:hover{
+//  color: red !important;
+// }

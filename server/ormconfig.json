@@ -1,4 +1,5 @@
 {
+
    "name": "default",
    "type": "postgres",
    "host": "harshil-blog.southindia.cloudapp.azure.com",
@@ -21,3 +22,5 @@
       "migrationsDir": "src/database/migration"
    }
 }
+
+

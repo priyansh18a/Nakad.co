@@ -23,7 +23,11 @@
          }
       ]
    },
+   "include": [
+      "src/**/*"
+   ],
    "exclude": [
-      "webapp/**/*"
+      "webapp/**/*",
+      "tools/**/*"
    ]
 }
