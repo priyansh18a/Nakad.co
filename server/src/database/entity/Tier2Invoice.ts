@@ -56,7 +56,7 @@ export class Tier2Invoice {
   creationTimestamp: Date | null;
 
   @Column("timestamp with time zone", {
-    name: " LastUpdateTimestamp",
+    name: "LastUpdateTimestamp",
     nullable: true,
   })
   lastUpdateTimestamp: Date | null;
