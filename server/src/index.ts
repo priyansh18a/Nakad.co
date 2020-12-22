@@ -25,7 +25,6 @@ import { listTier2RejectedInvoice } from "./routes/listTier2RejectedInvoice";
 import { AssertionError } from "assert";
 import path from "path";
 
-import { User } from "./database/entity/User";
 import { config } from "dotenv";
 import { router as uploadRouter } from "./routes/upload";
 

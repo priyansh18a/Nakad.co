@@ -18,6 +18,18 @@ export class Actor {
   @Column("jsonb", { name: "actorinfo", nullable: true })
   actorinfo: object | null;
 
+  @Column("character varying", { name: "username", nullable: true, length: 50 })
+  username: string | null;
+
+  @Column("character varying", { name: "hash", nullable: true })
+  hash: string | null;
+
+  @Column("jsonb", { name: "data", nullable: true })
+  data: object | null;
+
+  @Column("character varying", { name: "salt", nullable: true })
+  salt: string | null;
+
   @OneToMany(() => AnchorDebitNotes, (anchorDebitNotes) => anchorDebitNotes.anchor)
   anchorDebitNotes: AnchorDebitNotes[];
 
