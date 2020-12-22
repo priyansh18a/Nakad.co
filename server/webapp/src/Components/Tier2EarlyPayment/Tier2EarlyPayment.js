@@ -191,7 +191,7 @@ const Tier2EarlyPayment = () => {
         return checkedbytier1.map(inv => {
              return {
                  invoice: inv.tier2Invoice.invoiceId,
-                 payee:"Maruti",   // TODO(Priyanshu)
+                 payee: inv.tier2Invoice.tier1.actorInfo.name,
                  payment_date: inv.tier2Invoice.dueDate.slice(0,10),
                  discount_rate:inv.discountedAnnualRatePercentage,
                  invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
@@ -226,10 +226,10 @@ const Tier2EarlyPayment = () => {
         return pendingbytier1.map(inv => {
              return {
                  invoice: inv.invoiceId,
-                 vendor: inv.tier2.actorinfo.name,
+                 vendor: inv.tier2.actorInfo.name,
                  invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
                  date_upload: inv.creationTimestamp.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
-                 payee: "Maruti",   // TODO(Priyanshu), Need to fix this withi real data
+                 payee: inv.tier1.actorInfo.name, 
              };
          });
     }
@@ -240,7 +240,7 @@ const Tier2EarlyPayment = () => {
             return rejectedbytier1.map(inv => {
                 return {
                     invoice: inv.invoiceId,
-                    payee: "Maruti",   // TODO(Priyanshu)
+                    payee: inv.tier1.actorInfo.name,
                     invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
                     remark : inv.tier2InvoiceDetails.remark  // TODO(Priyanshu)
                 };
