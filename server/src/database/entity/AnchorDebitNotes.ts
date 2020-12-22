@@ -26,11 +26,11 @@ export class AnchorDebitNotes {
   @Column("character varying", { primary: true, name: "InvoiceId", length: 50 })
   invoiceId: string;
 
-  @ManyToOne(() => Actor, (actor) => actor.anchorDebitNotes)
+  @ManyToOne(() => Actor, (actor) => actor.anchorDebitNotes, { eager: true })
   @JoinColumn([{ name: "AnchorId", referencedColumnName: "actorid" }])
   anchor: Actor;
 
-  @ManyToOne(() => Actor, (actor) => actor.anchorDebitNotes2)
+  @ManyToOne(() => Actor, (actor) => actor.anchorDebitNotes2, { eager: true })
   @JoinColumn([{ name: "Tier1Id", referencedColumnName: "actorid" }])
-  tier: Actor;
+  tier1: Actor;
 }
