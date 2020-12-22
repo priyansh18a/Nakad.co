@@ -1,5 +1,6 @@
 import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { AnchorDebitNotes } from "./AnchorDebitNotes";
+import { AnchorInvoice } from "./AnchorInvoice";
 import { AnchorTier2InvoiceMapping } from "./AnchorTier2InvoiceMapping";
 import { Tier2Invoice } from "./Tier2Invoice";
 
@@ -18,10 +19,22 @@ export class Actor {
   @Column("jsonb", { name: "actorinfo", nullable: true })
   actorinfo: object | null;
 
+  @Column("character varying", { name: "username", nullable: true, length: 50 })
+  username: string | null;
+
+  @Column("character varying", { name: "hash", nullable: true })
+  hash: string | null;
+
+  @Column("jsonb", { name: "data", nullable: true })
+  data: object | null;
+
+  @Column("character varying", { name: "salt", nullable: true })
+  salt: string | null;
+
   @OneToMany(() => AnchorDebitNotes, (anchorDebitNotes) => anchorDebitNotes.anchor)
   anchorDebitNotes: AnchorDebitNotes[];
 
-  @OneToMany(() => AnchorDebitNotes, (anchorDebitNotes) => anchorDebitNotes.tier)
+  @OneToMany(() => AnchorDebitNotes, (anchorDebitNotes) => anchorDebitNotes.tier1)
   anchorDebitNotes2: AnchorDebitNotes[];
 
   @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.anchor)
@@ -30,15 +43,21 @@ export class Actor {
   @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.bank)
   anchorTier2InvoiceMappings2: AnchorTier2InvoiceMapping[];
 
-  @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.tier)
+  @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.tier1)
   anchorTier2InvoiceMappings3: AnchorTier2InvoiceMapping[];
 
   @OneToMany(() => AnchorTier2InvoiceMapping, (anchorTier2InvoiceMapping) => anchorTier2InvoiceMapping.tier2)
   anchorTier2InvoiceMappings4: AnchorTier2InvoiceMapping[];
 
-  @OneToMany(() => Tier2Invoice, (tier2Invoice) => tier2Invoice.tier)
+  @OneToMany(() => Tier2Invoice, (tier2Invoice) => tier2Invoice.tier1)
   tier2Invoices: Tier2Invoice[];
 
   @OneToMany(() => Tier2Invoice, (tier2Invoice) => tier2Invoice.tier2)
   tier2Invoices2: Tier2Invoice[];
+
+  @OneToMany(() => AnchorInvoice, (anchorinvoice) => anchorinvoice.anchor)
+  anchorinvoices: AnchorInvoice[];
+
+  @OneToMany(() => AnchorInvoice, (anchorinvoice) => anchorinvoice.tier1)
+  anchorinvoices2: AnchorInvoice[];
 }

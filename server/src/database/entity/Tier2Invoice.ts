@@ -78,11 +78,11 @@ export class Tier2Invoice {
   })
   receivableAmount: DineroObject | null;
 
-  @ManyToOne(() => Actor, (actor) => actor.tier2Invoices)
+  @ManyToOne(() => Actor, (actor) => actor.tier2Invoices, { eager: true })
   @JoinColumn([{ name: "Tier1Id", referencedColumnName: "actorid" }])
-  tier: Actor;
+  tier1: Actor;
 
-  @ManyToOne(() => Actor, (actor) => actor.tier2Invoices2)
+  @ManyToOne(() => Actor, (actor) => actor.tier2Invoices2, { eager: true })
   @JoinColumn([{ name: "Tier2Id", referencedColumnName: "actorid" }])
   tier2: Actor;
 

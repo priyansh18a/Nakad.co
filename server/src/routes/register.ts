@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import { getConnection } from "typeorm";
-import { User } from "../database/entity/User";
+import { Actor } from "../database/entity/Actor";
 import { genPassword } from "../database/util/passwordUtils";
 
 export interface RegisterRequest {
   email: string;
   password: string;
   data: any;
+  actortype: "Tier1" | "Tier2" | "Bank" | "Admin" | "Anchor";
 }
 
 export default async function register(req: Request, res: Response) {
@@ -15,27 +16,30 @@ export default async function register(req: Request, res: Response) {
 
   const salt = saltHash.salt;
   const hash = saltHash.hash;
-  const newUser = new User();
+  const newUser = new Actor();
 
   newUser.username = request.email;
   newUser.hash = hash;
   newUser.salt = salt;
   newUser.data = request.data;
-
+  newUser.actortype = request.actortype;
   const userexist = await getConnection()
-    .getRepository(User)
+    .getRepository(Actor)
     .findOne({
       where: {
         username: request.email,
       },
     });
-  if (userexist) return res.json({ message: "Email already registered. Please login to continue" });
+  if (userexist)
+    return res.json({
+      message: "Email already registered. Please login to continue",
+    });
   getConnection()
-    .getRepository(User)
+    .getRepository(Actor)
     .save(newUser)
     .then((u) => {
       console.log(u);
-      console.log("User Created");
+      console.log("Actor Created");
     });
 
   return res.json(request);
