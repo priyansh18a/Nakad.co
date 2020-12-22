@@ -76,7 +76,7 @@ export class AnchorTier2InvoiceMapping {
   })
   discountedAmount: DineroObject | null;
 
-  @ManyToOne(() => Actor, (actor) => actor.anchorTier2InvoiceMappings, { eager: true })
+  @ManyToOne(() => Actor, (actor) => actor.anchorTier2InvoiceMappings)
   @JoinColumn([{ name: "AnchorId", referencedColumnName: "actorid" }])
   anchor: Actor;
 
@@ -88,7 +88,7 @@ export class AnchorTier2InvoiceMapping {
   @JoinColumn([{ name: "Tier1Id", referencedColumnName: "actorid" }])
   tier1: Actor;
 
-  @ManyToOne(() => Actor, (actor) => actor.anchorTier2InvoiceMappings4, { eager: true })
+  @ManyToOne(() => Actor, (actor) => actor.anchorTier2InvoiceMappings4)
   @JoinColumn([{ name: "Tier2Id", referencedColumnName: "actorid" }])
   tier2: Actor;
 

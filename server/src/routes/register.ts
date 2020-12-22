@@ -22,7 +22,7 @@ export default async function register(req: Request, res: Response) {
   newUser.hash = hash;
   newUser.salt = salt;
   newUser.data = request.data;
-  newUser.actortype = request.actortype;
+  newUser.actorType = request.actortype;
   const userexist = await getConnection()
     .getRepository(Actor)
     .findOne({

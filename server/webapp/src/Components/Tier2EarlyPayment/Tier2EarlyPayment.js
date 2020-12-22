@@ -167,7 +167,7 @@ const Tier2EarlyPayment = () => {
     };
 
     const onGridReady2 = params => {
-       axios.get("/api/ListTier2RejectedInvoice?tier1Id=1") // TODO(Priyanshu)
+       axios.get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Rejected") // TODO(Priyanshu)
         .then(function (response) {
             setRejectedbytier1(response.data);         
         })
@@ -178,7 +178,7 @@ const Tier2EarlyPayment = () => {
     };
 
     const onGridReady3 = params => {
-        axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1") // TODO(Priyanshu)
+        axios.get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Pending") // TODO(Priyanshu)
         .then(function (response) {
             setPendingbytier1(response.data);         
         })
