@@ -153,7 +153,7 @@ const Tier2EarlyPayment = () => {
     }
 
     const onGridReady1 = params => {
-        axios.get("/api/ListTier2InvoicesForDiscounting?tier1Id=1&tier2Id=2") // TODO(Priyanshu)
+        axios.get("/api/ListTier2InvoicesForDiscounting?tier2Id=2") // TODO(Priyanshu)
         .then(function (response) {
             setCheckedbytier1(response.data);         
         })

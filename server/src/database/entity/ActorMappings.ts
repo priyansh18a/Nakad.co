@@ -1,6 +1,11 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Actor } from "./Actor";
 
+interface MappingData {
+  interestRate: number;
+  bufferDays: number;
+}
+
 @Index("actormappings_pkey", ["childId", "parentId"], { unique: true })
 @Entity("actormappings", { schema: "public" })
 export class ActorMappings {
@@ -11,7 +16,7 @@ export class ActorMappings {
   childId: number;
 
   @Column("jsonb", { name: "mappingdata", nullable: true })
-  mappingData: object | null;
+  mappingData: MappingData | null;
 
   @ManyToOne(() => Actor, (actor) => actor.actormappings, { eager: true })
   @JoinColumn([{ name: "childid", referencedColumnName: "actorid" }])
