@@ -26,6 +26,7 @@ import path from "path";
 
 import { config } from "dotenv";
 import { router as uploadRouter } from "./routes/upload";
+import { listTier2Customers } from "./routes/listTier2Customers";
 
 // Loads .env file to process
 config();
@@ -47,6 +48,7 @@ createConnection()
 
     app.post("/api/Tier2Invoice", loginCheck(), tier2Invoice);
     app.get("/api/ListTier2Invoices", loginCheck(), listTier2Invoices);
+    app.get("/api/ListTier2Customers", loginCheck(), listTier2Customers);
     app.post("/api/UpdateTier2InvoiceForApproval", loginCheck(), updateTier2InvoiceForApproval);
     app.get("/api/ListTier2InvoicesForDiscounting", loginCheck(), listTier2InvoicesForDiscounting);
     app.post("/api/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
