@@ -13,7 +13,6 @@ import Dinero from "dinero.js";
 const Tier1Action = () => {
     const history = useHistory();
     const [tier2actiondata, setTier2actiondata] = useState([]);
-    const [rowdata, setRowdata] = useState([]);
     const [invoicetoupdate, setInvoicetoupdate] = useState([]);
     const [tier2Invoiceurl, setTier2Invoiceurl] = useState('');
     const [tier2GRNurl, setTier2GRNurl] = useState('');
@@ -110,19 +109,7 @@ const Tier1Action = () => {
     const onGridReady = params => {
         axios.get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Pending") // TODO(Priyanshu)
         .then(function (response) {
-            setTier2actiondata(response.data);
-            const rowdata = response.data.map(inv => {
-                return {
-                    invoice: inv.invoiceId,
-                    vendor: inv.tier2.actorInfo.name,
-                    invoice_date: inv.invoiceDate.slice(0,10),
-                    payable_date: inv.dueDate.slice(0,10),
-                    invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
-                    payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00'),
-                    details: [inv.invoiceId, inv.tier2InvoiceDetails]
-                };
-            }); 
-            setRowdata(rowdata) ;    
+            setTier2actiondata(response.data);    
         })
         .catch(function (error) {
             history.push({
@@ -134,11 +121,6 @@ const Tier1Action = () => {
     };
 
     const changestatus = status  => {
-        const newRowData = rowdata.filter(element => {
-            return element.invoice !== invoicetoupdate;
-        });
-        setRowdata(newRowData);
-        document.getElementById('modal').style.display = "none";
         const tier2invoice =  tier2actiondata.find((element) => {
             return element.invoiceId === invoicetoupdate;
         })
@@ -151,7 +133,8 @@ const Tier1Action = () => {
         axios.post("/api/UpdateTier2InvoiceForApproval", tier2invoice)
           .then(function (response) {
             console.log(response);
-            // window.location.reload(); 
+            onGridReady();
+            document.getElementById('modal').style.display = "none";
           })
           .catch(function (error) {
             console.log(error);
@@ -169,8 +152,8 @@ const Tier1Action = () => {
                 vendor: inv.tier2.actorInfo.name,
                 invoice_date: inv.invoiceDate.slice(0,10),
                 payable_date: inv.dueDate.slice(0,10),
-                invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
-                payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00'),
+                invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0,0'),
+                payable_amount: Dinero(inv.receivableAmount).toFormat('$0,0'),
                 details: [inv.invoiceId, inv.tier2InvoiceDetails]
             };
         });
@@ -253,7 +236,7 @@ const Tier1Action = () => {
                 defaultColDef={defaultColDef}
                 frameworkComponents={frameworkComponents}
                 onGridReady={onGridReady}
-                rowData={rowdata}
+                rowData={getrowdata()}
                 domLayout='autoHeight'
                 rowClassRules={{
                     'highlight': function(params) { return  params.data.invoice === 'KEINV1234'; }

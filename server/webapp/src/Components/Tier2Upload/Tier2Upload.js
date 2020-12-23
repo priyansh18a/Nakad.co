@@ -115,7 +115,8 @@ const Tier2Upload =  () => {
     const getcustomers = () => {
         axios.get("/api/ListTier2Customers?tier2Id=2")  //TODO(Priyanshu)
         .then(function (response){
-            setCustomers(response.data);    
+            setCustomers(response.data);  
+            console.log(response.data)  ;
         })
         .catch(function (error) {
             console.log(error);
@@ -123,13 +124,6 @@ const Tier2Upload =  () => {
 
     }
 
-    const setmaxdate = () => {
-        document.getElementById("invoicedate").setAttribute("max", currentdate);
-    }
-
-    const setmindate = () => {
-        document.getElementById("receivabledate").setAttribute("min", currentdate);
-    }
     return (
     <div>
     <nav className="navbar is-info" role="navigation" aria-label="main navigation">
@@ -180,13 +174,13 @@ const Tier2Upload =  () => {
                         <input className="input" type="text" name="invoice" placeholder="Invoice Number" value={form.invoice} onChange={update} required/>
                     </div>
                 </div>
-                <div class="field">
-                    <label class="label" style={{float:"left"}}>Customer</label>
-                    <div class="control">
-                        <div class="select">
+                <div className="field">
+                    <label className="label" style={{float:"left"}}>Customer</label>
+                    <div className="control">
+                        <div className="select">
                         <select name="payername" onChange={update} required>
-                            <option defaultChecked >Select dropdown</option>
-                            <option>With options</option>
+                            <option defaultValue>Select dropdown</option>
+                            {customers.map(element => (<option value={element.customerActor.name} key={element.customerActor.name}>{element.customerActor.name}</option>))}
                         </select>
                     </div>
                 </div>
@@ -194,14 +188,13 @@ const Tier2Upload =  () => {
                 <div className="field">
                     <div className="control">
                         <label className="label">Invoice Date</label>
-                        {/* max date will set to today's date onclick */}
-                        <input className="input" type="date" max="2020-10-20" onClick={setmaxdate} id="invoicedate" name="invoicedate" placeholder="Invoice Date"  value={form.invoicedate} onChange={update} required />
+                        <input className="input" type="date" max={currentdate} id="invoicedate" name="invoicedate" placeholder="Invoice Date"  value={form.invoicedate} onChange={update} required />
                     </div>
                 </div>
                 <div className="field">
                     <div className="control">
                         <label className="label">Receivable Date</label>
-                        <input className="input" type="date" min="2020-10-20" onClick={setmindate} id="receivabledate" name="receivabledate" placeholder="Receivable Date"  value={form.receivabledate} onChange={update} required/>
+                        <input className="input" type="date" min={currentdate} id="receivabledate" name="receivabledate" placeholder="Receivable Date"  value={form.receivabledate} onChange={update} required/>
                     </div>
                 </div>
                 <div className="field">

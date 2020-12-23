@@ -24,8 +24,8 @@ const Tier2EarlyPayment = () => {
         {   headerName:"Invoice Number",
             field: "invoice"
         },
-        {   headerName:"Payee",
-            field: "payee",
+        {   headerName:"Customer",
+            field: "customer",
             minWidth: 200
         },
         {   headerName:"Invoice Amount",
@@ -47,8 +47,8 @@ const Tier2EarlyPayment = () => {
         {   headerName:"Invoice Number",
             field: "invoice",
         },
-        {   headerName:"Payee",
-            field: "payee",
+        {   headerName:"Customer",
+            field: "customer",
             minWidth: 200
         },
         {   headerName:"Invoice Amount",
@@ -90,8 +90,8 @@ const Tier2EarlyPayment = () => {
         {   headerName:"Invoice Number",
             field: "invoice"
         },
-        {   headerName:"Payee",
-            field: "payee",
+        {   headerName:"Customer",
+            field: "customer",
             minWidth: 200
         },
         {   headerName:"Invoice Amount",
@@ -156,6 +156,10 @@ const Tier2EarlyPayment = () => {
             setPendingbytier1(response.data);         
         })
         .catch(function (error) {
+            history.push({
+                pathname: "/tier1",
+                state: { alert: "true" }
+            });
             console.log(error);
         })
     };
@@ -167,10 +171,6 @@ const Tier2EarlyPayment = () => {
             setCheckedbytier1(response.data);         
         })
         .catch(function (error) {
-            history.push({
-                pathname: "/tier1",
-                state: { alert: "true" }
-            });
             console.log(error);
         })
     };
@@ -191,12 +191,12 @@ const Tier2EarlyPayment = () => {
         return checkedbytier1.map(inv => {
              return {
                  invoice: inv.tier2Invoice.invoiceId,
-                 payee: inv.tier2Invoice.tier1.actorInfo.name,
+                 customer: inv.tier2Invoice.tier1.actorInfo.name,
                  payment_date: inv.tier2Invoice.dueDate.slice(0,10),
                  discount_rate:inv.discountedAnnualRatePercentage,
-                 invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
-                 receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
-                 payment_amount:Dinero(inv.discountedAmount).toFormat('$0.00')
+                 invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0,0'),
+                 receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
+                 payment_amount:Dinero(inv.discountedAmount).toFormat('$0,0')
              };
          });
      }
@@ -206,16 +206,16 @@ const Tier2EarlyPayment = () => {
         const discontedtier2 =  checkedbytier1.find((element) => {
             return element.tier2Invoice.invoiceId === invoicetoupdate;
         });
-        discontedtier2.status = "Discounted";          //TODO(Priyanshu) Need to confirm this
+        discontedtier2.status = "Discounted";        
         callapi(discontedtier2);
     }
 
     const callapi = discontedtier2 => {
-        console.log(discontedtier2);
         axios.post("/api/UpdateTier2InvoiceForDiscounting", discontedtier2)
           .then(function (response) {
             console.log(response);
-            window.location.reload(); 
+            onGridReady2();
+            document.getElementById('modal').style.display = "none";
           })
           .catch(function (error) {
             console.log(error);
@@ -226,8 +226,8 @@ const Tier2EarlyPayment = () => {
         return pendingbytier1.map(inv => {
              return {
                  invoice: inv.invoiceId,
-                 vendor: inv.tier2.actorInfo.name,
-                 invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
+                 customer: inv.tier2.actorInfo.name,
+                 invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0,0'),
                  date_upload: inv.creationTimestamp.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
                  payee: inv.tier1.actorInfo.name, 
              };
@@ -240,8 +240,8 @@ const Tier2EarlyPayment = () => {
             return rejectedbytier1.map(inv => {
                 return {
                     invoice: inv.invoiceId,
-                    payee: inv.tier1.actorInfo.name,
-                    invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
+                    customer: inv.tier1.actorInfo.name,
+                    invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0,0'),
                     remark : inv.tier2InvoiceDetails.remark  // TODO(Priyanshu)
                 };
             });

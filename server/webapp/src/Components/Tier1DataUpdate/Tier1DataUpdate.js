@@ -139,9 +139,9 @@ const Tier1DataUpdate = () => {
                     invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
                     vendor: "Maruti", //TODO(Priyanshu)
                     invoice_date: inv.partAnchorInvoices.anchorInvoice.invoiceDate.slice(0,10),
-                    discounted_amount: Dinero(inv.discountedAmount).toFormat('$0.00'),
-                    payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0.00'),
-                    remaining_payable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00'),
+                    discounted_amount: Dinero(inv.discountedAmount).toFormat('$0,0'),
+                    payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0,0'),
+                    remaining_payable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0,0'),
                     details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId]
                 };
             });
@@ -154,9 +154,9 @@ const Tier1DataUpdate = () => {
                     invoice: inv.tier2Invoice.invoiceId,
                     payer: "Maruti", //TODO(Priyanshu)
                     invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
-                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
-                    discounted_amount: Dinero(inv.discountedAmount).toFormat('$0.00'),
-                    remaining_receivable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00'),
+                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
+                    discounted_amount: Dinero(inv.discountedAmount).toFormat('$0,0'),
+                    remaining_receivable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0,0'),
                     details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId]
                 };
             });

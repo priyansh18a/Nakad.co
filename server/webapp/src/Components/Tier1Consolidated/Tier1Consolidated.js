@@ -15,10 +15,8 @@ import BtnCellRenderer from "./BtnCellRenderer.jsx";
 const Tier1Consolidated = () => {
     const history = useHistory();
     const [approvedtier2invoice, setApprovedtier2invoice] = useState([]);
+    const [tier1data, setTier1data] = useState([]);
     const [invoicetodisapprove, setInvoicetodisapprove] = useState('');
-    const [tier1payable, setTier1payable] = useState([]);
-    const [tier1receivable, setTier1receivable] = useState([]);
-    const [tier2approvedinvoicetabledata, setTier2approvedinvoicetabledata] = useState([]);
 
     const columnDefs = [
         {   headerName:"Invoice",
@@ -155,35 +153,7 @@ const Tier1Consolidated = () => {
     const onGridReady = params => {
         axios.get("/api/ListTier1PayableReceivable?tier1Id=1") // TODO(Priyanshu)
         .then(function (response) {  
-            const takenpayable = response.data.filter(element => {
-                return element.tier1PayableEntry === "Done";
-            });
-            const rowdata1 =  takenpayable.map(inv => {
-                return {
-                    invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
-                    vendor: "Maruti", //TODO(Priyanshu)
-                    invoice_date: inv.partAnchorInvoices.anchorInvoice.invoiceDate.slice(0,10),
-                    payable_date:  inv.partAnchorInvoices.anchorInvoice.dueDate.slice(0,10),
-                    payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0.00'),
-                    amount_discounted: Dinero(inv.discountedAmount).toFormat('$0.00'),
-                    new_payable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00')                };
-            });
-            setTier1payable(rowdata1);
-            const takenreceivable = response.data.filter(element => {
-                return element.tier1ReceivableEntry === "Done";
-            });
-            const rowdata2 = takenreceivable.map(inv => {
-                return {
-                    invoice: inv.tier2Invoice.invoiceId,
-                    payer: "Maruti", //TODO(Priyanshu)
-                    invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
-                    invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
-                    receivable_date:inv.tier2Invoice.dueDate.slice(0,10),
-                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
-                    new_receivable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00')
-                };
-            });
-            setTier1receivable(rowdata2);
+           setTier1data(response.data);
         })
         .catch(function (error) {
             console.log(error);
@@ -197,19 +167,7 @@ const Tier1Consolidated = () => {
     const onGridReady3 = params => {
         axios.get("/api/ListTier2InvoicesForDiscounting?tier2Id=2") // TODO(Priyanshu)
         .then(function (response) {
-            setApprovedtier2invoice(response.data); 
-            const rowdata3 = response.data.map(inv => {
-                return {
-                    invoice: inv.tier2Invoice.invoiceId,
-                    vendor: "Maruti", //TODO(Priyanshu)
-                    invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
-                    payable_date: inv.tier2Invoice.dueDate.slice(0,10),
-                    invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
-                    payable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
-                    approval_date : inv.tier2Invoice.lastUpdateTimestamp.slice(0,10) //TODO(Priyanshu)
-                };
-            });
-            setTier2approvedinvoicetabledata(rowdata3);        
+            setApprovedtier2invoice(response.data);      
         })
         .catch(function (error) {
             console.log(error);
@@ -217,15 +175,59 @@ const Tier1Consolidated = () => {
 
     };
 
+    const gettier1payable = () => {
+        const takenpayable = tier1data.filter(element => {
+            return element.tier1PayableEntry === "Done";
+        });
+        return  takenpayable.map(inv => {
+            return {
+                invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
+                vendor: "Maruti", //TODO(Priyanshu)
+                invoice_date: inv.partAnchorInvoices.anchorInvoice.invoiceDate.slice(0,10),
+                payable_date:  inv.partAnchorInvoices.anchorInvoice.dueDate.slice(0,10),
+                payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0,0'),
+                amount_discounted: Dinero(inv.discountedAmount).toFormat('$0,0'),
+                new_payable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0,0')                };
+        });
+    }
+
+    const gettier1receivable = () => {
+        const takenreceivable = tier1data.filter(element => {
+            return element.tier1ReceivableEntry === "Done";
+        });
+        return takenreceivable.map(inv => {
+            return {
+                invoice: inv.tier2Invoice.invoiceId,
+                payer: "Maruti", //TODO(Priyanshu)
+                invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
+                invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0,0'),
+                receivable_date:inv.tier2Invoice.dueDate.slice(0,10),
+                receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
+                new_receivable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0,0')
+            };
+        });
+
+    }
+    
+    const getapprovedtier2data = () => {
+        return approvedtier2invoice.map(inv => {
+            return {
+                invoice: inv.tier2Invoice.invoiceId,
+                vendor: "Maruti", //TODO(Priyanshu)
+                invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
+                payable_date: inv.tier2Invoice.dueDate.slice(0,10),
+                invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0,0'),
+                payable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
+                approval_date : inv.tier2Invoice.lastUpdateTimestamp.slice(0,10) //TODO(Priyanshu)
+            };
+        });
+
+    }
+
     const changeapprovedstatus = () => {
         const disapprovetier2invoice =  approvedtier2invoice.find((element) => {
             return element.tier2Invoice.invoiceId === invoicetodisapprove;
         })
-        const newRowData = tier2approvedinvoicetabledata.filter(element => {
-            return element.invoice !== invoicetodisapprove;
-        });
-        setTier2approvedinvoicetabledata(newRowData);
-        document.getElementById('modal').style.display = "none";
         disapprovetier2invoice.tier2Invoice.approvalStatus = "Rejected";
         callapi(disapprovetier2invoice.tier2Invoice);
     }
@@ -234,6 +236,8 @@ const Tier1Consolidated = () => {
         axios.post("/api/UpdateTier2InvoiceForApproval", tier2invoice)
           .then(function (response) {
             console.log(response);
+            onGridReady3();
+            document.getElementById('modal').style.display = "none";
           })
           .catch(function (error) {
             console.log(error);
@@ -349,7 +353,7 @@ const Tier1Consolidated = () => {
             defaultColDef={defaultColDef}
             frameworkComponents={frameworkComponents}
             onGridReady={onGridReady}
-            rowData={tier1receivable}
+            rowData={gettier1receivable()}
             domLayout='autoHeight'
           />
         </div>
@@ -359,7 +363,7 @@ const Tier1Consolidated = () => {
                 columnDefs={columnDefs2}
                 defaultColDef={defaultColDef}
                 onGridReady={onGridReady2}
-                rowData={tier1payable}
+                rowData={gettier1payable()}
                 domLayout='autoHeight'
             />
         </div>
@@ -371,7 +375,7 @@ const Tier1Consolidated = () => {
                 defaultColDef={defaultColDef}
                 frameworkComponents={frameworkComponents}
                 onGridReady={onGridReady3}
-                rowData={tier2approvedinvoicetabledata}
+                rowData={getapprovedtier2data()}
                 rowSelection="multiple"
                 domLayout='autoHeight'
             />
