@@ -1,8 +1,13 @@
 import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { ActorMappings } from "./ActorMappings";
 import { AnchorDebitNotes } from "./AnchorDebitNotes";
 import { AnchorInvoice } from "./AnchorInvoice";
 import { AnchorTier2InvoiceMapping } from "./AnchorTier2InvoiceMapping";
 import { Tier2Invoice } from "./Tier2Invoice";
+
+interface ActorInfo {
+  name: string;
+}
 
 @Index("books_pkey", ["actorid"], { unique: true })
 @Entity("actor", { schema: "public" })
@@ -17,7 +22,7 @@ export class Actor {
   actorType: "Tier1" | "Tier2" | "Bank" | "Admin" | "Anchor";
 
   @Column("jsonb", { name: "actorinfo", nullable: true })
-  actorInfo: object | null;
+  actorInfo: ActorInfo | null;
 
   @Column("character varying", { name: "username", nullable: true, length: 50 })
   username: string | null;
@@ -60,4 +65,10 @@ export class Actor {
 
   @OneToMany(() => AnchorInvoice, (anchorinvoice) => anchorinvoice.tier1)
   anchorinvoices2: AnchorInvoice[];
+
+  @OneToMany(() => ActorMappings, (actormappings) => actormappings.child)
+  actormappings: ActorMappings[];
+
+  @OneToMany(() => ActorMappings, (actormappings) => actormappings.parent)
+  actormappings2: ActorMappings[];
 }

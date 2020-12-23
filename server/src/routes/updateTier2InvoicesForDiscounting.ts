@@ -12,8 +12,8 @@ import * as MoneyUtil from "../util/MoneyUtil";
 export async function updateTier2InvoicesForDiscounting(req: Request, res: Response): Promise<Response<any>> {
   const invoiceToDiscount: DiscountedTier2Invoice = req.body;
   const allPossibleDiscountedInvoices = await listTier2InvoicesForDiscountingInternal(
-    invoiceToDiscount.tier2Invoice.tier1Id,
-    invoiceToDiscount.tier2Invoice.tier2Id
+    invoiceToDiscount.tier2Invoice.tier2Id,
+    [invoiceToDiscount.tier2Invoice.tier1Id]
   );
   const foundInvoices = allPossibleDiscountedInvoices.filter(
     (dInv) =>

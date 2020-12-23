@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getConnection } from "typeorm";
+import { ActorMappings } from "../database/entity/ActorMappings";
 import { AnchorInvoice } from "../database/entity/AnchorInvoice";
 import { AnchorTier2InvoiceMapping } from "../database/entity/AnchorTier2InvoiceMapping";
 import { Tier2Invoice } from "../database/entity/Tier2Invoice";
@@ -8,14 +9,23 @@ import * as MoneyUtil from "../util/MoneyUtil";
 
 // Request has query param named tier2Id
 export async function listTier2InvoicesForDiscounting(req: Request, res: Response) {
-  const tier1Id = parseInt(req.query.tier1Id[0], 10);
   const tier2Id = parseInt(req.query.tier2Id[0], 10);
-  return res.json(await listTier2InvoicesForDiscountingInternal(tier1Id, tier2Id));
+  const tier1Ids = (
+    await getConnection()
+      .getRepository(ActorMappings)
+      .find({
+        where: {
+          childId: tier2Id,
+        },
+        select: ["parentId"],
+      })
+  ).map((mapping) => mapping.parentId);
+  return res.json(await listTier2InvoicesForDiscountingInternal(tier2Id, tier1Ids));
 }
 
 export async function listTier2InvoicesForDiscountingInternal(
-  tier1Id: number,
-  tier2Id: number
+  tier2Id: number,
+  tier1Ids: number[]
 ): Promise<DiscountedTier2Invoice[]> {
   const currentDate = new Date();
   const anchorInvoices = await getConnection()
@@ -24,7 +34,7 @@ export async function listTier2InvoicesForDiscountingInternal(
     .from(AnchorInvoice, "AI")
     .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"AI"."InvoiceId" = "ATM"."AnchorInvoiceId"')
     .where('"ATM"."AnchorInvoiceId" IS NULL')
-    .andWhere('"AI"."Tier1Id" = :id', { id: tier1Id })
+    .andWhere('"AI"."Tier1Id" IN (:...ids)', { ids: tier1Ids })
     .andWhere('"AI"."DueDate" > :dueDate', { dueDate: currentDate.toISOString() })
     .orderBy('"AI"."DueDate"', "ASC")
     .getMany();

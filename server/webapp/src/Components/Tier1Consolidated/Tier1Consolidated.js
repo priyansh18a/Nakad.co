@@ -195,7 +195,7 @@ const Tier1Consolidated = () => {
     }
 
     const onGridReady3 = params => {
-        axios.get("/api/ListTier2InvoicesForDiscounting?tier1Id=1&tier2Id=2") // TODO(Priyanshu)
+        axios.get("/api/ListTier2InvoicesForDiscounting?tier2Id=2") // TODO(Priyanshu)
         .then(function (response) {
             setApprovedtier2invoice(response.data); 
             const rowdata3 = response.data.map(inv => {
