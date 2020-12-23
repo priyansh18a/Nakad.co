@@ -10,7 +10,7 @@ import Session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { initializePassportConfig } from "./config/passport";
 import { tier2Invoice } from "./routes/tier2Invoice";
-import { listTier2InvoicesForApproval } from "./routes/listTier2InvoicesForApproval";
+import { listTier2Invoices } from "./routes/listTier2Invoices";
 import { listTier2InvoicesForDiscounting } from "./routes/listTier2InvoicesForDiscounting";
 import { updateTier2InvoiceForApproval } from "./routes/updateTier2InvoiceForApproval";
 import { updateTier2InvoicesForDiscounting } from "./routes/updateTier2InvoicesForDiscounting";
@@ -21,7 +21,6 @@ import { listTier1PayableReceivable } from "./routes/listTier1PayableReceivable"
 import { updateTier1PayableReceivable } from "./routes/updateTier1PayableReceivable";
 import { listTier2EarlyPaymentReceived } from "./routes/listTier2EarlyPaymentReceived";
 import { updateTier2EarlyPaymentReceived } from "./routes/updateTier2EarlyPaymentReceived";
-import { listTier2RejectedInvoice } from "./routes/listTier2RejectedInvoice";
 import { AssertionError } from "assert";
 import path from "path";
 
@@ -47,7 +46,7 @@ createConnection()
     setupDefaultAndAuthRoutes();
 
     app.post("/api/Tier2Invoice", loginCheck(), tier2Invoice);
-    app.get("/api/ListTier2InvoicesForApproval", loginCheck(), listTier2InvoicesForApproval);
+    app.get("/api/ListTier2Invoices", loginCheck(), listTier2Invoices);
     app.post("/api/UpdateTier2InvoiceForApproval", loginCheck(), updateTier2InvoiceForApproval);
     app.get("/api/ListTier2InvoicesForDiscounting", loginCheck(), listTier2InvoicesForDiscounting);
     app.post("/api/UpdateTier2InvoiceForDiscounting", loginCheck(), updateTier2InvoicesForDiscounting);
@@ -58,7 +57,6 @@ createConnection()
     app.post("/api/UpdateTier1PayableReceivable", loginCheck(), updateTier1PayableReceivable);
     app.get("/api/ListTier2EarlyPaymentReceived", loginCheck(), listTier2EarlyPaymentReceived);
     app.post("/api/UpdateTier2EarlyPaymentReceived", loginCheck(), updateTier2EarlyPaymentReceived);
-    app.get("/api/ListTier2RejectedInvoice", loginCheck(), listTier2RejectedInvoice);
 
     app.get("/*", (req, res) => {
       res.sendFile(path.join(__dirname, "../webapp/build", "index.html"));

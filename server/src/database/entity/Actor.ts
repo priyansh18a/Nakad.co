@@ -14,10 +14,10 @@ export class Actor {
     name: "actortype",
     enum: ["Tier1", "Tier2", "Bank", "Admin", "Anchor"],
   })
-  actortype: "Tier1" | "Tier2" | "Bank" | "Admin" | "Anchor";
+  actorType: "Tier1" | "Tier2" | "Bank" | "Admin" | "Anchor";
 
   @Column("jsonb", { name: "actorinfo", nullable: true })
-  actorinfo: object | null;
+  actorInfo: object | null;
 
   @Column("character varying", { name: "username", nullable: true, length: 50 })
   username: string | null;
