@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
 import FormData from 'form-data'
@@ -12,10 +12,14 @@ const Tier2Upload =  () => {
     const update = (({ target }) => setForm({ ...form, [target.name]: target.value }));
     const [invoiceurl, setInvoiceurl] = useState('');
     const [grnurl, setGrnurl] = useState('');
-    const  [uploading, setUploading] = useState(false);
-    const  [buttonText, setButtonText] = useState('Send for Approval');
+    const [customers, setCustomers] = useState([]);
+    const [uploading, setUploading] = useState(false);
+    const [buttonText, setButtonText] = useState('Send for Approval');
     const dateObj = new Date();
+    const currentdate = dateObj.toISOString().split("T")[0]
     const uploadtime = dateObj.getFullYear() + '-' + (dateObj.getMonth() + 1) + '-' + dateObj.getDate()+ " " +  dateObj.getHours() + ':' + dateObj.getMinutes() + ':' + dateObj.getSeconds();
+
+    useEffect(() => { getcustomers() }, [] );
 
     const uploadinvoiceandgrn =  event => {
         event.preventDefault();
@@ -43,12 +47,16 @@ const Tier2Upload =  () => {
           })
           .then(function (response) {
             console.log(response);
+            alert("Your invoice has been uploaded") //TODO(Priyanshu) need to change this with notification
             history.push("/tier2/early");
           })
           .catch(function (error) {
             console.log(error);
           });
     }
+
+   
+
 
     const uploadtier2invoice = event => {
         setUploading(true);
@@ -103,6 +111,25 @@ const Tier2Upload =  () => {
         })
 
     }
+
+    const getcustomers = () => {
+        axios.get("/api/ListTier2Customers?tier2Id=2")  //TODO(Priyanshu)
+        .then(function (response){
+            setCustomers(response.data);    
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+
+    }
+
+    const setmaxdate = () => {
+        document.getElementById("invoicedate").setAttribute("max", currentdate);
+    }
+
+    const setmindate = () => {
+        document.getElementById("receivabledate").setAttribute("min", currentdate);
+    }
     return (
     <div>
     <nav className="navbar is-info" role="navigation" aria-label="main navigation">
@@ -153,22 +180,28 @@ const Tier2Upload =  () => {
                         <input className="input" type="text" name="invoice" placeholder="Invoice Number" value={form.invoice} onChange={update} required/>
                     </div>
                 </div>
-                <div className="field">
-                    <div className="control">
-                        <label className="label">Customer</label>
-                        <input className="input" type="text" name="payername" placeholder="Customer Name"  value={form.payername} onChange={update} required/>
+                <div class="field">
+                    <label class="label" style={{float:"left"}}>Customer</label>
+                    <div class="control">
+                        <div class="select">
+                        <select name="payername" onChange={update} required>
+                            <option defaultChecked >Select dropdown</option>
+                            <option>With options</option>
+                        </select>
                     </div>
+                </div>
                 </div>
                 <div className="field">
                     <div className="control">
                         <label className="label">Invoice Date</label>
-                        <input className="input" type="date" name="invoicedate" placeholder="Invoice Date"  value={form.invoicedate} onChange={update} required/>
+                        {/* max date will set to today's date onclick */}
+                        <input className="input" type="date" max="2020-10-20" onClick={setmaxdate} id="invoicedate" name="invoicedate" placeholder="Invoice Date"  value={form.invoicedate} onChange={update} required />
                     </div>
                 </div>
                 <div className="field">
                     <div className="control">
                         <label className="label">Receivable Date</label>
-                        <input className="input" type="date" name="receivabledate" placeholder="Receivable Date"  value={form.receivabledate} onChange={update} required/>
+                        <input className="input" type="date" min="2020-10-20" onClick={setmindate} id="receivabledate" name="receivabledate" placeholder="Receivable Date"  value={form.receivabledate} onChange={update} required/>
                     </div>
                 </div>
                 <div className="field">

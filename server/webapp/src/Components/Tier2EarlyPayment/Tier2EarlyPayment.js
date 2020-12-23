@@ -20,7 +20,30 @@ const Tier2EarlyPayment = () => {
     const [pendingbytier1, setPendingbytier1] = useState([]);
     const [invoicetoupdate, setInvoicetoupdate] = useState('');
 
-    const columnDefs = [
+    const columnDefs1 = [
+        {   headerName:"Invoice Number",
+            field: "invoice"
+        },
+        {   headerName:"Payee",
+            field: "payee",
+            minWidth: 200
+        },
+        {   headerName:"Invoice Amount",
+            field: "invoice_amount",
+            minWidth: 150
+        },
+        {   headerName:"Date of Upload",
+            field: "date_upload",
+          
+        },
+        {   headerName:"Send reminder",
+            field: "send_reminder",
+            minWidth: 150,
+            cellRenderer: "btnCellRenderer3"
+        }
+      ]
+
+    const columnDefs2 = [
         {   headerName:"Invoice Number",
             field: "invoice",
         },
@@ -63,7 +86,7 @@ const Tier2EarlyPayment = () => {
         }
       ]
 
-      const columnDefs2 = [
+      const columnDefs3 = [
         {   headerName:"Invoice Number",
             field: "invoice"
         },
@@ -87,28 +110,7 @@ const Tier2EarlyPayment = () => {
         }
       ]
 
-      const columnDefs3 = [
-        {   headerName:"Invoice Number",
-            field: "invoice"
-        },
-        {   headerName:"Payee",
-            field: "payee",
-            minWidth: 200
-        },
-        {   headerName:"Invoice Amount",
-            field: "invoice_amount",
-            minWidth: 150
-        },
-        {   headerName:"Date of Upload",
-            field: "date_upload",
-          
-        },
-        {   headerName:"Send reminder",
-            field: "send_reminder",
-            minWidth: 150,
-            cellRenderer: "btnCellRenderer3"
-        }
-      ]
+  
 
     const defaultColDef = {
         flex: 2,
@@ -136,17 +138,30 @@ const Tier2EarlyPayment = () => {
       }
 
     const frameworkComponents1 =  {
-        btnCellRenderer1: BtnCellRenderer
-        
-    }
-    const frameworkComponents2 =  {
-        btnCellRenderer2: BtnCellRenderer2
-    }
-    const frameworkComponents3 =  {
         btnCellRenderer3: BtnCellRenderer3
     }
 
+    const frameworkComponents2 =  {
+        btnCellRenderer1: BtnCellRenderer
+        
+    }
+    const frameworkComponents3 =  {
+        btnCellRenderer2: BtnCellRenderer2
+    }
+   
+
     const onGridReady1 = params => {
+        axios.get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Pending") // TODO(Priyanshu)
+        .then(function (response) {
+            setPendingbytier1(response.data);         
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    };
+
+
+    const onGridReady2 = params => {
         axios.get("/api/ListTier2InvoicesForDiscounting?tier1Id=1&tier2Id=2") // TODO(Priyanshu)
         .then(function (response) {
             setCheckedbytier1(response.data);         
@@ -160,7 +175,7 @@ const Tier2EarlyPayment = () => {
         })
     };
 
-    const onGridReady2 = params => {
+    const onGridReady3 = params => {
        axios.get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Rejected") // TODO(Priyanshu)
         .then(function (response) {
             setRejectedbytier1(response.data);         
@@ -171,16 +186,7 @@ const Tier2EarlyPayment = () => {
 
     };
 
-    const onGridReady3 = params => {
-        axios.get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Pending") // TODO(Priyanshu)
-        .then(function (response) {
-            setPendingbytier1(response.data);         
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
-    };
-
+    
     const getapprovedrowdata = () => {
         return checkedbytier1.map(inv => {
              return {
@@ -222,13 +228,8 @@ const Tier2EarlyPayment = () => {
                  invoice: inv.invoiceId,
                  vendor: inv.tier2.actorInfo.name,
                  invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
-<<<<<<< HEAD
-                 date_upload: inv.creationTimestamp.slice(0,10), 
-                 payee: "Maruti",   // TODO(Priyanshu), Need to fix this with real data
-=======
                  date_upload: inv.creationTimestamp.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
                  payee: inv.tier1.actorInfo.name, 
->>>>>>> 5087333ce34f30c9b54a0c67b1f7f196834c5f10
              };
          });
     }
@@ -327,25 +328,36 @@ const Tier2EarlyPayment = () => {
     <div className="tabs is-boxed">
             <ul>
                 <li className="is-active" onClick={displaytab1} id="tab-1">
-                    <a><span>Invoices approved by tier 1</span></a>
-                </li>
-                <li  onClick={displaytab2} id="tab-2">
-                    <a><span>Invoices rejected by tier 1</span></a>
-                </li>
-                <li  onClick={displaytab3} id="tab-3">
                     <a><span>Invoices where approval is pending with tier 1</span></a>
                 </li>
+                <li onClick={displaytab2} id="tab-2">
+                    <a><span>Invoices approved by tier 1</span></a>
+                </li>
+                <li  onClick={displaytab3} id="tab-3">
+                    <a><span>Invoices rejected by tier 1</span></a>
+                </li>
+               
             </ul>
     </div>
-
-    {/* <div className="table-info has-background-info invoice-approved" >Invoices approved by tier 1</div> */}
-    <div id="table-1">
-        <div  className="ag-theme-material mygrid">
+    <div className="ag-theme-material mygrid" id="table-1" >
           <AgGridReact
-            columnDefs={columnDefs}
+            columnDefs={columnDefs1}
             defaultColDef={defaultColDef}
             frameworkComponents={frameworkComponents1}
             onGridReady={onGridReady1}
+            rowData={getpendingbytier1data()}
+            domLayout='autoHeight'
+          />
+    </div>
+
+    {/* <div className="table-info has-background-info invoice-approved" >Invoices approved by tier 1</div> */}
+    <div id="table-2" style={{display:"none"}}>
+        <div  className="ag-theme-material mygrid" >
+          <AgGridReact
+            columnDefs={columnDefs2}
+            defaultColDef={defaultColDef}
+            frameworkComponents={frameworkComponents2}
+            onGridReady={onGridReady2}
             rowData={getapprovedrowdata()}
             domLayout='autoHeight'
             rowClassRules={{
@@ -372,29 +384,19 @@ const Tier2EarlyPayment = () => {
         <div  className="dont-like"><small>Don’t like the discounting rates? Check back again later</small></div>
     </div>
     {/* <div className="table-info has-background-info invoice-approved" >Invoices rejected by tier 1</div> */}
-    <div className="ag-theme-material mygrid" id="table-2" style={{display:"none"}}>
-          <AgGridReact
-            columnDefs={columnDefs2}
-            defaultColDef={defaultColDef}
-            frameworkComponents={frameworkComponents2}
-            enableBrowserTooltips={true}
-            onGridReady={onGridReady2}
-            rowData={getrejectedrowdata()}                    
-            domLayout='autoHeight'
-          />
-    </div>
-
-    {/* <div className="table-info has-background-info invoice-approved" style={{width: "435px"}}>Invoices where approval is pending with tier 1</div> */}
     <div className="ag-theme-material mygrid" id="table-3" style={{display:"none"}}>
           <AgGridReact
             columnDefs={columnDefs3}
             defaultColDef={defaultColDef}
             frameworkComponents={frameworkComponents3}
+            enableBrowserTooltips={true}
             onGridReady={onGridReady3}
-            rowData={getpendingbytier1data()}
+            rowData={getrejectedrowdata()}                    
             domLayout='autoHeight'
           />
     </div>
+
+  
  
     </div>
     );

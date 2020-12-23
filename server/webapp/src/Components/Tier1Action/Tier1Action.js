@@ -5,7 +5,6 @@ import axios from 'axios';
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-material.css";
 import BtnCellRenderer from "./BtnCellRenderer.jsx";
-import invoice from '../../Graphics/invoice.jpeg'
 import logo from './../../Graphics/logo.jpg';
 import './Tier1Action.scss';
 import Dinero from "dinero.js";
@@ -115,7 +114,7 @@ const Tier1Action = () => {
             const rowdata = response.data.map(inv => {
                 return {
                     invoice: inv.invoiceId,
-                    vendor: inv.tier2.actorinfo.name,
+                    vendor: inv.tier2.actorInfo.name,
                     invoice_date: inv.invoiceDate.slice(0,10),
                     payable_date: inv.dueDate.slice(0,10),
                     invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
