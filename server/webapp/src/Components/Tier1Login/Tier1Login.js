@@ -66,7 +66,7 @@ const Tier1Login = () => {
                     <label className="label">Password</label>
                     <input className="input" type="password" name="password" placeholder="Password" value={form.password} onChange={update} required/>
                 </div>
-                <a class="help has-text-left" href="/tier1">Forgot Company ID / User ID / Password</a>
+                <a className="help has-text-left" href="/tier1">Forgot Company ID / User ID / Password</a>
             </div>
              <div className="field is-grouped is-grouped-centered">
                 <div className="buttons">

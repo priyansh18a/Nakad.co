@@ -30,13 +30,11 @@ const Tier1Consolidated = () => {
         },
         {   headerName:"Invoice Date",
             field: "invoice_date",
-            minWidth: 150,
-            sortable:true
+            minWidth: 150
         },
         {   headerName:"Receivable Date",
             field: "receivable_date",
-            minWidth: 180,
-            sortable:true
+            minWidth: 180
         },
         {   headerName:"Invoice Amount",
             field: "invoice_amount",
@@ -48,16 +46,14 @@ const Tier1Consolidated = () => {
         },
         {   headerName:"New receivable amount (post discounting)",
             field: "new_receivable",
-            minWidth: 230,
-            sortable:true
+            minWidth: 230
         },
 
       ]
 
     const columnDefs2 = [
         {   headerName:"Invoice Number",
-            field: "invoice",
-            sortable:true
+            field: "invoice"
         },
         {   headerName:"Vendor",
             field: "vendor"
@@ -65,7 +61,6 @@ const Tier1Consolidated = () => {
         {   headerName:"Payable Date",
             field: "payable_date",
             minWidth: 170,
-            sortable:true
         },
         {   headerName:"Buffer Days",
             field: "buffer_days",
@@ -74,7 +69,6 @@ const Tier1Consolidated = () => {
         {   headerName:"Payable Amount",
             field: "payable_amount",
             minWidth: 180,
-            sortable:true
         },
         {   headerName:"Amount Discounted",
             field: "amount_discounted",
@@ -89,7 +83,6 @@ const Tier1Consolidated = () => {
     const columnDefs3 = [
         {   headerName:"Invoice",
             field: "invoice",
-            sortable:true
         },
         {   headerName:"Vendor",
             field: "vendor"
@@ -97,22 +90,18 @@ const Tier1Consolidated = () => {
         {   headerName:"Invoice Date",
             field: "invoice_date",
             minWidth: 150,
-            sortable:true
         },
         {   headerName:"Payable Date",
             field: "payable_date",
             minWidth: 150,
-            sortable:true
         },
         {   headerName:"Invoice Amount",
             field: "invoice_amount",
             minWidth: 180,
-            sortable:true
         },
         {   headerName:"Payable Amount",
             field: "payable_amount",
             minWidth: 180,
-            sortable:true
         },
         {   headerName:"Approval Date",
             field: "approval_date",
@@ -137,6 +126,7 @@ const Tier1Consolidated = () => {
             minWidth: 150,
             sortable:true,
             flex: 1,
+            filter: true,
             resizable: true,
             wrapText: true,
             autoHeight: true,

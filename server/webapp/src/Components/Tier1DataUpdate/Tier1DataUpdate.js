@@ -20,8 +20,7 @@ const Tier1DataUpdate = () => {
     const columnDefs1 = [
         {   headerName:"Invoice",
             field: "invoice",
-            maxWidth: 150,
-            sortable:true
+            maxWidth: 150
         },
         {   headerName:"Vendor",
             field: "vendor"
@@ -41,7 +40,6 @@ const Tier1DataUpdate = () => {
         {   headerName:"Remaining Payable",
             field: "remaining_payable",
             minWidth: 200,
-            sortable:true
         },
         {   headerName:"Confirm",
             field: "details",
@@ -61,7 +59,6 @@ const Tier1DataUpdate = () => {
         {   headerName:"Invoice",
             field: "invoice",
             maxWidth: 150,
-            sortable:true
         },
         {   headerName:"Payer",
             field: "payer"
@@ -81,7 +78,6 @@ const Tier1DataUpdate = () => {
         {   headerName:"Remaining Receivable",
             field: "remaining_receivable",
             minWidth: 220,
-            sortable:true
         },
         {   headerName:"Confirm",
             field: "details",
@@ -104,6 +100,7 @@ const Tier1DataUpdate = () => {
         flex: 1,
         resizable: true,
         wrapText: true,
+        filter: true,
         autoHeight: true,
         cellStyle: {color: 'Black'},
         headerComponentParams: {

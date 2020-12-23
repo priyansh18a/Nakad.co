@@ -30,13 +30,11 @@ const Tier2EarlyPayment = () => {
         },
         {   headerName:"Invoice Amount",
             field: "invoice_amount",
-            minWidth: 130,
-            sortable:true
+            minWidth: 130
         },
         {   headerName:"Payment Date",
             field: "payment_date",
-            minWidth: 130,
-            sortable:true
+            minWidth: 130
         },
         {   headerName: "Receivable Amount",
             field: "receivable_amount",
@@ -48,8 +46,7 @@ const Tier2EarlyPayment = () => {
         },
         {   headerName:"Early Payment Amount",
             field: "payment_amount",
-            minWidth: 200,
-            sortable:true
+            minWidth: 200
         },
         {   
             headerName:"Take Early Payment",
@@ -68,8 +65,7 @@ const Tier2EarlyPayment = () => {
 
       const columnDefs2 = [
         {   headerName:"Invoice Number",
-            field: "invoice",
-            sortable:true
+            field: "invoice"
         },
         {   headerName:"Payee",
             field: "payee",
@@ -77,8 +73,7 @@ const Tier2EarlyPayment = () => {
         },
         {   headerName:"Invoice Amount",
             field: "invoice_amount",
-            minWidth: 150,
-            sortable:true
+            minWidth: 150
         },
         {   headerName:"Remark",
             field: "remark",
@@ -94,8 +89,7 @@ const Tier2EarlyPayment = () => {
 
       const columnDefs3 = [
         {   headerName:"Invoice Number",
-            field: "invoice",
-            sortable:true
+            field: "invoice"
         },
         {   headerName:"Payee",
             field: "payee",
@@ -103,8 +97,7 @@ const Tier2EarlyPayment = () => {
         },
         {   headerName:"Invoice Amount",
             field: "invoice_amount",
-            minWidth: 150,
-            sortable:true
+            minWidth: 150
         },
         {   headerName:"Date of Upload",
             field: "date_upload",
@@ -123,6 +116,7 @@ const Tier2EarlyPayment = () => {
         sortable:true,
         resizable: true,
         wrapText: true,
+        filter: true,
         autoHeight: true,
         cellStyle: {color: 'Black'},
         headerComponentParams: {
@@ -228,8 +222,8 @@ const Tier2EarlyPayment = () => {
                  invoice: inv.invoiceId,
                  vendor: inv.tier2.actorinfo.name,
                  invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
-                 date_upload: inv.creationTimestamp.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
-                 payee: "Maruti",   // TODO(Priyanshu), Need to fix this withi real data
+                 date_upload: inv.creationTimestamp.slice(0,10), 
+                 payee: "Maruti",   // TODO(Priyanshu), Need to fix this with real data
              };
          });
     }

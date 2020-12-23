@@ -28,13 +28,11 @@ const Tier2Consolidated = () => {
         },
         {   headerName:"Invoice Amount",
             field: "invoice_amount",
-            minWidth: 150,
-            sortable:true
+            minWidth: 150
         },
         {   headerName:"Payment Date (as on invoice)",
             field: "payment_date",
-            minWidth:180,
-            sortable:true
+            minWidth:180
         },
         {   headerName: "Receivable Amount",
             field: "receivable_amount",
@@ -46,8 +44,7 @@ const Tier2Consolidated = () => {
         },
         {   headerName:"Date of Early Payment",
             field: "early_payment_date",
-            minWidth: 200,
-            sortable:true
+            minWidth: 200
         },
 
         {   headerName:"Adjusted in Tally",
@@ -65,8 +62,7 @@ const Tier2Consolidated = () => {
 
       const columnDefs2 = [
         {   headerName:"Invoice Number",
-            field: "invoice",
-            sortable:true
+            field: "invoice"
         },
         {   headerName:"Payee",
             field: "payee",
@@ -74,13 +70,11 @@ const Tier2Consolidated = () => {
         },
         {   headerName:"Invoice Amount",
             field: "invoice_amount",
-            minWidth: 150,
-            sortable:true
+            minWidth: 150
         },
         {   headerName:"Payment Date (as on invoice)",
             field: "payment_date",
-            minWidth: 200,
-            sortable:true
+            minWidth: 200
         },
         {   headerName: "Receivable Amount",
             field: "receivable_amount",
@@ -88,8 +82,7 @@ const Tier2Consolidated = () => {
         },
         {   headerName:"Date of Early Payment",
             field: "early_payment_date",
-            minWidth: 200,
-            sortable:true
+            minWidth: 200
         }
       ]
 
@@ -97,6 +90,7 @@ const Tier2Consolidated = () => {
         minWidth: 150,
         sortable:true,
         flex: 1,
+        filter: true,
         resizable: true,
         wrapText: true,
         autoHeight: true,

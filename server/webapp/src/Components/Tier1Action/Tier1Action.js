@@ -14,6 +14,7 @@ import Dinero from "dinero.js";
 const Tier1Action = () => {
     const history = useHistory();
     const [tier2actiondata, setTier2actiondata] = useState([]);
+    const [rowdata, setRowdata] = useState([]);
     const [invoicetoupdate, setInvoicetoupdate] = useState([]);
     const [tier2Invoiceurl, setTier2Invoiceurl] = useState('');
     const [tier2GRNurl, setTier2GRNurl] = useState('');
@@ -40,8 +41,7 @@ const Tier1Action = () => {
         },
         {   headerName:"Invoice Date",
             field: "invoice_date",
-            minWidth: 130,
-            sortable:true
+            minWidth: 130
         },
         {   headerName:"Payable Date",
             field: "payable_date",
@@ -49,8 +49,7 @@ const Tier1Action = () => {
         },
         {   headerName:"Invoice Amount",
             field: "invoice_amount",
-            minWidth: 150,
-            sortable:true
+            minWidth: 150
         },
         {   headerName:"Payable Amount",
             field: "payable_amount",
@@ -112,7 +111,19 @@ const Tier1Action = () => {
     const onGridReady = params => {
         axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1") // TODO(Priyanshu)
         .then(function (response) {
-            setTier2actiondata(response.data);       
+            setTier2actiondata(response.data);
+            const rowdata = response.data.map(inv => {
+                return {
+                    invoice: inv.invoiceId,
+                    vendor: inv.tier2.actorinfo.name,
+                    invoice_date: inv.invoiceDate.slice(0,10),
+                    payable_date: inv.dueDate.slice(0,10),
+                    invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
+                    payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00'),
+                    details: [inv.invoiceId, inv.tier2InvoiceDetails]
+                };
+            }); 
+            setRowdata(rowdata) ;    
         })
         .catch(function (error) {
             history.push({
@@ -123,21 +134,16 @@ const Tier1Action = () => {
         })
     };
 
-    const changestatustoapproved = () => {
+    const changestatus = status  => {
+        const newRowData = rowdata.filter(element => {
+            return element.invoice !== invoicetoupdate;
+        });
+        setRowdata(newRowData);
+        document.getElementById('modal').style.display = "none";
         const tier2invoice =  tier2actiondata.find((element) => {
             return element.invoiceId === invoicetoupdate;
         })
-        tier2invoice.approvalStatus = "Approved";
-        console.log(tier2invoice);
-        callapi(tier2invoice);
-    }
-
-    const changestatustoreject = () => {
-        const tier2invoice =  tier2actiondata.find((element) => {
-            return element.invoiceId === invoicetoupdate;
-        })
-        tier2invoice.approvalStatus = "Rejected";
-        console.log(remark);
+        tier2invoice.approvalStatus = status;
         tier2invoice.tier2InvoiceDetails.remark = remark;
         callapi(tier2invoice);
     }
@@ -155,20 +161,6 @@ const Tier1Action = () => {
 
     const closemodal = () => {
         document.getElementById('modal').style.display = "none";
-    }
-
-    const getrowdata = () => {
-       return tier2actiondata.map(inv => {
-            return {
-                invoice: inv.invoiceId,
-                vendor: inv.tier2.actorinfo.name,
-                invoice_date: inv.invoiceDate.slice(0,10),
-                payable_date: inv.dueDate.slice(0,10),
-                invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
-                payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00'),
-                details: [inv.invoiceId, inv.tier2InvoiceDetails]
-            };
-        });
     }
 
     const logout = () => {
@@ -248,7 +240,7 @@ const Tier1Action = () => {
                 defaultColDef={defaultColDef}
                 frameworkComponents={frameworkComponents}
                 onGridReady={onGridReady}
-                rowData={getrowdata()}
+                rowData={rowdata}
                 domLayout='autoHeight'
                 rowClassRules={{
                     'highlight': function(params) { return  params.data.invoice === 'KEINV1234'; }
@@ -288,8 +280,8 @@ const Tier1Action = () => {
                 </section>
         
                 <footer className="modal-card-foot">
-                <button className="button is-success" onClick={changestatustoapproved}>Approve</button>
-                <button className="button is-danger" onClick={changestatustoreject} >Decline</button>
+                <button className="button is-success" onClick={() => {changestatus("Approved")}}>Approve</button>
+                <button className="button is-danger" onClick={() => {changestatus("Rejected")}} >Decline</button>
                 </footer>
             </div>
             </div>

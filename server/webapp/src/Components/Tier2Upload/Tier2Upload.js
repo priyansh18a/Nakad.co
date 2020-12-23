@@ -149,14 +149,14 @@ const Tier2Upload =  () => {
             <form onSubmit={uploadinvoiceandgrn}> 
                 <div className="field">
                     <div className="control">
-                        <label className="label">Invoice</label>
+                        <label className="label">Invoice Number</label>
                         <input className="input" type="text" name="invoice" placeholder="Invoice Number" value={form.invoice} onChange={update} required/>
                     </div>
                 </div>
                 <div className="field">
                     <div className="control">
-                        <label className="label">Payer</label>
-                        <input className="input" type="text" name="payername" placeholder="Payer Name"  value={form.payername} onChange={update} required/>
+                        <label className="label">Customer</label>
+                        <input className="input" type="text" name="payername" placeholder="Customer Name"  value={form.payername} onChange={update} required/>
                     </div>
                 </div>
                 <div className="field">
