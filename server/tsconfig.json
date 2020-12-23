@@ -1,33 +1,25 @@
 {
-   "compilerOptions": {
-      "lib": [
-         "es5",
-         "es6",
-         "esnext.asynciterable"
-      ],
-      "target": "es6",
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "outDir": "./build",
-      "emitDecoratorMetadata": true,
-      "esModuleInterop": true,
-      "experimentalDecorators": true,
-      "sourceMap": true,
-      "plugins": [
-         {
-            "name": "typescript-tslint-plugin",
-            "configFile": "./tslint.json",
-            "alwaysShowRuleFailuresAsWarnings": false,
-            "ignoreDefinitionFiles": true,
-            "suppressWhileTypeErrorsPresent": false
-         }
-      ]
-   },
-   "include": [
-      "src/**/*"
-   ],
-   "exclude": [
-      "webapp/**/*",
-      "tools/**/*"
-   ]
+  "compilerOptions": {
+    "lib": ["es5", "es6", "esnext.asynciterable"],
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./build",
+    "rootDir": "./src",
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "plugins": [
+      {
+        "name": "typescript-tslint-plugin",
+        "configFile": "./tslint.json",
+        "alwaysShowRuleFailuresAsWarnings": false,
+        "ignoreDefinitionFiles": true,
+        "suppressWhileTypeErrorsPresent": false
+      }
+    ]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["webapp/**/*", "tools/**/*"]
 }

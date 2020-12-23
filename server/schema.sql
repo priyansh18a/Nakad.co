@@ -5,7 +5,7 @@
 -- Dumped from database version 13.0 (Debian 13.0-1.pgdg100+1)
 -- Dumped by pg_dump version 13.1 (Ubuntu 13.1-1.pgdg18.04+1)
 
--- Started on 2020-11-13 16:39:57 UTC
+-- Started on 2020-12-21 17:27:03 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -27,7 +27,7 @@ CREATE SCHEMA public;
 
 
 --
--- TOC entry 3186 (class 0 OID 0)
+-- TOC entry 3199 (class 0 OID 0)
 -- Dependencies: 4
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
 --
@@ -36,7 +36,7 @@ COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 --
--- TOC entry 708 (class 1247 OID 16391)
+-- TOC entry 711 (class 1247 OID 16391)
 -- Name: ActorType; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -50,7 +50,7 @@ CREATE TYPE public."ActorType" AS ENUM (
 
 
 --
--- TOC entry 712 (class 1247 OID 16456)
+-- TOC entry 715 (class 1247 OID 16456)
 -- Name: ApprovalStatus; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -58,6 +58,17 @@ CREATE TYPE public."ApprovalStatus" AS ENUM (
     'Approved',
     'Rejected',
     'Pending'
+);
+
+
+--
+-- TOC entry 842 (class 1247 OID 25109)
+-- Name: adjustmentstatus; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.adjustmentstatus AS ENUM (
+    'Pending',
+    'Done'
 );
 
 
@@ -71,7 +82,11 @@ SET default_table_access_method = heap;
 CREATE TABLE public.actor (
     actorid integer NOT NULL,
     actortype public."ActorType" NOT NULL,
-    actorinfo jsonb
+    actorinfo jsonb,
+    username character varying(50),
+    hash character varying,
+    data jsonb,
+    salt character varying
 );
 
 
@@ -129,7 +144,13 @@ CREATE TABLE public.anchortier2invoicemapping (
     "Tier1Id" integer NOT NULL,
     "AnchorInvoiceId" character varying(50) NOT NULL,
     "Tier2InvoiceId" character varying(50) NOT NULL,
-    "Tier2Id" integer NOT NULL
+    "Tier2Id" integer NOT NULL,
+    "BankId" integer,
+    "BankApprovalStatus" public."ApprovalStatus",
+    "DiscountedAmount" bigint,
+    "Tier1ReceivableEntry" public.adjustmentstatus,
+    "Tier1PayableEntry" public.adjustmentstatus,
+    "Tier2Entry" public.adjustmentstatus
 );
 
 
@@ -147,12 +168,24 @@ CREATE SEQUENCE public.books_actorid_seq
 
 
 --
--- TOC entry 3187 (class 0 OID 0)
+-- TOC entry 3200 (class 0 OID 0)
 -- Dependencies: 203
 -- Name: books_actorid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.books_actorid_seq OWNED BY public.actor.actorid;
+
+
+--
+-- TOC entry 246 (class 1259 OID 17121)
+-- Name: session; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.session (
+    sid character varying NOT NULL,
+    sess json NOT NULL,
+    expire timestamp(6) without time zone NOT NULL
+);
 
 
 --
@@ -181,12 +214,42 @@ CREATE TABLE public.tier2invoice (
     "DueDate" timestamp with time zone,
     "GRNId" character varying(50)[],
     "ApprovalStatus" public."ApprovalStatus",
-    "ReceivableAmount" bigint
+    "ReceivableAmount" bigint,
+    "Tier2InvoiceDetails" jsonb,
+    "CreationTimestamp" timestamp with time zone,
+    " LastUpdateTimestamp" timestamp with time zone
 );
 
 
 --
--- TOC entry 3005 (class 2604 OID 16853)
+-- TOC entry 247 (class 1259 OID 17142)
+-- Name: user_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+--
+-- TOC entry 248 (class 1259 OID 17144)
+-- Name: user; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."user" (
+    id integer DEFAULT nextval('public.user_id_seq'::regclass) NOT NULL,
+    username character varying(50) NOT NULL,
+    hash character varying NOT NULL,
+    data jsonb,
+    salt character varying NOT NULL
+);
+
+
+--
+-- TOC entry 3020 (class 2604 OID 16853)
 -- Name: actor actorid; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -194,94 +257,7 @@ ALTER TABLE ONLY public.actor ALTER COLUMN actorid SET DEFAULT nextval('public.b
 
 
 --
--- TOC entry 3174 (class 0 OID 16424)
--- Dependencies: 204
--- Data for Name: actor; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.actor (actorid, actortype, actorinfo) FROM stdin;
-1	Tier1	{}
-3	Bank	{}
-4	Admin	{}
-5	Anchor	{}
-2	Tier2	{"name": "Tier2Vendor"}
-\.
-
-
---
--- TOC entry 3176 (class 0 OID 16438)
--- Dependencies: 206
--- Data for Name: anchordebitnotes; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.anchordebitnotes ("AnchorId", "Tier1Id", "DebitNoteId", "DebitAmount", "DebitNoteDate", "InvoiceId") FROM stdin;
-\.
-
-
---
--- TOC entry 3177 (class 0 OID 16441)
--- Dependencies: 207
--- Data for Name: anchorgrn; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.anchorgrn ("AnchorId", "Tier1Id", "GRNId", "InvoiceId", "GRNDate") FROM stdin;
-\.
-
-
---
--- TOC entry 3175 (class 0 OID 16435)
--- Dependencies: 205
--- Data for Name: anchorinvoice; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.anchorinvoice ("Tier1Id", "InvoiceId", "InvoiceDate", "InvoiceAmount", "AnchorId", "DueDate") FROM stdin;
-1	InvoiceId1	2020-10-01 00:00:00+00	100000	5	2020-10-15
-\.
-
-
---
--- TOC entry 3180 (class 0 OID 16461)
--- Dependencies: 210
--- Data for Name: anchortier2invoicemapping; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.anchortier2invoicemapping ("AnchorId", "Tier1Id", "AnchorInvoiceId", "Tier2InvoiceId", "Tier2Id") FROM stdin;
-\.
-
-
---
--- TOC entry 3179 (class 0 OID 16450)
--- Dependencies: 209
--- Data for Name: tier1tier2bufferdays; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.tier1tier2bufferdays ("Tier1Id", "Tier2Id", "BufferDays") FROM stdin;
-\.
-
-
---
--- TOC entry 3178 (class 0 OID 16444)
--- Dependencies: 208
--- Data for Name: tier2invoice; Type: TABLE DATA; Schema: public; Owner: -
---
-
-COPY public.tier2invoice ("Tier2Id", "Tier1Id", "InvoiceId", "InvoiceAmount", "InvoiceDate", "DueDate", "GRNId", "ApprovalStatus", "ReceivableAmount") FROM stdin;
-2	1	Tier2InvoiceId1	10000	2020-10-02 00:00:00+00	2020-10-10 00:00:00+00	{123}	Approved	10000
-2	1	Tier2InvoiceId9	40000	2020-11-10 00:00:00+00	2021-05-14 00:00:00+00	{12345}	Pending	40000
-\.
-
-
---
--- TOC entry 3188 (class 0 OID 0)
--- Dependencies: 203
--- Name: books_actorid_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('public.books_actorid_seq', 5, true);
-
-
---
--- TOC entry 3009 (class 2606 OID 17051)
+-- TOC entry 3025 (class 2606 OID 17051)
 -- Name: anchorinvoice AnchorInvoice_AnchorId_InvoiceId_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -290,7 +266,7 @@ ALTER TABLE ONLY public.anchorinvoice
 
 
 --
--- TOC entry 3021 (class 2606 OID 16897)
+-- TOC entry 3037 (class 2606 OID 16897)
 -- Name: tier1tier2bufferdays Tier1Tier2BufferDays_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -299,7 +275,7 @@ ALTER TABLE ONLY public.tier1tier2bufferdays
 
 
 --
--- TOC entry 3013 (class 2606 OID 17060)
+-- TOC entry 3029 (class 2606 OID 17060)
 -- Name: anchordebitnotes anchorDebitNotes_pk; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -308,7 +284,7 @@ ALTER TABLE ONLY public.anchordebitnotes
 
 
 --
--- TOC entry 3015 (class 2606 OID 17058)
+-- TOC entry 3031 (class 2606 OID 17058)
 -- Name: anchorgrn anchorgrn_pk; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -317,7 +293,7 @@ ALTER TABLE ONLY public.anchorgrn
 
 
 --
--- TOC entry 3011 (class 2606 OID 17000)
+-- TOC entry 3027 (class 2606 OID 17000)
 -- Name: anchorinvoice anchorinvoice_primary; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -326,7 +302,7 @@ ALTER TABLE ONLY public.anchorinvoice
 
 
 --
--- TOC entry 3007 (class 2606 OID 16855)
+-- TOC entry 3023 (class 2606 OID 16855)
 -- Name: actor books_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -335,7 +311,7 @@ ALTER TABLE ONLY public.actor
 
 
 --
--- TOC entry 3023 (class 2606 OID 16938)
+-- TOC entry 3039 (class 2606 OID 16938)
 -- Name: anchortier2invoicemapping main; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -344,7 +320,16 @@ ALTER TABLE ONLY public.anchortier2invoicemapping
 
 
 --
--- TOC entry 3017 (class 2606 OID 17049)
+-- TOC entry 3042 (class 2606 OID 17128)
+-- Name: session session_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.session
+    ADD CONSTRAINT session_pkey PRIMARY KEY (sid);
+
+
+--
+-- TOC entry 3033 (class 2606 OID 17049)
 -- Name: tier2invoice tier2_unqiue; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -353,7 +338,7 @@ ALTER TABLE ONLY public.tier2invoice
 
 
 --
--- TOC entry 3019 (class 2606 OID 17017)
+-- TOC entry 3035 (class 2606 OID 17017)
 -- Name: tier2invoice tier2invoice_pk; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -362,7 +347,24 @@ ALTER TABLE ONLY public.tier2invoice
 
 
 --
--- TOC entry 3024 (class 2606 OID 16915)
+-- TOC entry 3044 (class 2606 OID 17152)
+-- Name: user user_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."user"
+    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3040 (class 1259 OID 17129)
+-- Name: IDX_session_expire; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "IDX_session_expire" ON public.session USING btree (expire);
+
+
+--
+-- TOC entry 3045 (class 2606 OID 16915)
 -- Name: anchordebitnotes anchorId_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -371,7 +373,7 @@ ALTER TABLE ONLY public.anchordebitnotes
 
 
 --
--- TOC entry 3028 (class 2606 OID 17033)
+-- TOC entry 3049 (class 2606 OID 17033)
 -- Name: anchortier2invoicemapping anchorId_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -380,7 +382,7 @@ ALTER TABLE ONLY public.anchortier2invoicemapping
 
 
 --
--- TOC entry 3031 (class 2606 OID 17052)
+-- TOC entry 3052 (class 2606 OID 17052)
 -- Name: anchortier2invoicemapping anchorinvoice_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -389,7 +391,7 @@ ALTER TABLE ONLY public.anchortier2invoicemapping
 
 
 --
--- TOC entry 3025 (class 2606 OID 16920)
+-- TOC entry 3046 (class 2606 OID 16920)
 -- Name: anchordebitnotes tier1Id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -398,7 +400,7 @@ ALTER TABLE ONLY public.anchordebitnotes
 
 
 --
--- TOC entry 3026 (class 2606 OID 16925)
+-- TOC entry 3047 (class 2606 OID 16925)
 -- Name: tier2invoice tier1Id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -407,7 +409,7 @@ ALTER TABLE ONLY public.tier2invoice
 
 
 --
--- TOC entry 3029 (class 2606 OID 17038)
+-- TOC entry 3050 (class 2606 OID 17038)
 -- Name: anchortier2invoicemapping tier1Id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -416,7 +418,7 @@ ALTER TABLE ONLY public.anchortier2invoicemapping
 
 
 --
--- TOC entry 3027 (class 2606 OID 16932)
+-- TOC entry 3048 (class 2606 OID 16932)
 -- Name: tier2invoice tier2Id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -425,7 +427,7 @@ ALTER TABLE ONLY public.tier2invoice
 
 
 --
--- TOC entry 3030 (class 2606 OID 17043)
+-- TOC entry 3051 (class 2606 OID 17043)
 -- Name: anchortier2invoicemapping tier2Id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -433,22 +435,9 @@ ALTER TABLE ONLY public.anchortier2invoicemapping
     ADD CONSTRAINT "tier2Id_fk" FOREIGN KEY ("Tier2Id") REFERENCES public.actor(actorid) NOT VALID;
 
 
--- Completed on 2020-11-13 16:40:04 UTC
+-- Completed on 2020-12-21 17:27:08 UTC
 
 --
 -- PostgreSQL database dump complete
 --
 
---- CUSTOM
-CREATE TABLE "session" (
-  "sid" varchar NOT NULL COLLATE "default",
-	"sess" json NOT NULL,
-	"expire" timestamp(6) NOT NULL
-)
-WITH (OIDS=FALSE);
-
-ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
-
-CREATE INDEX "IDX_session_expire" ON "session" ("expire");
-
---- CUSTOM END 

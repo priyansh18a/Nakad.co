@@ -17,6 +17,7 @@ export async function listTier2InvoicesForDiscountingInternal(
   tier1Id: number,
   tier2Id: number
 ): Promise<DiscountedTier2Invoice[]> {
+  const currentDate = new Date();
   const anchorInvoices = await getConnection()
     .createQueryBuilder()
     .select("AI")
@@ -24,20 +25,22 @@ export async function listTier2InvoicesForDiscountingInternal(
     .leftJoin(AnchorTier2InvoiceMapping, "ATM", '"AI"."InvoiceId" = "ATM"."AnchorInvoiceId"')
     .where('"ATM"."AnchorInvoiceId" IS NULL')
     .andWhere('"AI"."Tier1Id" = :id', { id: tier1Id })
+    .andWhere('"AI"."DueDate" > :dueDate', { dueDate: currentDate.toISOString() })
     .orderBy('"AI"."DueDate"', "ASC")
     .getMany();
   // console.log("anchorInvoices: " + JSON.stringify(anchorInvoices));
 
   const tier2Invoices = await getConnection()
-    .createQueryBuilder()
-    .select("t")
-    .from(Tier2Invoice, "t")
-    .where('"t"."ApprovalStatus" = \'Approved\'')
-    .andWhere('"t"."Tier2Id" = :id', { id: tier2Id })
-    .orderBy('"t"."DueDate"', "ASC")
-    .getMany();
-
-  // console.log("tier2Invoices: " + JSON.stringify(tier2Invoices));
+    .getRepository(Tier2Invoice)
+    .find({
+      where: {
+        approvalStatus: "Approved",
+        tier2Id,
+      },
+      order: {
+        dueDate: "ASC",
+      },
+    });
 
   let j = 0;
   const invoiceToReturn: DiscountedTier2Invoice[] = [];

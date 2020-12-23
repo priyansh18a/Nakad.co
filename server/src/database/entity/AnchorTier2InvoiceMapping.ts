@@ -80,13 +80,13 @@ export class AnchorTier2InvoiceMapping {
   @JoinColumn([{ name: "AnchorId", referencedColumnName: "actorid" }])
   anchor: Actor;
 
-  @ManyToOne(() => Actor, (actor) => actor.anchorTier2InvoiceMappings2)
+  @ManyToOne(() => Actor, (actor) => actor.anchorTier2InvoiceMappings2, { eager: true })
   @JoinColumn([{ name: "BankId", referencedColumnName: "actorid" }])
   bank: Actor;
 
-  @ManyToOne(() => Actor, (actor) => actor.anchorTier2InvoiceMappings3)
+  @ManyToOne(() => Actor, (actor) => actor.anchorTier2InvoiceMappings3, { eager: true })
   @JoinColumn([{ name: "Tier1Id", referencedColumnName: "actorid" }])
-  tier: Actor;
+  tier1: Actor;
 
   @ManyToOne(() => Actor, (actor) => actor.anchorTier2InvoiceMappings4)
   @JoinColumn([{ name: "Tier2Id", referencedColumnName: "actorid" }])

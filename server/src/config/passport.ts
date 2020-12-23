@@ -1,5 +1,5 @@
 import { getConnection } from "typeorm";
-import { User } from "../database/entity/User";
+import { Actor } from "../database/entity/Actor";
 import passport from "passport";
 import { validPassword } from "../database/util/passwordUtils";
 import { Strategy as LocalStrategy } from "passport-local";
@@ -7,7 +7,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 export function initializePassportConfig() {
   const verifyCallback = (username, password, done) => {
     getConnection()
-      .getRepository(User)
+      .getRepository(Actor)
       .findOne({
         where: {
           username,
@@ -33,12 +33,12 @@ export function initializePassportConfig() {
 
   passport.use(strategy);
   passport.serializeUser((user, done) => {
-    const userSerialize = user as User;
+    const userSerialize = user as Actor;
     done(null, userSerialize.username);
   });
 
   passport.deserializeUser(async (username, done) => {
-    const u = await getConnection().getRepository(User).findOne({
+    const u = await getConnection().getRepository(Actor).findOne({
       where: {
         username,
       },

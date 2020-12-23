@@ -161,7 +161,7 @@ const Tier2EarlyPayment = () => {
     };
 
     const onGridReady2 = params => {
-       axios.get("/api/ListTier2RejectedInvoice?tier1Id=1") // TODO(Priyanshu)
+       axios.get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Rejected") // TODO(Priyanshu)
         .then(function (response) {
             setRejectedbytier1(response.data);         
         })
@@ -172,7 +172,7 @@ const Tier2EarlyPayment = () => {
     };
 
     const onGridReady3 = params => {
-        axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1") // TODO(Priyanshu)
+        axios.get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Pending") // TODO(Priyanshu)
         .then(function (response) {
             setPendingbytier1(response.data);         
         })
@@ -185,7 +185,7 @@ const Tier2EarlyPayment = () => {
         return checkedbytier1.map(inv => {
              return {
                  invoice: inv.tier2Invoice.invoiceId,
-                 payee:"Maruti",   // TODO(Priyanshu)
+                 payee: inv.tier2Invoice.tier1.actorInfo.name,
                  payment_date: inv.tier2Invoice.dueDate.slice(0,10),
                  discount_rate:inv.discountedAnnualRatePercentage,
                  invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
@@ -220,10 +220,15 @@ const Tier2EarlyPayment = () => {
         return pendingbytier1.map(inv => {
              return {
                  invoice: inv.invoiceId,
-                 vendor: inv.tier2.actorinfo.name,
+                 vendor: inv.tier2.actorInfo.name,
                  invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
+<<<<<<< HEAD
                  date_upload: inv.creationTimestamp.slice(0,10), 
                  payee: "Maruti",   // TODO(Priyanshu), Need to fix this with real data
+=======
+                 date_upload: inv.creationTimestamp.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
+                 payee: inv.tier1.actorInfo.name, 
+>>>>>>> 5087333ce34f30c9b54a0c67b1f7f196834c5f10
              };
          });
     }
@@ -234,7 +239,7 @@ const Tier2EarlyPayment = () => {
             return rejectedbytier1.map(inv => {
                 return {
                     invoice: inv.invoiceId,
-                    payee: "Maruti",   // TODO(Priyanshu)
+                    payee: inv.tier1.actorInfo.name,
                     invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
                     remark : inv.tier2InvoiceDetails.remark  // TODO(Priyanshu)
                 };

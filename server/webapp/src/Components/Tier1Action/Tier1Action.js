@@ -109,7 +109,7 @@ const Tier1Action = () => {
      
 
     const onGridReady = params => {
-        axios.get("/api/ListTier2InvoicesForApproval?tier1Id=1") // TODO(Priyanshu)
+        axios.get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Pending") // TODO(Priyanshu)
         .then(function (response) {
             setTier2actiondata(response.data);
             const rowdata = response.data.map(inv => {
@@ -161,6 +161,20 @@ const Tier1Action = () => {
 
     const closemodal = () => {
         document.getElementById('modal').style.display = "none";
+    }
+
+    const getrowdata = () => {
+       return tier2actiondata.map(inv => {
+            return {
+                invoice: inv.invoiceId,
+                vendor: inv.tier2.actorInfo.name,
+                invoice_date: inv.invoiceDate.slice(0,10),
+                payable_date: inv.dueDate.slice(0,10),
+                invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
+                payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00'),
+                details: [inv.invoiceId, inv.tier2InvoiceDetails]
+            };
+        });
     }
 
     const logout = () => {
