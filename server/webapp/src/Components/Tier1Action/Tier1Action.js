@@ -5,7 +5,6 @@ import axios from 'axios';
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-material.css";
 import BtnCellRenderer from "./BtnCellRenderer.jsx";
-import invoice from '../../Graphics/invoice.jpeg'
 import logo from './../../Graphics/logo.jpg';
 import './Tier1Action.scss';
 import Dinero from "dinero.js";
@@ -40,8 +39,7 @@ const Tier1Action = () => {
         },
         {   headerName:"Invoice Date",
             field: "invoice_date",
-            minWidth: 130,
-            sortable:true
+            minWidth: 130
         },
         {   headerName:"Payable Date",
             field: "payable_date",
@@ -49,8 +47,7 @@ const Tier1Action = () => {
         },
         {   headerName:"Invoice Amount",
             field: "invoice_amount",
-            minWidth: 150,
-            sortable:true
+            minWidth: 150
         },
         {   headerName:"Payable Amount",
             field: "payable_amount",
@@ -112,7 +109,7 @@ const Tier1Action = () => {
     const onGridReady = params => {
         axios.get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Pending") // TODO(Priyanshu)
         .then(function (response) {
-            setTier2actiondata(response.data);       
+            setTier2actiondata(response.data);    
         })
         .catch(function (error) {
             history.push({
@@ -123,21 +120,11 @@ const Tier1Action = () => {
         })
     };
 
-    const changestatustoapproved = () => {
+    const changestatus = status  => {
         const tier2invoice =  tier2actiondata.find((element) => {
             return element.invoiceId === invoicetoupdate;
         })
-        tier2invoice.approvalStatus = "Approved";
-        console.log(tier2invoice);
-        callapi(tier2invoice);
-    }
-
-    const changestatustoreject = () => {
-        const tier2invoice =  tier2actiondata.find((element) => {
-            return element.invoiceId === invoicetoupdate;
-        })
-        tier2invoice.approvalStatus = "Rejected";
-        console.log(remark);
+        tier2invoice.approvalStatus = status;
         tier2invoice.tier2InvoiceDetails.remark = remark;
         callapi(tier2invoice);
     }
@@ -146,7 +133,8 @@ const Tier1Action = () => {
         axios.post("/api/UpdateTier2InvoiceForApproval", tier2invoice)
           .then(function (response) {
             console.log(response);
-            // window.location.reload(); 
+            onGridReady();
+            document.getElementById('modal').style.display = "none";
           })
           .catch(function (error) {
             console.log(error);
@@ -164,8 +152,8 @@ const Tier1Action = () => {
                 vendor: inv.tier2.actorInfo.name,
                 invoice_date: inv.invoiceDate.slice(0,10),
                 payable_date: inv.dueDate.slice(0,10),
-                invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
-                payable_amount: Dinero(inv.receivableAmount).toFormat('$0.00'),
+                invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0,0'),
+                payable_amount: Dinero(inv.receivableAmount).toFormat('$0,0'),
                 details: [inv.invoiceId, inv.tier2InvoiceDetails]
             };
         });
@@ -288,8 +276,8 @@ const Tier1Action = () => {
                 </section>
         
                 <footer className="modal-card-foot">
-                <button className="button is-success" onClick={changestatustoapproved}>Approve</button>
-                <button className="button is-danger" onClick={changestatustoreject} >Decline</button>
+                <button className="button is-success" onClick={() => {changestatus("Approved")}}>Approve</button>
+                <button className="button is-danger" onClick={() => {changestatus("Rejected")}} >Decline</button>
                 </footer>
             </div>
             </div>

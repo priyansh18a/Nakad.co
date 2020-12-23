@@ -18,13 +18,11 @@ const BankCollection = () => {
         },
         {   headerName:"Loan amount",
             field: "loan_amount",
-            minWidth: 150,
-            sortable:true
+            minWidth: 150
         },
         {   headerName:"Repayment date",
             field: "repayment_date",
-            minWidth: 200,
-            sortable:true
+            minWidth: 200
         },
         {   headerName:"Linked invoice amount",
             field: "invoice_amount",
@@ -56,6 +54,7 @@ const BankCollection = () => {
         minWidth: 150,
         sortable:true,
         flex: 1,
+        filter: true,
         resizable: true,
         wrapText: true,
         autoHeight: true,

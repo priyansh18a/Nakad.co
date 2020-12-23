@@ -11,7 +11,7 @@ const Tier2Login =  () => {
     const logintier2 = event => {
         event.preventDefault();
         // const { invoice, password } = event.target.elements;
-        history.push("/tier2/account");
+        history.push("/tier2/early");
     }
     
     return (

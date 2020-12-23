@@ -28,13 +28,11 @@ const Tier2Consolidated = () => {
         },
         {   headerName:"Invoice Amount",
             field: "invoice_amount",
-            minWidth: 150,
-            sortable:true
+            minWidth: 150
         },
         {   headerName:"Payment Date (as on invoice)",
             field: "payment_date",
-            minWidth:180,
-            sortable:true
+            minWidth:180
         },
         {   headerName: "Receivable Amount",
             field: "receivable_amount",
@@ -46,8 +44,7 @@ const Tier2Consolidated = () => {
         },
         {   headerName:"Date of Early Payment",
             field: "early_payment_date",
-            minWidth: 200,
-            sortable:true
+            minWidth: 200
         },
 
         {   headerName:"Adjusted in Tally",
@@ -65,8 +62,7 @@ const Tier2Consolidated = () => {
 
       const columnDefs2 = [
         {   headerName:"Invoice Number",
-            field: "invoice",
-            sortable:true
+            field: "invoice"
         },
         {   headerName:"Payee",
             field: "payee",
@@ -74,13 +70,11 @@ const Tier2Consolidated = () => {
         },
         {   headerName:"Invoice Amount",
             field: "invoice_amount",
-            minWidth: 150,
-            sortable:true
+            minWidth: 150
         },
         {   headerName:"Payment Date (as on invoice)",
             field: "payment_date",
-            minWidth: 200,
-            sortable:true
+            minWidth: 200
         },
         {   headerName: "Receivable Amount",
             field: "receivable_amount",
@@ -88,8 +82,7 @@ const Tier2Consolidated = () => {
         },
         {   headerName:"Date of Early Payment",
             field: "early_payment_date",
-            minWidth: 200,
-            sortable:true
+            minWidth: 200
         }
       ]
 
@@ -97,6 +90,7 @@ const Tier2Consolidated = () => {
         minWidth: 150,
         sortable:true,
         flex: 1,
+        filter: true,
         resizable: true,
         wrapText: true,
         autoHeight: true,
@@ -134,10 +128,10 @@ const Tier2Consolidated = () => {
                 return {
                     invoice: inv.tier2Invoice.invoiceId,
                     payee: "Maruti", //TODO(Priyanshu)
-                    invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
+                    invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0,0'),
                     payment_date: inv.tier2Invoice.dueDate.slice(0,10),
-                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
-                    early_payment_amount: Dinero(inv.discountedAmount).toFormat('$0.00'),
+                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
+                    early_payment_amount: Dinero(inv.discountedAmount).toFormat('$0,0'),
                     early_payment_date: inv.tier2Invoice.lastUpdateTimestamp.slice(0,10),  //TODO(Priyanshu)  Need to update this
                     details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId]
                 };
@@ -150,9 +144,9 @@ const Tier2Consolidated = () => {
                 return {
                     invoice: inv.tier2Invoice.invoiceId,
                     payee: "Maruti", //TODO(Priyanshu)
-                    invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0.00'),
+                    invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0,0'),
                     payment_date: inv.tier2Invoice.dueDate.slice(0,10),
-                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
+                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
                     early_payment_date: inv.tier2Invoice.lastUpdateTimestamp.slice(0,10),  
                 };
             });

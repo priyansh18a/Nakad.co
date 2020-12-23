@@ -34,18 +34,15 @@ const BankDisbursement = () => {
         },
         {   headerName:"Repayment Date",
             field: "repayment_date",
-            minWidth: 170,
-            sortable:true
+            minWidth: 170
         },
         {   headerName:"Linked Invoice Amount",
             field: "invoice_amount",
-            minWidth: 170,
-            sortable:true
+            minWidth: 170
         },
         {   headerName:"Invoice Payee Name",
             field: "payee_name",
-            minWidth: 170,
-            sortable:true
+            minWidth: 170
         },
         {   headerName:"Loan already issued against invoice",
             field: "loan_issued",
@@ -78,6 +75,7 @@ const BankDisbursement = () => {
         sortable:true,
         flex: 1,
         resizable: true,
+        filter: true,
         wrapText: true,
         autoHeight: true,
         cellStyle: {color: 'Black'},
