@@ -48,7 +48,7 @@ export async function listTier2InvoicesForDiscountingInternal(
         tier2Id,
       },
       order: {
-        dueDate: "ASC",
+        creationTimestamp: "DESC",
       },
     });
 

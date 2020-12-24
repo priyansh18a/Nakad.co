@@ -11,7 +11,7 @@ import Dinero from "dinero.js";
 import BtnCellRenderer from "./BtnCellRenderer.jsx";
 import BtnCellRenderer2 from "./BtnCellRenderer2.jsx";
 import BtnCellRenderer3 from "./BtnCellRenderer3.jsx";
-
+import BtnCellRenderer4 from "./BtnCellRenderer4.jsx";
 
 const Tier2EarlyPayment = () => {
     const history = useHistory();
@@ -21,25 +21,39 @@ const Tier2EarlyPayment = () => {
     const [invoicetoupdate, setInvoicetoupdate] = useState('');
 
     const columnDefs1 = [
+        {   headerName:"Invoice Date",
+            field: "invoice_date",
+        },
         {   headerName:"Invoice Number",
             field: "invoice"
         },
         {   headerName:"Customer",
             field: "customer",
-            minWidth: 200
-        },
-        {   headerName:"Invoice Amount",
-            field: "invoice_amount",
             minWidth: 150
         },
-        {   headerName:"Date of Upload",
-            field: "date_upload",
-          
+        {   headerName:"Net Receivable Amount",
+            field: "receivable_amount",
+            minWidth: 180
         },
-        {   headerName:"Send reminder",
-            field: "send_reminder",
+        {   headerName:"Receivable Date",
+            field: "receivable_date",
+        },
+        {   headerName:"Send Reminder",
+            field: "invoice",
             minWidth: 150,
             cellRenderer: "btnCellRenderer3"
+        },
+        {   headerName:"Cancel Early Payment Request",
+            field: "invoice",
+            minWidth: 180,
+            cellRenderer: "btnCellRenderer4",
+            cellRendererParams: {
+            clicked: function(field) {
+                console.log(field);
+                setInvoicetoupdate(field);
+                document.getElementById('modal2').style.display = "flex";
+            }
+            }
         }
       ]
 
@@ -59,12 +73,12 @@ const Tier2EarlyPayment = () => {
             field: "payment_date",
             minWidth: 130
         },
-        {   headerName: "Receivable Amount",
+        {   headerName: "Net Receivable",
             field: "receivable_amount",
             minWidth: 180
         },
-        {   headerName:"Discount Rate (for Period)",
-            field: "discount_rate",
+        {   headerName:"Early Payment Discount ",
+            field: "payment_discount",
             minWidth: 200
         },
         {   headerName:"Early Payment Amount",
@@ -120,7 +134,7 @@ const Tier2EarlyPayment = () => {
         wrapText: true,
         filter: true,
         autoHeight: true,
-        cellStyle: {color: 'Black'},
+        cellStyle: {color: 'Black', textAlign: 'center'},
         headerComponentParams: {
             template:
               '<div class="ag-cell-label-container" role="presentation">' +
@@ -138,16 +152,19 @@ const Tier2EarlyPayment = () => {
       }
 
     const frameworkComponents1 =  {
-        btnCellRenderer3: BtnCellRenderer3
+        btnCellRenderer3: BtnCellRenderer3,
+        btnCellRenderer4: BtnCellRenderer4
     }
 
     const frameworkComponents2 =  {
-        btnCellRenderer1: BtnCellRenderer
-        
+        btnCellRenderer1: BtnCellRenderer 
     }
+
     const frameworkComponents3 =  {
         btnCellRenderer2: BtnCellRenderer2
     }
+
+ 
    
 
     const onGridReady1 = params => {
@@ -186,6 +203,21 @@ const Tier2EarlyPayment = () => {
 
     };
 
+
+    const getpendingbytier1data = () => {
+        return pendingbytier1.map(inv => {
+             return {
+                 invoice: inv.invoiceId,
+                 customer: inv.tier2.actorInfo.name,
+                 receivable_amount: Dinero(inv.receivableAmount).toFormat('$0,0'),
+                 invoice_date: inv.invoiceDate.slice(0,10),
+                 receivable_date: inv.dueDate.slice(0,10),
+                 payee: inv.tier1.actorInfo.name, 
+             };
+         });
+    }
+
+
     
     const getapprovedrowdata = () => {
         return checkedbytier1.map(inv => {
@@ -193,7 +225,7 @@ const Tier2EarlyPayment = () => {
                  invoice: inv.tier2Invoice.invoiceId,
                  customer: inv.tier2Invoice.tier1.actorInfo.name,
                  payment_date: inv.tier2Invoice.dueDate.slice(0,10),
-                 discount_rate:inv.discountedAnnualRatePercentage,
+                 payment_discount:Dinero(inv.discountedAmount).toFormat('$0,0'),
                  invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0,0'),
                  receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
                  payment_amount:Dinero(inv.discountedAmount).toFormat('$0,0')
@@ -221,19 +253,6 @@ const Tier2EarlyPayment = () => {
             console.log(error);
           });
     }
-
-    const getpendingbytier1data = () => {
-        return pendingbytier1.map(inv => {
-             return {
-                 invoice: inv.invoiceId,
-                 customer: inv.tier2.actorInfo.name,
-                 invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0,0'),
-                 date_upload: inv.creationTimestamp.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
-                 payee: inv.tier1.actorInfo.name, 
-             };
-         });
-    }
-
  
      // TODO(Priyanshu) Need to confirm to this with Harshil Bhaiya
     const getrejectedrowdata = () => {
@@ -249,6 +268,7 @@ const Tier2EarlyPayment = () => {
 
     const closemodal = () => {
         document.getElementById('modal').style.display = "none";
+        document.getElementById('modal2').style.display = "none";
     }
 
     const displaytab1 = () => {
@@ -328,13 +348,13 @@ const Tier2EarlyPayment = () => {
     <div className="tabs is-boxed">
             <ul>
                 <li className="is-active" onClick={displaytab1} id="tab-1">
-                    <a><span>Invoices where approval is pending with tier 1</span></a>
+                    <a><span>Pending with Customer</span></a>
                 </li>
                 <li onClick={displaytab2} id="tab-2">
-                    <a><span>Invoices approved by tier 1</span></a>
+                    <a><span> Approved by Customer</span></a>
                 </li>
                 <li  onClick={displaytab3} id="tab-3">
-                    <a><span>Invoices rejected by tier 1</span></a>
+                    <a><span>Rejected by Customer</span></a>
                 </li>
                
             </ul>
@@ -349,6 +369,22 @@ const Tier2EarlyPayment = () => {
             domLayout='autoHeight'
           />
     </div>
+    <div className="modal" id="modal2"  >
+            <div className="modal-background" onClick={closemodal}></div>
+            <div className="modal-card">
+                <header className="modal-card-head">
+                <p className="modal-card-title">Confirmation</p>
+                <button className="delete" aria-label="close" onClick={closemodal} ></button>
+                </header>
+                <section className="modal-card-body">
+                 <p>Are you sure you want to cancel request of early payment?</p>
+                </section>
+                <footer className="modal-card-foot">
+                    <button className="button is-success" onClick={closemodal} >Confirm</button>  //TODO(Priyanshu ) what to do set status when he cancel the request for early payment
+                    <button className="button is-danger" onClick={closemodal}>Cancel</button>
+                </footer>
+            </div>
+        </div>
 
     {/* <div className="table-info has-background-info invoice-approved" >Invoices approved by tier 1</div> */}
     <div id="table-2" style={{display:"none"}}>
@@ -373,7 +409,7 @@ const Tier2EarlyPayment = () => {
                 <button className="delete" aria-label="close" onClick={closemodal} ></button>
                 </header>
                 <section className="modal-card-body">
-                 <p>Are you sure you have taken early payment?</p>
+                 <p>Are you sure you want to take early payment?</p>
                 </section>
                 <footer className="modal-card-foot">
                     <button className="button is-success" onClick={confirmearlypayment} >Confirm</button>
