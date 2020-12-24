@@ -58,7 +58,7 @@ const BankCollection = () => {
         resizable: true,
         wrapText: true,
         autoHeight: true,
-        cellStyle: {color: 'Black'},
+        cellStyle: {color: 'Black', textAlign: 'center'},
         headerComponentParams: {
             template:
               '<div class="ag-cell-label-container" role="presentation">' +

@@ -76,7 +76,7 @@ const Tier1Action = () => {
         flex: 1,
         minWidth: 150,
         sortable:true,
-        cellStyle: {color: 'Black'},
+        cellStyle: {color: 'Black', textAlign: 'center'},
         enableRowGroup: true,
         enablePivot: true,
         enableValue: true,

@@ -1,4 +1,3 @@
-import Dinero from "dinero.js";
 import { Request, Response } from "express";
 import { getConnection } from "typeorm";
 import { ActorMappings } from "../database/entity/ActorMappings";
@@ -49,7 +48,7 @@ export async function listTier2InvoicesForDiscountingInternal(
         tier2Id,
       },
       order: {
-        dueDate: "ASC",
+        creationTimestamp: "DESC",
       },
     });
 
@@ -67,11 +66,10 @@ export async function listTier2InvoicesForDiscountingInternal(
       const daysPending = Math.floor((anchorInvoice.dueDate.valueOf() - new Date().valueOf()) / 86400000);
       console.log(daysPending);
       const hairCut = parseFloat(((Math.max(daysPending, 0) / 365) * interestRate).toFixed(4));
-      let discountedAmount = MoneyUtil.subtract(
+      const discountedAmount = MoneyUtil.subtract(
         tier2Invoice.invoiceAmount,
         MoneyUtil.multiply(tier2Invoice.invoiceAmount, hairCut)
       );
-      discountedAmount = Dinero(discountedAmount).convertPrecision(0).toObject();
       invoiceToReturn.push({
         tier2Invoice,
         discountedAmount,

@@ -16,7 +16,7 @@ async function listTier2InvoicesForApprovalInternal(tier1Id: number, approvalSta
     .find({
       where: { approvalStatus, tier1Id },
       order: {
-        creationTimestamp: "ASC",
+        creationTimestamp: "DESC",
       },
       relations: ["tier2"],
     });
