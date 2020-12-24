@@ -8,7 +8,7 @@ import BtnCellRenderer from "./BtnCellRenderer.jsx";
 import logo from './../../Graphics/logo.jpg';
 import './Tier1Action.scss';
 import Dinero from "dinero.js";
-
+import {formatDate} from "../../Utils/DateUtils";
 
 const Tier1Action = () => {
     const history = useHistory();
@@ -29,11 +29,11 @@ const Tier1Action = () => {
     }
 
     const columnDefs = [
-        {   headerName:"Invoice",
+        {   headerName:"Invoice #",
             field: "invoice",
             maxWidth: 150
         },
-        {   headerName:"Vendor",
+        {   headerName:"Supplier",
             field: "vendor",
             minWidth: 200
         },
@@ -150,8 +150,8 @@ const Tier1Action = () => {
             return {
                 invoice: inv.invoiceId,
                 vendor: inv.tier2.actorInfo.name,
-                invoice_date: inv.invoiceDate.slice(0,10),
-                payable_date: inv.dueDate.slice(0,10),
+                invoice_date: formatDate(inv.invoiceDate),
+                payable_date: formatDate(inv.dueDate),
                 invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0,0'),
                 payable_amount: Dinero(inv.receivableAmount).toFormat('$0,0'),
                 details: [inv.invoiceId, inv.tier2InvoiceDetails]
@@ -228,7 +228,7 @@ const Tier1Action = () => {
             {/* <div className="total-benefit has-background-info">Total Benefit: ₹10000</div> */}
         </div>
         <div id="table-more-info" className="has-background-warning"><span className="has-text-info">More Info: </span>Tier 2 requests confirmation of invoice. <br/>Based on this it will discount invoice to get early payment.</div>
-        <div className="table-info has-background-info" style={{marginBottom:"20px", width: "300px"}} >Tier 2 Invoices for Approval<span onMouseOver={showtablemoreinfo} onMouseLeave={hidetablemoreinfo} className="moreinfospan"><i className="fas fa-info-circle" ></i></span></div>
+        <div className="table-info has-background-info" style={{marginBottom:"20px", width: "300px"}} >Supplier invoices for approval<span onMouseOver={showtablemoreinfo} onMouseLeave={hidetablemoreinfo} className="moreinfospan"><i className="fas fa-info-circle" ></i></span></div>
         <div>
             <div className="ag-theme-material mygrid">
             <AgGridReact
