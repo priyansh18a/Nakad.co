@@ -194,9 +194,9 @@ const Tier2EarlyPayment = () => {
                  customer: inv.tier2Invoice.tier1.actorInfo.name,
                  payment_date: inv.tier2Invoice.dueDate.slice(0,10),
                  discount_rate:inv.discountedAnnualRatePercentage,
-                 invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount)..toFormat('$0,0'),
-                 receivable_amount: Dinero(inv.tier2Invoice.receivableAmount)..toFormat('$0,0'),
-                 payment_amount:Dinero(inv.discountedAmount)..toFormat('$0,0')
+                 invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0,0'),
+                 receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
+                 payment_amount:Dinero(inv.discountedAmount).toFormat('$0,0')
              };
          });
      }
@@ -227,7 +227,7 @@ const Tier2EarlyPayment = () => {
              return {
                  invoice: inv.invoiceId,
                  customer: inv.tier2.actorInfo.name,
-                 invoice_amount: Dinero(inv.invoiceAmount)..toFormat('$0,0'),
+                 invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0,0'),
                  date_upload: inv.creationTimestamp.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
                  payee: inv.tier1.actorInfo.name, 
              };
