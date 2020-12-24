@@ -9,7 +9,7 @@ import './../Tier1DataUpdate/Tier1DataUpdate.scss';
 import '../Tier2EarlyPayment/Tier2EarlyPayment.scss';
 import Dinero from "dinero.js";
 import BtnCellRenderer from "./BtnCellRenderer.jsx";
-
+import {formatDate} from "../../Utils/DateUtils";
 
 
 const Tier1Consolidated = () => {
@@ -183,8 +183,8 @@ const Tier1Consolidated = () => {
             return {
                 invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
                 vendor: "Maruti", //TODO(Priyanshu)
-                invoice_date: inv.partAnchorInvoices.anchorInvoice.invoiceDate.slice(0,10),
-                payable_date:  inv.partAnchorInvoices.anchorInvoice.dueDate.slice(0,10),
+                invoice_date: formatDate(inv.partAnchorInvoices.anchorInvoice.invoiceDate),
+                payable_date:  formatDate(inv.partAnchorInvoices.anchorInvoice.dueDate),
                 payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0,0'),
                 amount_discounted: Dinero(inv.discountedAmount).toFormat('$0,0'),
                 new_payable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0,0')                };
@@ -199,9 +199,9 @@ const Tier1Consolidated = () => {
             return {
                 invoice: inv.tier2Invoice.invoiceId,
                 payer: "Maruti", //TODO(Priyanshu)
-                invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
+                invoice_date: formatDate(inv.tier2Invoice.invoiceDate),
                 invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0,0'),
-                receivable_date:inv.tier2Invoice.dueDate.slice(0,10),
+                receivable_date:formatDate(inv.tier2Invoice.dueDate),
                 receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
                 new_receivable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0,0')
             };

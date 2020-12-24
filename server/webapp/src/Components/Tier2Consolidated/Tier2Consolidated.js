@@ -8,7 +8,7 @@ import './../Tier1DataUpdate/Tier1DataUpdate.scss';
 import '../Tier2EarlyPayment/Tier2EarlyPayment.scss';
 import Dinero from "dinero.js";
 import BtnCellRenderer from "./BtnCellRenderer.jsx";
-
+import {formatDate} from "../../Utils/DateUtils";
 
 
 
@@ -129,10 +129,10 @@ const Tier2Consolidated = () => {
                     invoice: inv.tier2Invoice.invoiceId,
                     payee: "Maruti", //TODO(Priyanshu)
                     invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0,0'),
-                    payment_date: inv.tier2Invoice.dueDate.slice(0,10),
+                    payment_date: formatDate(inv.tier2Invoice.dueDate),
                     receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
                     early_payment_amount: Dinero(inv.discountedAmount).toFormat('$0,0'),
-                    early_payment_date: inv.tier2Invoice.lastUpdateTimestamp.slice(0,10),  //TODO(Priyanshu)  Need to update this
+                    early_payment_date: formatDate(inv.tier2Invoice.lastUpdateTimestamp),  //TODO(Priyanshu)  Need to update this
                     details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId]
                 };
             });
@@ -145,9 +145,9 @@ const Tier2Consolidated = () => {
                     invoice: inv.tier2Invoice.invoiceId,
                     payee: "Maruti", //TODO(Priyanshu)
                     invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0,0'),
-                    payment_date: inv.tier2Invoice.dueDate.slice(0,10),
+                    payment_date: formatDate(inv.tier2Invoice.dueDate),
                     receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
-                    early_payment_date: inv.tier2Invoice.lastUpdateTimestamp.slice(0,10),  
+                    early_payment_date: formatDate(inv.tier2Invoice.lastUpdateTimestamp),  
                 };
             });
             setTier2adjustmentdone(rowdata2);

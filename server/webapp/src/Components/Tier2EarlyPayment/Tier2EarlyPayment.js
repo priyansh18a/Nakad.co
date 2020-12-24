@@ -8,6 +8,7 @@ import logo from './../../Graphics/logo.jpg';
 import './../Tier1DataUpdate/Tier1DataUpdate.scss';
 import './Tier2EarlyPayment.scss';
 import Dinero from "dinero.js";
+import {formatDate} from "../../Utils/DateUtils";
 import BtnCellRenderer from "./BtnCellRenderer.jsx";
 import BtnCellRenderer2 from "./BtnCellRenderer2.jsx";
 import BtnCellRenderer3 from "./BtnCellRenderer3.jsx";
@@ -210,8 +211,8 @@ const Tier2EarlyPayment = () => {
                  invoice: inv.invoiceId,
                  customer: inv.tier2.actorInfo.name,
                  receivable_amount: Dinero(inv.receivableAmount).toFormat('$0,0'),
-                 invoice_date: inv.invoiceDate.slice(0,10),
-                 receivable_date: inv.dueDate.slice(0,10),
+                 invoice_date: formatDate(inv.invoiceDate),
+                 receivable_date: formatDate(inv.dueDate),
                  payee: inv.tier1.actorInfo.name, 
              };
          });
@@ -224,7 +225,7 @@ const Tier2EarlyPayment = () => {
              return {
                  invoice: inv.tier2Invoice.invoiceId,
                  customer: inv.tier2Invoice.tier1.actorInfo.name,
-                 payment_date: inv.tier2Invoice.dueDate.slice(0,10),
+                 payment_date: formatDate(inv.tier2Invoice.dueDate),
                  payment_discount:Dinero(inv.discountedAmount).toFormat('$0,0'),
                  invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat('$0,0'),
                  receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
