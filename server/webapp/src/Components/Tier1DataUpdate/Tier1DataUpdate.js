@@ -9,7 +9,7 @@ import Dinero from "dinero.js";
 import './Tier1DataUpdate.scss';
 import BtnCellRenderer from "./BtnCellRenderer.jsx";
 import BtnCellRenderer2 from "./BtnCellRenderer2.jsx";
-
+import {formatDate} from "../../Utils/DateUtils";
 
 const Tier1DataUpdate = () => {
     const history = useHistory();
@@ -18,12 +18,11 @@ const Tier1DataUpdate = () => {
     const [anchortier2mappingtoupdate,  setAnchortier2mappingtoupdate] = useState('');
 
     const columnDefs1 = [
-        {   headerName:"Invoice",
+        {   headerName:"Invoice #",
             field: "invoice",
-            maxWidth: 150,
-            sortable:true
+            maxWidth: 150
         },
-        {   headerName:"Vendor",
+        {   headerName:"Supplier",
             field: "vendor"
         },
         {   headerName:"Invoice Date",
@@ -41,7 +40,6 @@ const Tier1DataUpdate = () => {
         {   headerName:"Remaining Payable",
             field: "remaining_payable",
             minWidth: 200,
-            sortable:true
         },
         {   headerName:"Confirm",
             field: "details",
@@ -61,7 +59,6 @@ const Tier1DataUpdate = () => {
         {   headerName:"Invoice",
             field: "invoice",
             maxWidth: 150,
-            sortable:true
         },
         {   headerName:"Payer",
             field: "payer"
@@ -81,7 +78,6 @@ const Tier1DataUpdate = () => {
         {   headerName:"Remaining Receivable",
             field: "remaining_receivable",
             minWidth: 220,
-            sortable:true
         },
         {   headerName:"Confirm",
             field: "details",
@@ -104,6 +100,7 @@ const Tier1DataUpdate = () => {
         flex: 1,
         resizable: true,
         wrapText: true,
+        filter: true,
         autoHeight: true,
         cellStyle: {color: 'Black'},
         headerComponentParams: {
@@ -141,10 +138,10 @@ const Tier1DataUpdate = () => {
                 return {
                     invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
                     vendor: "Maruti", //TODO(Priyanshu)
-                    invoice_date: inv.partAnchorInvoices.anchorInvoice.invoiceDate.slice(0,10),
-                    discounted_amount: Dinero(inv.discountedAmount).toFormat('$0.00'),
-                    payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0.00'),
-                    remaining_payable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00'),
+                    invoice_date: formatDate(inv.partAnchorInvoices.anchorInvoice.invoiceDate),
+                    discounted_amount: Dinero(inv.discountedAmount).toFormat('$0,0'),
+                    payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0,0'),
+                    remaining_payable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0,0'),
                     details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId]
                 };
             });
@@ -157,9 +154,9 @@ const Tier1DataUpdate = () => {
                     invoice: inv.tier2Invoice.invoiceId,
                     payer: "Maruti", //TODO(Priyanshu)
                     invoice_date: inv.tier2Invoice.invoiceDate.slice(0,10),
-                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0.00'),
-                    discounted_amount: Dinero(inv.discountedAmount).toFormat('$0.00'),
-                    remaining_receivable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0.00'),
+                    receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat('$0,0'),
+                    discounted_amount: Dinero(inv.discountedAmount).toFormat('$0,0'),
+                    remaining_receivable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0,0'),
                     details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId]
                 };
             });
