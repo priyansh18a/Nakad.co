@@ -226,7 +226,7 @@ const Tier2EarlyPayment = () => {
         return pendingbytier1.map(inv => {
              return {
                  invoice: inv.invoiceId,
-                 vendor: inv.tier2.actorInfo.name,
+                 customer: inv.tier2.actorInfo.name,
                  invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0.00'),
                  date_upload: inv.creationTimestamp.slice(0,10), // TODO(Priyanshu), Date upload is not same as invoice date
                  payee: inv.tier1.actorInfo.name, 
@@ -240,7 +240,7 @@ const Tier2EarlyPayment = () => {
             return rejectedbytier1.map(inv => {
                 return {
                     invoice: inv.invoiceId,
-                    payee: inv.tier1.actorInfo.name,
+                    customer: inv.tier1.actorInfo.name,
                     invoice_amount: Dinero(inv.invoiceAmount).toFormat('$0,0'),
                     remark : inv.tier2InvoiceDetails.remark  // TODO(Priyanshu)
                 };
