@@ -9,7 +9,7 @@ import Dinero from "dinero.js";
 import './Tier1DataUpdate.scss';
 import BtnCellRenderer from "./BtnCellRenderer.jsx";
 import BtnCellRenderer2 from "./BtnCellRenderer2.jsx";
-
+import {formatDate} from "../../Utils/DateUtils";
 
 const Tier1DataUpdate = () => {
     const history = useHistory();
@@ -18,11 +18,11 @@ const Tier1DataUpdate = () => {
     const [anchortier2mappingtoupdate,  setAnchortier2mappingtoupdate] = useState('');
 
     const columnDefs1 = [
-        {   headerName:"Invoice",
+        {   headerName:"Invoice #",
             field: "invoice",
             maxWidth: 150
         },
-        {   headerName:"Vendor",
+        {   headerName:"Supplier",
             field: "vendor"
         },
         {   headerName:"Invoice Date",
@@ -138,7 +138,7 @@ const Tier1DataUpdate = () => {
                 return {
                     invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
                     vendor: "Maruti", //TODO(Priyanshu)
-                    invoice_date: inv.partAnchorInvoices.anchorInvoice.invoiceDate.slice(0,10),
+                    invoice_date: formatDate(inv.partAnchorInvoices.anchorInvoice.invoiceDate),
                     discounted_amount: Dinero(inv.discountedAmount).toFormat('$0,0'),
                     payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat('$0,0'),
                     remaining_payable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat('$0,0'),
