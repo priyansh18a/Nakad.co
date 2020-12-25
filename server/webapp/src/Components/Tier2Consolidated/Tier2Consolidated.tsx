@@ -17,13 +17,12 @@ const Tier2Consolidated = () => {
 
   const columnDefs = [
     { headerName: "Invoice Number", field: "invoice", minWidth: 150 },
-    { headerName: "Payee", field: "payee", minWidth: 200 },
+    { headerName: "Customer", field: "customer", minWidth: 200 },
     { headerName: "Invoice Amount", field: "invoice_amount", minWidth: 150 },
     { headerName: "Payment Date (as on invoice)", field: "payment_date", minWidth: 180 },
     { headerName: "Receivable Amount", field: "receivable_amount", minWidth: 180 },
     { headerName: "Early Payment Amount", field: "early_payment_amount", minWidth: 200 },
     { headerName: "Date of Early Payment", field: "early_payment_date", minWidth: 200 },
-
     {
       headerName: "Adjusted in Tally",
       field: "details",
@@ -40,7 +39,7 @@ const Tier2Consolidated = () => {
 
   const columnDefs2 = [
     { headerName: "Invoice Number", field: "invoice" },
-    { headerName: "Payee", field: "payee", minWidth: 200 },
+    { headerName: "Customer", field: "customer", minWidth: 200 },
     { headerName: "Invoice Amount", field: "invoice_amount", minWidth: 150 },
     { headerName: "Payment Date (as on invoice)", field: "payment_date", minWidth: 200 },
     { headerName: "Receivable Amount", field: "receivable_amount", minWidth: 200 },
@@ -86,7 +85,7 @@ const Tier2Consolidated = () => {
         const rowdata1 = adjustmentpending.map((inv: any) => {
           return {
             invoice: inv.tier2Invoice.invoiceId,
-            payee: "Maruti",
+            customer: inv.tier2Invoice.tier2.actorInfo.name,
             invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat("$0,0"),
             payment_date: formatDate(inv.tier2Invoice.dueDate),
             receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat("$0,0"),
@@ -102,7 +101,7 @@ const Tier2Consolidated = () => {
         const rowdata2 = adjustmentdone.map((inv: any) => {
           return {
             invoice: inv.tier2Invoice.invoiceId,
-            payee: "Maruti",
+            customer:  inv.tier2Invoice.tier2.actorInfo.name,
             invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat("$0,0"),
             payment_date: formatDate(inv.tier2Invoice.dueDate),
             receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat("$0,0"),
@@ -114,14 +113,6 @@ const Tier2Consolidated = () => {
   };
 
   const tallyadjustmentdone = () => {
-    const newRowData = tier2adjustmentpending.filter((element) => {
-      return element.invoice !== anchortier2mappingtoupdate[0];
-    });
-    setTier2adjustmentpending(newRowData);
-    const newRowData2 = tier2adjustmentpending.find((element) => {
-      return element.invoice === anchortier2mappingtoupdate[0];
-    });
-    setTier2adjustmentdone([...tier2adjustmentdone, newRowData2]);
     document.getElementById("modal").style.display = "none";
     axios
       .post("/api/UpdateTier2EarlyPaymentReceived", {
@@ -130,6 +121,14 @@ const Tier2Consolidated = () => {
         tier2Entry: "Done",
       })
       .then((response) => {
+        const newRowData = tier2adjustmentpending.filter((element) => {
+          return element.invoice !== anchortier2mappingtoupdate[0];
+        });
+        setTier2adjustmentpending(newRowData);
+        const newRowData2 = tier2adjustmentpending.find((element) => {
+          return element.invoice === anchortier2mappingtoupdate[0];
+        });
+        setTier2adjustmentdone([...tier2adjustmentdone, newRowData2]);
         console.log(response);
       })
       .catch((error) => {

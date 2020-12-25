@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
-import "./App.css";
 import Tier1Login from "./Components/Tier1Login/Tier1Login";
 import Tier2Login from "./Components/Tier2Login/Tier2Login";
 import BankLogin from "./Components/BankLogin/BankLogin";

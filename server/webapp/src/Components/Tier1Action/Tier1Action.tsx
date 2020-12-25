@@ -220,8 +220,7 @@ const Tier1Action = () => {
         {/* <div className="total-benefit has-background-info">Total Benefit: ₹10000</div> */}
       </div>
       <div id="table-more-info" className="has-background-warning">
-        <span className="has-text-info">More Info: </span>Tier 2 requests confirmation of invoice. <br />
-        Based on this it will discount invoice to get early payment.
+        Tier 2 requests confirmation of invoice. Based on <br /> this it will discount invoice to get early payment.
       </div>
       <div className="table-info has-background-info" style={{ marginBottom: "20px", width: "300px" }}>
         Supplier invoices for approval
@@ -263,6 +262,11 @@ const Tier1Action = () => {
                   <li onClick={displaytab2} id="tab-2">
                     <a>
                       <span>GRN</span>
+                    </a>
+                  </li>
+                  <li id="tab-3">
+                    <a>
+                      <span>Debit Note</span>
                     </a>
                   </li>
                 </ul>
