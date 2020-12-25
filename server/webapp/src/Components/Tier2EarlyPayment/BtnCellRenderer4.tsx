@@ -13,7 +13,11 @@ class BtnCellRenderer extends Component<BtnCellRendererProps> {
     this.props.clicked(this.props.value);
   }
   render() {
-    return <button className="button is-danger" onClick={this.btnClickedHandler} style={{marginTop:"3px"}}>Cancel</button>;
+    return (
+      <button className="button is-danger" onClick={this.btnClickedHandler} style={{ marginTop: "3px" }}>
+        Cancel
+      </button>
+    );
   }
 }
 

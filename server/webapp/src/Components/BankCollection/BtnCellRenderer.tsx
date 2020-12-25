@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 interface BtnCellRendererProps {
   clicked: (arg0: string) => void;
-  value: string
+  value: string;
 }
 
 class BtnCellRenderer extends Component<BtnCellRendererProps> {
@@ -14,7 +14,11 @@ class BtnCellRenderer extends Component<BtnCellRendererProps> {
     this.props.clicked(this.props.value);
   }
   render() {
-    return <button className="button is-primary" onClick={this.btnClickedHandler} style={{marginTop:"3px"}}>More Details</button>;
+    return (
+      <button className="button is-primary" onClick={this.btnClickedHandler} style={{ marginTop: "3px" }}>
+        More Details
+      </button>
+    );
   }
 }
 

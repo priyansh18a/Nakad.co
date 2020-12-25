@@ -86,8 +86,6 @@ const Tier1Action = () => {
     btnCellRenderer: BtnCellRenderer,
   };
 
-
-
     const onGridReady = params => {
     axios
       .get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Pending") // TODO(Priyanshu)
@@ -313,7 +311,6 @@ const Tier1Action = () => {
     </div>
     </div>
   );
-
 
 }
 

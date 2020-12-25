@@ -10,8 +10,6 @@ import Dinero from "dinero.js";
 import BtnCellRenderer from "./BtnCellRenderer";
 import {formatDate} from "../../Utils/DateUtils";
 
-
-
 const Tier2Consolidated = () => {
     const [tier2adjustmentpending, setTier2adjustmentpending] = useState([]);
     const [tier2adjustmentdone, setTier2adjustmentdone] = useState([]);
@@ -115,8 +113,6 @@ const Tier2Consolidated = () => {
             btnCellRenderer1: BtnCellRenderer
             
     }
-
-
 
     const onGridReady = params => {
         axios.get("/api/ListTier2EarlyPaymentReceived?tier2Id=2") // TODO(Priyanshu)
