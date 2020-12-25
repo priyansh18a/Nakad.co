@@ -19,15 +19,15 @@ const Tier1DataUpdate = () => {
 
   const columnDefs1 = [
     { headerName: "Invoice #", field: "invoice", maxWidth: 150 },
-    { headerName: "Supplier", field: "vendor" },
+    { headerName: "Supplier", field: "supplier" },
     { headerName: "Invoice Date", field: "invoice_date", minWidth: 180 },
     { headerName: "Payable Amount", field: "payable_amount", minWidth: 200 },
     { headerName: "Amount Discounted", field: "discounted_amount", minWidth: 200 },
-    { headerName: "Remaining Payable", field: "remaining_payable", minWidth: 200 },
+    { headerName: "Remaining Amount", field: "remaining_payable", minWidth: 200 },
     {
-      headerName: "Confirm",
+      headerName: "Entry Adjusted in ERP",
       field: "details",
-      minWidth: 150,
+      minWidth: 200,
       cellRenderer: "btnCellRenderer1",
       cellRendererParams: {
         clicked(field: any) {
@@ -41,13 +41,13 @@ const Tier1DataUpdate = () => {
 
   const columnDefs2 = [
     { headerName: "Invoice", field: "invoice", maxWidth: 150 },
-    { headerName: "Payer", field: "payer" },
+    { headerName: "Customer", field: "customer" },
     { headerName: "Invoice Date", field: "invoice_date", minWidth: 150 },
     { headerName: "Receivable Amount", field: "receivable_amount", minWidth: 200 },
     { headerName: "Amount Discounted", field: "discounted_amount", minWidth: 220 },
-    { headerName: "Remaining Receivable", field: "remaining_receivable", minWidth: 220 },
+    { headerName: "Remaining Amount", field: "remaining_receivable", minWidth: 220 },
     {
-      headerName: "Confirm",
+      headerName: "Entry Adjusted in ERP",
       field: "details",
       minWidth: 150,
       cellRenderer: "btnCellRenderer2",
@@ -103,14 +103,12 @@ const Tier1DataUpdate = () => {
         });
         const rowdata1 = pendingpayable.map((inv: any) => {
           return {
-            invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
-            vendor: "Maruti",
-            invoice_date: formatDate(inv.partAnchorInvoices.anchorInvoice.invoiceDate),
+            invoice: inv.tier2Invoice.invoiceId,
+            supplier: inv.tier2Invoice.tier2.actorInfo.name,
+            invoice_date: formatDate(inv.tier2Invoice.invoiceDate),
             discounted_amount: Dinero(inv.discountedAmount).toFormat("$0,0"),
-            payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat("$0,0"),
-            remaining_payable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount)
-              .subtract(Dinero(inv.discountedAmount))
-              .toFormat("$0,0"),
+            payable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat("$0,0"),
+            remaining_payable:  Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat("$0,0"),
             details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId],
           };
         });
@@ -120,14 +118,12 @@ const Tier1DataUpdate = () => {
         });
         const rowdata2 = pendingreceivable.map((inv: any) => {
           return {
-            invoice: inv.tier2Invoice.invoiceId,
-            payer: "Maruti",
-            invoice_date: inv.tier2Invoice.invoiceDate.slice(0, 10),
-            receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat("$0,0"),
+            invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
+            customer: inv.partAnchorInvoices.anchorInvoice.anchor.actorInfo.name,
+            invoice_date:formatDate(inv.partAnchorInvoices.anchorInvoice.invoiceDate),
+            receivable_amount:Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat("$0,0"),
             discounted_amount: Dinero(inv.discountedAmount).toFormat("$0,0"),
-            remaining_receivable: Dinero(inv.tier2Invoice.receivableAmount)
-              .subtract(Dinero(inv.discountedAmount))
-              .toFormat("$0,0"),
+            remaining_receivable:Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat("$0,0"),
             details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId],
           };
         });
@@ -143,11 +139,6 @@ const Tier1DataUpdate = () => {
 
   // TODO (Priyanshu) Need to complete this
   const removepayableentry = () => {
-    const newRowData = tier1payable.filter((element) => {
-      return element.invoice !== anchortier2mappingtoupdate[1];
-    });
-    setTier1payable(newRowData);
-    document.getElementById("modal").style.display = "none";
     axios
       .post("/api/UpdateTier1PayableReceivable", {
         anchorInvoiceId: anchortier2mappingtoupdate[1],
@@ -156,6 +147,11 @@ const Tier1DataUpdate = () => {
         tier1ReceivableEntry: "Nochange",
       })
       .then((response) => {
+        document.getElementById("modal").style.display = "none";
+        const newRowData = tier1payable.filter((element) => {
+          return element.invoice !== anchortier2mappingtoupdate[1];
+        });
+        setTier1payable(newRowData);
         console.log(response);
       })
       .catch((error) => {
@@ -164,11 +160,6 @@ const Tier1DataUpdate = () => {
   };
 
   const removereceivableentry = () => {
-    const newRowData = tier1receivable.filter((element) => {
-      return element.invoice !== anchortier2mappingtoupdate[0];
-    });
-    setTier1receivable(newRowData);
-    document.getElementById("modal2").style.display = "none";
     axios
       .post("/api/UpdateTier1PayableReceivable", {
         anchorInvoiceId: anchortier2mappingtoupdate[1],
@@ -177,6 +168,11 @@ const Tier1DataUpdate = () => {
         tier1ReceivableEntry: "Done",
       })
       .then((response) => {
+        document.getElementById("modal2").style.display = "none";
+        const newRowData = tier1receivable.filter((element) => {
+          return element.invoice !== anchortier2mappingtoupdate[0];
+        });
+        setTier1receivable(newRowData);
         console.log(response);
       })
       .catch((error) => {
@@ -283,9 +279,8 @@ const Tier1DataUpdate = () => {
       </div>
 
       <div id="table-more-info" className="has-background-warning">
-        <span className="has-text-info">More Info: </span>Tier 2 has discounted its invoice for early payments
-        <br />
-        Request to make following changes in your accounting system.
+        Tier 2 has discounted its invoice for early payments.
+        Request <br />you to make following changes in your accounting system.
       </div>
       <div className="table-info has-background-info" style={{ width: "300px" }}>
         ERP entry adjustment
@@ -335,7 +330,7 @@ const Tier1DataUpdate = () => {
               Confirm
             </button>
             <button className="button is-danger" onClick={closemodal}>
-              Decline
+              Cancel
             </button>
           </footer>
         </div>
@@ -367,7 +362,7 @@ const Tier1DataUpdate = () => {
               Confirm
             </button>
             <button className="button is-danger" onClick={closemodal2}>
-              Decline
+              Cancel
             </button>
           </footer>
         </div>

@@ -19,30 +19,30 @@ const Tier1Consolidated = () => {
 
   const columnDefs = [
     { headerName: "Invoice", field: "invoice" },
-    { headerName: "Payer", field: "payer", minWidth: 200 },
+    { headerName: "Customer", field: "customer", minWidth: 200 },
     { headerName: "Invoice Date", field: "invoice_date", minWidth: 150 },
     { headerName: "Receivable Date", field: "receivable_date", minWidth: 180 },
-    { headerName: "Invoice Amount", field: "invoice_amount", minWidth: 180 },
-    { headerName: "Receivable Amount", field: "receivable_amount", minWidth: 200 },
-    { headerName: "New receivable amount (post discounting)", field: "new_receivable", minWidth: 230 },
+    { headerName: "Receivable Amount", field: "receivable_amount", minWidth: 180 },
+    { headerName: "Discounted Amount", field: "discounted_amount", minWidth: 200 },
+    { headerName: "Net receivable amount", field: "new_receivable", minWidth: 230 },
   ];
 
   const columnDefs2 = [
     { headerName: "Invoice Number", field: "invoice" },
-    { headerName: "Vendor", field: "vendor" },
+    { headerName: "Supplier", field: "supplier" },
     { headerName: "Payable Date", field: "payable_date", minWidth: 170 },
     { headerName: "Buffer Days", field: "buffer_days", minWidth: 150 },
     { headerName: "Payable Amount", field: "payable_amount", minWidth: 180 },
-    { headerName: "Amount Discounted", field: "amount_discounted", minWidth: 200 },
-    { headerName: "New payable (post discounting)", field: "new_payable", minWidth: 230 },
+    { headerName: "Discounted Amount", field: "discounted_amount", minWidth: 200 },
+    { headerName: "Net payable amount", field: "new_payable", minWidth: 230 },
   ];
 
   const columnDefs3 = [
     { headerName: "Invoice", field: "invoice" },
-    { headerName: "Vendor", field: "vendor" },
+    { headerName: "Supplier", field: "supplier" },
     { headerName: "Invoice Date", field: "invoice_date", minWidth: 150 },
     { headerName: "Payable Date", field: "payable_date", minWidth: 150 },
-    { headerName: "Invoice Amount", field: "invoice_amount", minWidth: 180 },
+    { headerName: "Receivable Amount", field: "receivable_amount", minWidth: 180 },
     { headerName: "Payable Amount", field: "payable_amount", minWidth: 180 },
     { headerName: "Approval Date", field: "approval_date", minWidth: 180 },
     {
@@ -119,15 +119,13 @@ const Tier1Consolidated = () => {
     });
     return takenpayable.map((inv) => {
       return {
-        invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
-        vendor: "Maruti", // TODO(Priyanshu)
-        invoice_date: formatDate(inv.partAnchorInvoices.anchorInvoice.invoiceDate),
-        payable_date: formatDate(inv.partAnchorInvoices.anchorInvoice.dueDate),
-        payable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat("$0,0"),
-        amount_discounted: Dinero(inv.discountedAmount).toFormat("$0,0"),
-        new_payable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount)
-          .subtract(Dinero(inv.discountedAmount))
-          .toFormat("$0,0"),
+        invoice:inv.tier2Invoice.invoiceId, 
+        supplier: inv.tier2Invoice.tier2.actorInfo.name,
+        invoice_date:  formatDate(inv.tier2Invoice.invoiceDate),
+        payable_date: formatDate(inv.tier2Invoice.dueDate),
+        payable_amount:  Dinero(inv.tier2Invoice.invoiceAmount).toFormat("$0,0"),
+        discounted_amount:Dinero(inv.discountedAmount).toFormat("$0,0"),
+        new_payable:  Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat("$0,0"),
       };
     });
   };
@@ -138,15 +136,13 @@ const Tier1Consolidated = () => {
     });
     return takenreceivable.map((inv) => {
       return {
-        invoice: inv.tier2Invoice.invoiceId,
-        payer: "Maruti", // TODO(Priyanshu)
-        invoice_date: formatDate(inv.tier2Invoice.invoiceDate),
-        invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat("$0,0"),
-        receivable_date: formatDate(inv.tier2Invoice.dueDate),
-        receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat("$0,0"),
-        new_receivable: Dinero(inv.tier2Invoice.receivableAmount)
-          .subtract(Dinero(inv.discountedAmount))
-          .toFormat("$0,0"),
+        invoice:inv.partAnchorInvoices.anchorInvoice.invoiceId,
+        customer:inv.partAnchorInvoices.anchorInvoice.anchor.actorInfo.name,
+        invoice_date:formatDate(inv.partAnchorInvoices.anchorInvoice.invoiceDate),
+        receivable_amount:Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat("$0,0"),
+        receivable_date: formatDate(inv.partAnchorInvoices.anchorInvoice.dueDate),
+        discounted_amount: Dinero(inv.discountedAmount).toFormat("$0,0"),
+        new_receivable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat("$0,0"),
       };
     });
   };
@@ -155,10 +151,10 @@ const Tier1Consolidated = () => {
     return approvedtier2invoice.map((inv) => {
       return {
         invoice: inv.tier2Invoice.invoiceId,
-        vendor: "Maruti", // TODO(Priyanshu)
+        supplier: inv.tier2Invoice.tier2.actorInfo.name, 
         invoice_date: inv.tier2Invoice.invoiceDate.slice(0, 10),
         payable_date: inv.tier2Invoice.dueDate.slice(0, 10),
-        invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat("$0,0"),
+        receivable_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat("$0,0"),
         payable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat("$0,0"),
         approval_date: inv.tier2Invoice.lastUpdateTimestamp.slice(0, 10), // TODO(Priyanshu)
       };
@@ -283,17 +279,17 @@ const Tier1Consolidated = () => {
         <ul>
           <li className="is-active" onClick={displaytab1} id="tab-1">
             <a>
-              <span>Receivables invoices for which Loan taken by Tier 2</span>
+              <span>Receivable discounted by Supplier</span>
             </a>
           </li>
           <li onClick={displaytab2} id="tab-2">
             <a>
-              <span>Payables invoices for which Loan taken by Tier 2</span>
+              <span>Payables discounted by Supplier</span>
             </a>
           </li>
           <li onClick={displaytab3} id="tab-3">
             <a>
-              <span>Tier 2 Invoices approved</span>
+              <span>Invoices approved by Supplier</span>
             </a>
           </li>
         </ul>
@@ -349,7 +345,7 @@ const Tier1Consolidated = () => {
                 Confirm
               </button>
               <button className="button is-danger" onClick={closemodal}>
-                Decline
+                Cancel
               </button>
             </footer>
           </div>
