@@ -4,7 +4,7 @@ import { AgGridReact } from "ag-grid-react";
 import axios from 'axios';
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-material.css";
-import BtnCellRenderer from "./BtnCellRenderer.jsx";
+import BtnCellRenderer from "./BtnCellRenderer";
 import logo from './../../Graphics/logo.jpg';
 import './Tier1Action.scss';
 import Dinero from "dinero.js";

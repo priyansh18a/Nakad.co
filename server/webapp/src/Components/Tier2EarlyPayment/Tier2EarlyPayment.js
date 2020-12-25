@@ -9,10 +9,10 @@ import './../Tier1DataUpdate/Tier1DataUpdate.scss';
 import './Tier2EarlyPayment.scss';
 import Dinero from "dinero.js";
 import {formatDate} from "../../Utils/DateUtils";
-import BtnCellRenderer from "./BtnCellRenderer.jsx";
-import BtnCellRenderer2 from "./BtnCellRenderer2.jsx";
-import BtnCellRenderer3 from "./BtnCellRenderer3.jsx";
-import BtnCellRenderer4 from "./BtnCellRenderer4.jsx";
+import BtnCellRenderer from "./BtnCellRenderer";
+import BtnCellRenderer2 from "./BtnCellRenderer2";
+import BtnCellRenderer3 from "./BtnCellRenderer3";
+import BtnCellRenderer4 from "./BtnCellRenderer4";
 
 const Tier2EarlyPayment = () => {
     const history = useHistory();

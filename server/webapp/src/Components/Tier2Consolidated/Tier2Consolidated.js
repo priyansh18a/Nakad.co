@@ -7,7 +7,7 @@ import logo from './../../Graphics/logo.jpg';
 import './../Tier1DataUpdate/Tier1DataUpdate.scss';
 import '../Tier2EarlyPayment/Tier2EarlyPayment.scss';
 import Dinero from "dinero.js";
-import BtnCellRenderer from "./BtnCellRenderer.jsx";
+import BtnCellRenderer from "./BtnCellRenderer";
 import {formatDate} from "../../Utils/DateUtils";
 
 

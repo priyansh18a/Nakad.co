@@ -7,8 +7,8 @@ import "ag-grid-community/dist/styles/ag-theme-material.css";
 import logo from './../../Graphics/logo.jpg';
 import Dinero from "dinero.js";
 import './Tier1DataUpdate.scss';
-import BtnCellRenderer from "./BtnCellRenderer.jsx";
-import BtnCellRenderer2 from "./BtnCellRenderer2.jsx";
+import BtnCellRenderer from "./BtnCellRenderer";
+import BtnCellRenderer2 from "./BtnCellRenderer2";
 import {formatDate} from "../../Utils/DateUtils";
 
 const Tier1DataUpdate = () => {
