@@ -3,47 +3,23 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 import FormData from "form-data";
 import logo from "./../../Graphics/logo.jpg";
-
 import "./Tier2Upload.scss";
 
 const Tier2Upload = () => {
   const history = useHistory();
-  const [form, setForm] = useState({
-    invoice: "",
-    payername: "",
-    invoicedate: "",
-    invoiceamount: "",
-    receivableamount: "",
-    receivabledate: "",
-    grn: "",
-    invoicefile: "",
-    grnfile: "",
-  }); //
+  const [form, setForm] = useState({ invoice: "", payername: "", invoicedate: "", invoiceamount: 0, receivableamount: 0, receivabledate: "", grn: "", invoicefile: "", grnfile: "" }); 
   const update = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm({ ...form, [event.target.name]: event.target.value });
-  const [invoiceurl, setInvoiceurl] = useState("");
-  const [grnurl, setGrnurl] = useState("");
+  const [fileurl, setFileurl] = useState([]);
+  const [inputList, setInputList] = useState([{ debitNoteNo: "", debitNoteAmount: 0 , debitNoteFile: ""}]);
   const [customers, setCustomers] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [buttonText, setButtonText] = useState("Send for Approval");
   const dateObj = new Date();
   const currentdate = dateObj.toISOString().split("T")[0];
-  const uploadtime =
-    dateObj.getFullYear() +
-    "-" +
-    (dateObj.getMonth() + 1) +
-    "-" +
-    dateObj.getDate() +
-    " " +
-    dateObj.getHours() +
-    ":" +
-    dateObj.getMinutes() +
-    ":" +
-    dateObj.getSeconds();
+  const uploadtime = dateObj.getFullYear() +"-" + (dateObj.getMonth() + 1) + "-" + dateObj.getDate() + " " + dateObj.getHours() +":" +dateObj.getMinutes() +":" +dateObj.getSeconds();
 
-  useEffect(() => {
-    getcustomers();
-  }, []);
+  useEffect(() => { getcustomers(); }, []);   
 
   const uploadinvoiceandgrn = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -53,7 +29,7 @@ const Tier2Upload = () => {
         tier2Id: 2, // TODO(Priyanshu)
         invoiceId: form.invoice,
         invoiceAmount: {
-          amount: parseInt(form.invoiceamount, 10) * 100, // to provide 2 digit precision
+          amount: form.invoiceamount * 100, // to provide 2 digit precision
           currency: "INR",
           precision: 2,
         },
@@ -61,8 +37,8 @@ const Tier2Upload = () => {
         dueDate: form.receivabledate,
         grnId: [form.grn],
         approvalStatus: "Pending",
-        receivableAmount: { amount: parseInt(form.receivableamount, 10) * 100, currency: "INR", precision: 2 },
-        tier2InvoiceDetails: { data: [invoiceurl, grnurl] },
+        receivableAmount: { amount: form.receivableamount * 100, currency: "INR", precision: 2 },
+        tier2InvoiceDetails: { data: fileurl },
         creationTimestamp: uploadtime,
         lastUpdateTimestamp: uploadtime,
       })
@@ -76,7 +52,7 @@ const Tier2Upload = () => {
       });
   };
 
-  const uploadtier2invoice = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const uploadfile = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUploading(true);
     setButtonText("Uploading...");
     const file = event.target.files[0];
@@ -88,44 +64,16 @@ const Tier2Upload = () => {
         headers: {
           accept: "application/json",
           "Accept-Language": "en-US,en;q=0.8",
-          "Content-Type": `multipart/form-data; boundary=${data.getBoundary()}`,
+          "Content-Type": "multipart/form-data",
         },
       })
       .then((response) => {
         setUploading(false);
         setButtonText("Send for Approval");
-        setInvoiceurl(response.data.fileUrl);
+        setFileurl([...fileurl, response.data.fileUrl]);
       })
       .catch((error) => {
         setButtonText("Uploading Failed! Try Again");
-        console.log(error);
-      });
-  };
-
-  const uploadtier2grn = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUploading(true);
-    setButtonText("Uploading...");
-    const file = event.target.files[0];
-    console.log(file);
-    const data = new FormData();
-    data.append("image", file, file.name);
-    axios
-      .post("/upload", data, {
-        headers: {
-          accept: "application/json",
-          "Accept-Language": "en-US,en;q=0.8",
-          "Content-Type": `multipart/form-data; boundary=${data.getBoundary()}`,
-        },
-      })
-      .then((response) => {
-        // alert("Upload Successful");
-        setUploading(false);
-        setButtonText("Send for Approval");
-        setGrnurl(response.data.fileUrl);
-      })
-      .catch((error) => {
-        setUploading(false);
-        setButtonText("Uploading Failed");
         console.log(error);
       });
   };
@@ -141,6 +89,72 @@ const Tier2Upload = () => {
         console.log(error);
       });
   };
+
+  // handle input change
+  const handleDebitNoteNoChange = (e:React.ChangeEvent<HTMLInputElement>, index:number) => {
+    const { value } = e.target;
+    const list = [...inputList];
+    list[index].debitNoteNo = value;
+    setInputList(list);
+  };
+
+  const handleDebitNoteAmountChange = (e:React.ChangeEvent<HTMLInputElement>, index:number) => {
+    const { value } = e.target;
+    const list = [...inputList];
+    if(value) list[index].debitNoteAmount = parseInt(value,10);
+    setInputList(list);
+  };
+
+  // handle click event of the Remove button
+  const handleRemoveClick = (index:number) => {
+    const list = [...inputList];
+    list.splice(index, 1);
+    setInputList(list);
+  };
+
+  // handle click event of the Add button
+  const handleAddClick = () => {
+    setInputList([...inputList, { debitNoteNo: "", debitNoteAmount: 0, debitNoteFile: "" }]);
+  };
+
+  const uploaddebitnotefile = (event: React.ChangeEvent<HTMLInputElement>, index:number) => {
+    setUploading(true);
+    setButtonText("Uploading...");
+    const file = event.target.files[0];
+    console.log(file);
+    const data = new FormData();
+    data.append("image", file, file.name);
+    axios
+      .post("/upload", data, {
+        headers: {
+          accept: "application/json",
+          "Accept-Language": "en-US,en;q=0.8",
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        setUploading(false);
+        setButtonText("Send for Approval");
+        const list = [...inputList];
+        list[index].debitNoteFile = response.data.fileUrl;
+        setInputList(list);
+      })
+      .catch((error) => {
+        setButtonText("Uploading Failed! Try Again");
+        console.log(error);
+      });
+  };
+
+  const calculatereceivedamount = () => {
+    let debitnoteamount = 0 ;
+    for(let i of inputList ){
+       debitnoteamount -=  i.debitNoteAmount;
+    }
+    let positivevalue = Math.abs(debitnoteamount); //getting some issue in using + to calculate final amount so first positive value and then subtract
+    let finalamount = form.invoiceamount - positivevalue;
+    setForm({...form, receivableamount:finalamount}) ;     
+  }
+
 
   return (
     <div>
@@ -193,15 +207,7 @@ const Tier2Upload = () => {
               <div className="field">
                 <div className="control">
                   <label className="label">Invoice Number</label>
-                  <input
-                    className="input"
-                    type="text"
-                    name="invoice"
-                    placeholder="Invoice Number"
-                    value={form.invoice}
-                    onChange={update}
-                    required
-                  />
+                  <input className="input" type="text" name="invoice" placeholder="Invoice Number"  value={form.invoice}  onChange={update}  required/>
                 </div>
               </div>
               <div className="field">
@@ -224,80 +230,26 @@ const Tier2Upload = () => {
               <div className="field">
                 <div className="control">
                   <label className="label">Invoice Date</label>
-                  <input
-                    className="input"
-                    type="date"
-                    max={currentdate}
-                    id="invoicedate"
-                    name="invoicedate"
-                    placeholder="Invoice Date"
-                    value={form.invoicedate}
-                    onChange={update}
-                    required
-                  />
+                  <input  className="input"  type="date"  max={currentdate}  id="invoicedate"  name="invoicedate"  placeholder="Invoice Date"  value={form.invoicedate}  onChange={update}  required   />
                 </div>
               </div>
               <div className="field">
                 <div className="control">
                   <label className="label">Receivable Date</label>
-                  <input
-                    className="input"
-                    type="date"
-                    min={currentdate}
-                    id="receivabledate"
-                    name="receivabledate"
-                    placeholder="Receivable Date"
-                    value={form.receivabledate}
-                    onChange={update}
-                    required
+                  <input  className="input" type="date" min={currentdate} id="receivabledate" name="receivabledate" placeholder="Receivable Date" value={form.receivabledate} onChange={update} required
                   />
                 </div>
               </div>
               <div className="field">
                 <div className="control">
                   <label className="label">Invoice Amount</label>
-                  <input
-                    className="input"
-                    type="number"
-                    name="invoiceamount"
-                    placeholder="Amount(in ₹)"
-                    value={form.invoiceamount}
-                    onChange={update}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="field">
-                <div className="control">
-                  <label className="label">Receivable Amount</label>
-                  <input
-                    className="input"
-                    type="number"
-                    name="receivableamount"
-                    placeholder="Receivable Amount(in ₹)"
-                    value={form.receivableamount}
-                    onChange={update}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="field">
-                <div className="control">
-                  <label className="label">GRN</label>
-                  <input
-                    className="input"
-                    type="text"
-                    name="grn"
-                    placeholder="GRN #"
-                    value={form.grn}
-                    onChange={update}
-                    required
+                  <input className="input" type="number" name="invoiceamount" placeholder="Amount(in ₹)" value={form.invoiceamount} onChange={update} required
                   />
                 </div>
               </div>
               <div id="file-js-example" className=" field file has-name is-dark">
                 <label className="file-label">
-                  <input className="file-input" type="file" name="invoicefile" onChange={uploadtier2invoice} required />
+                  <input className="file-input" type="file" name="invoicefile" onChange={uploadfile} required />
                   <span className="file-cta">
                     <span className="file-icon">
                       <i className="fas fa-upload"></i>
@@ -307,9 +259,58 @@ const Tier2Upload = () => {
                   <span className="file-name">No file uploaded</span>
                 </label>
               </div>
+              {inputList.map((x, i) => {
+                      return (
+                        <div>
+                          <div className="field">
+                            <div className="control">
+                                <label className="label">Debit Note Number</label>
+                                <input className="input" type="text" name="debitNoteNo" placeholder="Enter Debit Note No." value={x.debitNoteNo} onChange={e => handleDebitNoteNoChange(e, i)}
+                                />
+                              </div>
+                            </div>
+                          <div className="field">
+                            <div className="control">
+                              <label className="label">Debit Note Amount</label>
+                              <input className="input" type="number" name="debitNoteAmount" placeholder="Enter Debit Note Amount" value={x.debitNoteAmount} onChange={e => handleDebitNoteAmountChange(e, i)}
+                              />
+                            </div>
+                          </div>
+                          <div id="file-js-example3" className=" field file has-name is-dark">
+                            <label className="file-label">
+                              <input className="file-input" type="file" name="debitNoteFile" onChange={e => uploaddebitnotefile(e,i)}  required />
+                              <span className="file-cta">
+                                <span className="file-icon">
+                                  <i className="fas fa-upload"></i>
+                                </span>
+                                <span className="file-label">Upload Debit Note</span>
+                              </span>
+                              <span className="file-name">No file uploaded</span>
+                            </label>
+                          </div>
+                          <div className="buttons" style={{marginBottom:"5px"}}>
+                             {inputList.length - 1 === i && <button onClick={handleAddClick} className="is-success button">Add More Debit Note</button>}
+                             {inputList.length !== 1 && <button className="is-danger button" onClick={() => handleRemoveClick(i)}>Remove</button>}
+                          </div>
+                        </div>
+                      );
+                    })}
+             <div className="field">
+                <div className="control">
+                  <label className="label">Receivable Amount</label>
+                  <input className="input" type="number" name="receivableamount" placeholder="Receivable Amount(in ₹)" readOnly  value={form.receivableamount} required onClick={calculatereceivedamount}/>
+                </div>
+              </div>
+              <div className="field">
+                <div className="control">
+                  <label className="label">GRN</label>
+                  <input className="input" type="text" name="grn" placeholder="GRN #" value={form.grn} onChange={update} required
+                  />
+                </div>
+              </div>
               <div id="file-js-example2" className=" field file has-name is-dark">
                 <label className="file-label">
-                  <input className="file-input" type="file" name="grnfile" onChange={uploadtier2grn} required />
+                  <input className="file-input" type="file" name="grnfile" onChange={uploadfile} required />
                   <span className="file-cta">
                     <span className="file-icon">
                       <i className="fas fa-upload"></i>
