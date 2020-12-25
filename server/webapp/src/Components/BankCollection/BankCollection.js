@@ -5,7 +5,7 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import logo from './../../Graphics/logo.jpg';
 import './../Tier1DataUpdate/Tier1DataUpdate.scss';
 import './../Tier2EarlyPayment/Tier2EarlyPayment.scss';
-import BtnCellRenderer from "./BtnCellRenderer.jsx";
+import BtnCellRenderer from "./BtnCellRenderer";
 import invoice from '../../Graphics/invoice.jpeg'
 
 

@@ -21,8 +21,6 @@ import Tier1Consolidated from './Components/Tier1Consolidated/Tier1Consolidated'
 import Tier2Consolidated from './Components/Tier2Consolidated/Tier2Consolidated';
 import Register from './Components/Register/Register';
 
-
-
 const App = () => {
 
   return (

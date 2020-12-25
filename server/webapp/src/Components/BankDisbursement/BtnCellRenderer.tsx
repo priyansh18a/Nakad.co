@@ -1,7 +1,12 @@
 import React, { Component } from "react";
 
-class BtnCellRenderer extends Component {
-  constructor(props) {
+interface BtnCellRendererProps {
+  clicked: (arg0: string) => void;
+  value: string
+}
+
+class BtnCellRenderer extends Component<BtnCellRendererProps> {
+  constructor(props: BtnCellRendererProps) {
     super(props);
     this.btnClickedHandler = this.btnClickedHandler.bind(this);
   }
