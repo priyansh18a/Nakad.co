@@ -17,15 +17,16 @@ const Tier1Action = () => {
   const [tier2Invoiceurl, setTier2Invoiceurl] = useState("");
   const [tier2GRNurl, setTier2GRNurl] = useState("");
   const [remark, setRemark] = useState("");
-  const updateremark = ({ target }) => setRemark(target.value);
+
+  const updateremark = (event: React.ChangeEvent<HTMLTextAreaElement>) => setRemark(event.target.value);
 
   const showtablemoreinfo = () => {
-    document.getElementById("table-more-info").style.display = "block";
+    (document.getElementById("table-more-info") as HTMLElement).style.display = "block";
     console.log("it work");
   };
 
   const hidetablemoreinfo = () => {
-    document.getElementById("table-more-info").style.display = "none";
+    (document.getElementById("table-more-info") as HTMLElement).style.display = "none";
   };
 
   const columnDefs = [
@@ -40,7 +41,7 @@ const Tier1Action = () => {
       field: "details",
       cellRenderer: "btnCellRenderer",
       cellRendererParams: {
-        clicked: function (field) {
+        clicked(field: any) {
           console.log(field);
           setInvoicetoupdate(field[0]);
           if (field[1]) {
@@ -86,13 +87,13 @@ const Tier1Action = () => {
     btnCellRenderer: BtnCellRenderer,
   };
 
-    const onGridReady = params => {
+  const onGridReady = () => {
     axios
       .get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Pending") // TODO(Priyanshu)
-      .then(function (response) {
+      .then((response) => {
         setTier2actiondata(response.data);
       })
-      .catch(function (error) {
+      .catch((error) => {
         history.push({
           pathname: "/tier1",
           state: { alert: "true" },
@@ -101,7 +102,7 @@ const Tier1Action = () => {
       });
   };
 
-  const changestatus = (status) => {
+  const changestatus = (status: any) => {
     const tier2invoice = tier2actiondata.find((element) => {
       return element.invoiceId === invoicetoupdate;
     });
@@ -110,15 +111,15 @@ const Tier1Action = () => {
     callapi(tier2invoice);
   };
 
-  const callapi = (tier2invoice) => {
+  const callapi = (tier2invoice: any) => {
     axios
       .post("/api/UpdateTier2InvoiceForApproval", tier2invoice)
-      .then(function (response) {
+      .then((response) => {
         console.log(response);
         onGridReady();
         document.getElementById("modal").style.display = "none";
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -144,10 +145,10 @@ const Tier1Action = () => {
   const logout = () => {
     axios
       .get("/logout")
-      .then(function (response) {
+      .then((response) => {
         history.push("/");
       })
-      .catch(function (error) {
+      .catch((error) => {
         // handle error
         console.log(error);
       });
@@ -238,7 +239,7 @@ const Tier1Action = () => {
             rowData={getrowdata()}
             domLayout="autoHeight"
             rowClassRules={{
-              highlight: function (params) {
+              highlight(params) {
                 return params.data.invoice === "KEINV1234";
               },
             }}
@@ -267,17 +268,16 @@ const Tier1Action = () => {
                 </ul>
               </div>
               <p className="image is-4by3" id="invoice">
-                <img src={tier2Invoiceurl} alt="" crossOrigin="Anonymous" />
+                <img src={tier2Invoiceurl} alt="" crossOrigin="anonymous" />
               </p>
               <p className="image is-4by3" id="grn">
-                <img src={tier2GRNurl} alt="" crossOrigin="Anonymous" />
+                <img src={tier2GRNurl} alt="" crossOrigin="anonymous" />
               </p>
               <div className="field">
                 <div className="control">
                   <label className="label">Remark</label>
                   <textarea
                     className="input"
-                    type="text"
                     name="remark"
                     placeholder="Write your remark here(if any)"
                     style={{ height: "80px" }}
@@ -287,31 +287,30 @@ const Tier1Action = () => {
                 </div>
               </div>
 
-                <footer className="modal-card-foot">
-              <button
-                className="button is-success"
-                onClick={() => {
-                  changestatus("Approved");
-                }}
-              >
-                Approve
-              </button>
-              <button
-                className="button is-danger"
-                onClick={() => {
-                  changestatus("Rejected");
-                }}
-              >
-                Decline
-              </button>
-            </footer>
-          </section>
+              <footer className="modal-card-foot">
+                <button
+                  className="button is-success"
+                  onClick={() => {
+                    changestatus("Approved");
+                  }}
+                >
+                  Approve
+                </button>
+                <button
+                  className="button is-danger"
+                  onClick={() => {
+                    changestatus("Rejected");
+                  }}
+                >
+                  Decline
+                </button>
+              </footer>
+            </section>
+          </div>
         </div>
       </div>
     </div>
-    </div>
   );
-
-}
+};
 
 export default Tier1Action;
