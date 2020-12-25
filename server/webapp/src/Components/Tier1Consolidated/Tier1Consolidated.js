@@ -1,4 +1,4 @@
-import React ,  { useState}from 'react';
+import React,  { useState} from 'react';
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
 import {  AgGridReact } from 'ag-grid-react';
@@ -10,7 +10,6 @@ import '../Tier2EarlyPayment/Tier2EarlyPayment.scss';
 import Dinero from "dinero.js";
 import BtnCellRenderer from "./BtnCellRenderer";
 import {formatDate} from "../../Utils/DateUtils";
-
 
 const Tier1Consolidated = () => {
     const history = useHistory();
@@ -145,7 +144,6 @@ const Tier1Consolidated = () => {
               }
         }       
     
-
     const frameworkComponents =  {
         btnCellRenderer: BtnCellRenderer       
     }
@@ -159,7 +157,6 @@ const Tier1Consolidated = () => {
             console.log(error);
         })
        
-
     };
     const onGridReady2 = params => {
     }

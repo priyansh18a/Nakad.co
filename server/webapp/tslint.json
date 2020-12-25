@@ -1,0 +1,16 @@
+{
+    "extends": "tslint:recommended",
+    "rules": {
+        "no-console": {
+            "severity": "off",
+            "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
+        },
+        "prettier": [true, { "printWidth" : 120}]
+
+    },
+    "jsRules": {
+        "no-console":false,
+        "no-empty":false
+    },
+    "rulesDirectory": ["tslint-plugin-prettier"]
+}

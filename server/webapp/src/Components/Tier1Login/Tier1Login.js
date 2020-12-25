@@ -4,7 +4,6 @@ import { useHistory ,  useLocation  } from "react-router-dom";
 import 'react-bulma-components/dist/react-bulma-components.min.css';
 import "./Tier1Login.scss"
 
-
 const Tier1Login = () => {
     const history = useHistory();
     const location = useLocation();
@@ -17,7 +16,6 @@ const Tier1Login = () => {
             document.getElementById("msg").innerHTML = "Please Login to access Action page";
         }
      }, [location]);
-    
     
     const logintier1 = event => {
         event.preventDefault();

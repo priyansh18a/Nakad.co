@@ -27,7 +27,7 @@ const Tier2Upload =  () => {
             tier1Id: 1,     // TODO(Priyanshu)
             tier2Id: 2,      // TODO(Priyanshu)
             invoiceId: form.invoice,
-            invoiceAmount : { amount : parseInt(form.invoiceamount)*100, //to provide 2 digit precision
+            invoiceAmount : { amount : parseInt(form.invoiceamount, 10)*100, //to provide 2 digit precision
                               currency: "INR",
                               precision: 2
                             },
@@ -35,7 +35,7 @@ const Tier2Upload =  () => {
             dueDate: form.receivabledate,
             grnId: [form.grn],
             approvalStatus:  "Pending",
-            receivableAmount: { amount:  parseInt(form.receivableamount)*100,
+            receivableAmount: { amount:  parseInt(form.receivableamount, 10)*100,
                                 currency:"INR",
                                 precision: 2
                               },
@@ -54,9 +54,6 @@ const Tier2Upload =  () => {
             console.log(error);
           });
     }
-
-   
-
 
     const uploadtier2invoice = event => {
         setUploading(true);

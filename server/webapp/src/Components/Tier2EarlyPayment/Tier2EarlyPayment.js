@@ -125,8 +125,6 @@ const Tier2EarlyPayment = () => {
         }
       ]
 
-  
-
     const defaultColDef = {
         flex: 2,
         minWidth: 150,
@@ -165,9 +163,6 @@ const Tier2EarlyPayment = () => {
         btnCellRenderer2: BtnCellRenderer2
     }
 
- 
-   
-
     const onGridReady1 = params => {
         axios.get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Pending") // TODO(Priyanshu)
         .then(function (response) {
@@ -181,7 +176,6 @@ const Tier2EarlyPayment = () => {
             console.log(error);
         })
     };
-
 
     const onGridReady2 = params => {
         axios.get("/api/ListTier2InvoicesForDiscounting?tier1Id=1&tier2Id=2") // TODO(Priyanshu)
@@ -204,7 +198,6 @@ const Tier2EarlyPayment = () => {
 
     };
 
-
     const getpendingbytier1data = () => {
         return pendingbytier1.map(inv => {
              return {
@@ -218,8 +211,6 @@ const Tier2EarlyPayment = () => {
          });
     }
 
-
-    
     const getapprovedrowdata = () => {
         return checkedbytier1.map(inv => {
              return {
@@ -233,7 +224,6 @@ const Tier2EarlyPayment = () => {
              };
          });
      }
-
 
     const confirmearlypayment = () => {
         const discontedtier2 =  checkedbytier1.find((element) => {
@@ -299,8 +289,6 @@ const Tier2EarlyPayment = () => {
         document.getElementById("tab-3").classList.add("is-active");
     }
   
-
-
     return (
         <div>
             <nav className="navbar is-info" role="navigation" aria-label="main navigation">
@@ -433,8 +421,6 @@ const Tier2EarlyPayment = () => {
           />
     </div>
 
-  
- 
     </div>
     );
 
