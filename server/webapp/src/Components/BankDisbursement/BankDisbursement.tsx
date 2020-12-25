@@ -160,7 +160,6 @@ const BankDisbursement = () => {
     if (element != null) {
       element.style.display = "none";
     }
-
   };
 
   return (

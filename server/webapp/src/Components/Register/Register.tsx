@@ -17,7 +17,7 @@ const Register = () => {
         password: form.password,
         data: { name: form.name },
       })
-      .then(function (response) {
+      .then((response) => {
         if (response.data.message) {
           const flashMsg = document.getElementById("flash-msg");
           const msg = document.getElementById("msg");
@@ -32,7 +32,7 @@ const Register = () => {
           msg.innerHTML = 'Registration Successful. Please <a href="/tier1">Login</a> here.';
         }
       })
-      .catch(function (error) {
+      .catch((error) => {
         const flashMsg = document.getElementById("flash-msg");
         const msg = document.getElementById("msg");
         if (flashMsg == null || msg == null) return;

@@ -17,8 +17,7 @@ const Tier1Action = () => {
   const [tier2Invoiceurl, setTier2Invoiceurl] = useState("");
   const [tier2GRNurl, setTier2GRNurl] = useState("");
   const [remark, setRemark] = useState("");
-  const updateremark = (event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) =>
-    setRemark(event.target.value);
+  const updateremark = ({ target }) => setRemark(target.value);
 
   const showtablemoreinfo = () => {
     document.getElementById("table-more-info").style.display = "block";
@@ -41,7 +40,7 @@ const Tier1Action = () => {
       field: "details",
       cellRenderer: "btnCellRenderer",
       cellRendererParams: {
-        clicked(field) {
+        clicked: function (field) {
           console.log(field);
           setInvoicetoupdate(field[0]);
           if (field[1]) {
@@ -87,7 +86,9 @@ const Tier1Action = () => {
     btnCellRenderer: BtnCellRenderer,
   };
 
-  const onGridReady = (params) => {
+
+
+    const onGridReady = params => {
     axios
       .get("/api/ListTier2Invoices?tier1Id=1&approvalStatus=Pending") // TODO(Priyanshu)
       .then(function (response) {
@@ -239,7 +240,7 @@ const Tier1Action = () => {
             rowData={getrowdata()}
             domLayout="autoHeight"
             rowClassRules={{
-              highlight(params) {
+              highlight: function (params) {
                 return params.data.invoice === "KEINV1234";
               },
             }}
@@ -288,30 +289,32 @@ const Tier1Action = () => {
                 </div>
               </div>
 
-              <footer className="modal-card-foot">
-                <button
-                  className="button is-success"
-                  onClick={() => {
-                    changestatus("Approved");
-                  }}
-                >
-                  Approve
-                </button>
-                <button
-                  className="button is-danger"
-                  onClick={() => {
-                    changestatus("Rejected");
-                  }}
-                >
-                  Decline
-                </button>
-              </footer>
-            </section>
-          </div>
+                <footer className="modal-card-foot">
+              <button
+                className="button is-success"
+                onClick={() => {
+                  changestatus("Approved");
+                }}
+              >
+                Approve
+              </button>
+              <button
+                className="button is-danger"
+                onClick={() => {
+                  changestatus("Rejected");
+                }}
+              >
+                Decline
+              </button>
+            </footer>
+          </section>
         </div>
       </div>
     </div>
+    </div>
   );
-};
+
+
+}
 
 export default Tier1Action;
