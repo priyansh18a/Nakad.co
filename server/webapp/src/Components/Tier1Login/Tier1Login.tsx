@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from "react";
+ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory, useLocation } from "react-router-dom";
 import "react-bulma-components/dist/react-bulma-components.min.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 import "./Tier1Login.scss";
+
+const eye = <FontAwesomeIcon icon={faEye} />;
 
 const Tier1Login = () => {
   const history = useHistory();
   const location = useLocation();
   const [form, setForm] = useState({ companyid: "", username: "", password: "" });
+  const [passwordShown, setPasswordShown] = useState(false);
+
   const update = (event: React.ChangeEvent<HTMLInputElement>) =>
     setForm({ ...form, [event.target.name]: event.target.value });
   useEffect(() => {
@@ -40,6 +46,10 @@ const Tier1Login = () => {
       });
   };
 
+  const togglePasswordVisiblity = () => {
+    setPasswordShown(passwordShown ? false : true);
+  };
+
   const closeflash = () => {
     document.getElementById("flash-msg").style.display = "none";
   };
@@ -57,29 +67,16 @@ const Tier1Login = () => {
             <div className="field">
               <div className="control">
                 <label className="label">User ID</label>
-                <input
-                  className="input"
-                  type="text"
-                  name="username"
-                  placeholder="User ID"
-                  value={form.username}
-                  onChange={update}
-                  required
-                />
+                <input className="input" type="text" name="username" placeholder="User ID" value={form.username} onChange={update} required/>
               </div>
             </div>
             <div className="field">
-              <div className="control">
+              <div className="control has-icons-right">
                 <label className="label">Password</label>
-                <input
-                  className="input"
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  value={form.password}
-                  onChange={update}
-                  required
-                />
+                <div style={{display:"flex"}}>
+                  <input  className="input"  type={passwordShown ? "text" : "password"}  name="password"  placeholder="Password"  value={form.password}  onChange={update}  required/>
+                  <i onClick={togglePasswordVisiblity} id="eye">{eye}</i>
+                </div>
               </div>
               <a className="help has-text-left" href="/tier1">
                 Forgot Company ID / User ID / Password
