@@ -7,10 +7,17 @@ import { AnchorTier2InvoiceMapping } from "./AnchorTier2InvoiceMapping";
 interface Tier2InvoiceDetails {
   data: Image[];
   remark: string;
+  debitNotes: DebitNotes[];
 }
 
 interface Image {
   link: string;
+}
+
+interface DebitNotes {
+  debitNoteNumber: string;
+  debitNoteAmount: number;
+  debitNoteFile: string;
 }
 
 @Index("tier2_unqiue", ["invoiceId", "tier1Id", "tier2Id"], { unique: true })

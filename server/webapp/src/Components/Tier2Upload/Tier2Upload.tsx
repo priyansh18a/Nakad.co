@@ -38,9 +38,10 @@ const Tier2Upload = () => {
         grnId: [form.grn],
         approvalStatus: "Pending",
         receivableAmount: { amount: form.receivableamount * 100, currency: "INR", precision: 2 },
-        tier2InvoiceDetails: { data: fileurl },
+        tier2InvoiceDetails: { data: fileurl , debitNotes: inputList },
         creationTimestamp: uploadtime,
         lastUpdateTimestamp: uploadtime,
+
       })
       .then((response) => {
         console.log(response);
@@ -123,9 +124,12 @@ const Tier2Upload = () => {
     const file = event.target.files[0];
     console.log(file);
     const data = new FormData();
+    if(document.getElementById(inputList[index].debitNoteNo)) document.getElementById(inputList[index].debitNoteNo).textContent = file.name;
+    else{
+      alert("First Fill Debit Note Number");
+    }
     data.append("image", file, file.name);
-    axios
-      .post("/upload", data, {
+    axios.post("/upload", data, {
         headers: {
           accept: "application/json",
           "Accept-Language": "en-US,en;q=0.8",
@@ -217,7 +221,7 @@ const Tier2Upload = () => {
                 <div className="control">
                   <div className="select">
                     <select name="payername" onChange={update} required>
-                      <option defaultValue="">Select dropdown</option>
+                     <option defaultValue="">Select dropdown</option>         {/*    TODO(Priyanshu) Sending this data to backend pending */}
                       {customers.map((element) => (
                         <option value={element.customerActor.name} key={element.customerActor.name}>
                           {element.customerActor.name}
@@ -256,7 +260,7 @@ const Tier2Upload = () => {
                     </span>
                     <span className="file-label">Upload Invoice</span>
                   </span>
-                  <span className="file-name">No file uploaded</span>
+                  <span className="file-name" >No file uploaded</span>
                 </label>
               </div>
               {inputList.map((x, i) => {
@@ -276,7 +280,7 @@ const Tier2Upload = () => {
                               />
                             </div>
                           </div>
-                          <div id="file-js-example3" className=" field file has-name is-dark">
+                          <div className=" field file has-name is-dark">
                             <label className="file-label">
                               <input className="file-input" type="file" name="debitNoteFile" onChange={e => uploaddebitnotefile(e,i)}  required />
                               <span className="file-cta">
@@ -285,7 +289,7 @@ const Tier2Upload = () => {
                                 </span>
                                 <span className="file-label">Upload Debit Note</span>
                               </span>
-                              <span className="file-name">No file uploaded</span>
+                              <span className="file-name" id={x.debitNoteNo}>No file uploaded</span>
                             </label>
                           </div>
                           <div className="buttons" style={{marginBottom:"5px"}}>
