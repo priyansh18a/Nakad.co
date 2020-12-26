@@ -16,8 +16,8 @@ interface Image {
 
 interface DebitNotes {
   debitNoteNumber: string;
-  debitNoteAmount: number ;
-  debitNoteFile : string;
+  debitNoteAmount: number;
+  debitNoteFile: string;
 }
 
 @Index("tier2_unqiue", ["invoiceId", "tier1Id", "tier2Id"], { unique: true })
