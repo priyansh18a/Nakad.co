@@ -39,6 +39,8 @@ export async function updateTier2InvoicesForDiscounting(req: Request, res: Respo
     // TODO(harshil) - Remove this auto-approve once bank screens are completed.
     bankId: 3,
     bankApprovalStatus: "Approved",
+    tier1PayableEntry: "Pending",
+    tier1ReceivableEntry: "Pending",
   };
 
   const retVal: AnchorTier2InvoiceMapping = await getConnection()

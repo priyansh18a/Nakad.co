@@ -60,22 +60,22 @@ export async function listTier2InvoicesForDiscountingInternal(
     const anchorInvoice = anchorInvoices[j];
     if (
       tier2Invoice.dueDate <= anchorInvoice.dueDate &&
-      MoneyUtil.lessThanOrEqual(tier2Invoice.invoiceAmount, anchorInvoice.invoiceAmount)
+      MoneyUtil.lessThanOrEqual(tier2Invoice.receivableAmount, anchorInvoice.invoiceAmount)
     ) {
       const interestRate = 15 / 100;
       const daysPending = Math.floor((anchorInvoice.dueDate.valueOf() - new Date().valueOf()) / 86400000);
       console.log(daysPending);
       const hairCut = parseFloat(((Math.max(daysPending, 0) / 365) * interestRate).toFixed(4));
       const discountedAmount = MoneyUtil.subtract(
-        tier2Invoice.invoiceAmount,
-        MoneyUtil.multiply(tier2Invoice.invoiceAmount, hairCut)
+        tier2Invoice.receivableAmount,
+        MoneyUtil.multiply(tier2Invoice.receivableAmount, hairCut)
       );
       invoiceToReturn.push({
         tier2Invoice,
         discountedAmount,
         discountedAnnualRatePercentage: hairCut * 100,
         status: "Pending",
-        partAnchorInvoices: [{ anchorInvoice, partialAmount: tier2Invoice.invoiceAmount }],
+        partAnchorInvoices: [{ anchorInvoice, partialAmount: tier2Invoice.receivableAmount }],
       });
       j++;
     }
