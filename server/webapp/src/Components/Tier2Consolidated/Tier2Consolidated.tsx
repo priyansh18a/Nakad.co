@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import axios from "axios";
 import "ag-grid-community/dist/styles/ag-grid.css";
-import "ag-grid-community/dist/styles/ag-theme-material.css";
-import logo from "./../../Graphics/logo.jpg";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+import Nakad from "./../../Graphics/Nakad.svg";
+import Notification from "./../../Graphics/Notification.svg";
+import Support from "./../../Graphics/Support.svg";
 import "./../Tier1DataUpdate/Tier1DataUpdate.scss";
 import "../Tier2EarlyPayment/Tier2EarlyPayment.scss";
 import Dinero from "dinero.js";
@@ -16,15 +18,15 @@ const Tier2Consolidated = () => {
   const [anchortier2mappingtoupdate, setAnchortier2mappingtoupdate] = useState("");
 
   const columnDefs = [
-    { headerName: "Invoice Number", field: "invoice", minWidth: 150 },
+    { headerName: "Invoice number", field: "invoice", minWidth: 150 },
     { headerName: "Customer", field: "customer", minWidth: 200 },
-    { headerName: "Invoice Amount", field: "invoice_amount", minWidth: 150 },
-    { headerName: "Payment Date (as on invoice)", field: "payment_date", minWidth: 180 },
-    { headerName: "Receivable Amount", field: "receivable_amount", minWidth: 180 },
-    { headerName: "Early Payment Amount", field: "early_payment_amount", minWidth: 200 },
-    { headerName: "Date of Early Payment", field: "early_payment_date", minWidth: 200 },
+    { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150 },
+    { headerName: "Payment date (as on invoice)", field: "payment_date", minWidth: 180 },
+    { headerName: "Receivable amount", field: "receivable_amount", minWidth: 180 },
+    { headerName: "Early payment amount", field: "early_payment_amount", minWidth: 200 },
+    { headerName: "Date of early payment", field: "early_payment_date", minWidth: 200 },
     {
-      headerName: "Adjusted in Tally",
+      headerName: "Adjusted in tally",
       field: "details",
       cellRenderer: "btnCellRenderer1",
       cellRendererParams: {
@@ -38,12 +40,12 @@ const Tier2Consolidated = () => {
   ];
 
   const columnDefs2 = [
-    { headerName: "Invoice Number", field: "invoice" },
+    { headerName: "Invoice number", field: "invoice" },
     { headerName: "Customer", field: "customer", minWidth: 200 },
-    { headerName: "Invoice Amount", field: "invoice_amount", minWidth: 150 },
-    { headerName: "Payment Date (as on invoice)", field: "payment_date", minWidth: 200 },
-    { headerName: "Receivable Amount", field: "receivable_amount", minWidth: 200 },
-    { headerName: "Date of Early Payment", field: "early_payment_date", minWidth: 200 },
+    { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150 },
+    { headerName: "Payment date (as on invoice)", field: "payment_date", minWidth: 200 },
+    { headerName: "Receivable amount", field: "receivable_amount", minWidth: 200 },
+    { headerName: "Date of early payment", field: "early_payment_date", minWidth: 200 },
   ];
 
   const defaultColDef = {
@@ -54,7 +56,7 @@ const Tier2Consolidated = () => {
     resizable: true,
     wrapText: true,
     autoHeight: true,
-    cellStyle: { color: "Black", textAlign: "center" },
+    cellStyle: { color: "#4D4F5C", textAlign: "center" },
     headerComponentParams: {
       template:
         '<div class="ag-cell-label-container" role="presentation">' +
@@ -159,10 +161,10 @@ const Tier2Consolidated = () => {
 
   return (
     <div>
-      <nav className="navbar is-info" role="navigation" aria-label="main navigation">
+      <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <a className="navbar-item" href="/">
-            <img src={logo} width="150" alt="" />
+            <img src={Nakad} height="37" alt="" className="main-logo"/>
           </a>
           <a
             role="button"
@@ -177,12 +179,12 @@ const Tier2Consolidated = () => {
           </a>
         </div>
 
-        <div id="navbarBasicExample" className="navbar-menu">
-          <div className="navbar-end">
-            <a className="navbar-item" href="/tier2/early">
+        <div className="navbar-menu">
+          <div className="navbar-center">
+            <a className="navbar-item " href="/tier2/early">
               Early Payment
             </a>
-            <a className="navbar-item" href="/tier2/consolidated">
+            <a className="navbar-item this-page" href="/tier2/consolidated">
               Consolidated View
             </a>
             <a className="navbar-item" href="/tier2/upload">
@@ -191,22 +193,38 @@ const Tier2Consolidated = () => {
             <a className="navbar-item" href="/tier2/account">
               Account
             </a>
-            <div className="navbar-item">
-              <div className="buttons">
-                <a className="button is-primary is-light">Log Out</a>
-              </div>
-            </div>
           </div>
+           <div className="navbar-right">
+             <img src={Support} alt="" width="16px" className="support"/>
+             <img src={Notification} alt="" width="20px" />
+             <div>
+                <div className="navbar-item has-dropdown is-hoverable">
+                  <a className="navbar-link">
+                    <p className="name-full">Kamal enterprise</p>  {/* Need to make this dynamic */}
+                     <div className="name-first"><p>K</p></div>
+                  </a>
+
+                  <div className="navbar-dropdown">
+                    <a className="navbar-item">
+                      Profile
+                    </a>
+                    <a className="navbar-item">
+                      Settings
+                    </a>
+                    <a className="navbar-item">
+                      Logout
+                    </a>
+                  </div>
+                  </div>
+             </div>
+             
+          </div> 
+
         </div>
       </nav>
+      <div className="main-content">
 
-      <div className="actiontop">
-        <p className="title has-text-info tier-2-action" style={{ marginBottom: "40px" }}>
-          Kamal enterprise consolidated view
-        </p>
-      </div>
-
-      <div className="tabs is-boxed">
+      <div className="tabs  is-toggle">
         <ul>
           <li className="is-active" onClick={displaypending} id="list-pending">
             <a>
@@ -221,7 +239,7 @@ const Tier2Consolidated = () => {
         </ul>
       </div>
       {/* <div className="table-info has-background-info invoice-approved" style={{width: "484px", marginTop:"10px"}}>Early payment received but Tally adjustment pending</div> */}
-      <div className="ag-theme-material mygrid" id="adjustment-pending">
+      <div className="ag-theme-alpine mygrid" id="adjustment-pending">
         <AgGridReact
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
@@ -252,7 +270,7 @@ const Tier2Consolidated = () => {
           </footer>
         </div>
       </div>
-      <div className="ag-theme-material mygrid" id="adjustment-done" style={{ display: "none" }}>
+      <div className="ag-theme-alpine mygrid" id="adjustment-done" style={{ display: "none" }}>
         <AgGridReact
           columnDefs={columnDefs2}
           defaultColDef={defaultColDef}
@@ -260,6 +278,7 @@ const Tier2Consolidated = () => {
           rowData={tier2adjustmentdone}
           domLayout="autoHeight"
         />
+      </div>
       </div>
     </div>
   );

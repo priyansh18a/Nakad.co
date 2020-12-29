@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
-import "ag-grid-community/dist/styles/ag-theme-material.css";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import logo from "./../../Graphics/logo.jpg";
 import Dinero from "dinero.js";
 import "./Tier1DataUpdate.scss";
@@ -69,7 +69,7 @@ const Tier1DataUpdate = () => {
     wrapText: true,
     filter: true,
     autoHeight: true,
-    cellStyle: { color: "Black", textAlign: "center" },
+    cellStyle: { color: "#4D4F5C", textAlign: "center" },
     headerComponentParams: {
       template:
         '<div class="ag-cell-label-container" role="presentation">' +
@@ -304,7 +304,7 @@ const Tier1DataUpdate = () => {
         </ul>
       </div>
       {/* <div className="container has-background-grey-dark payables" style={ { marginTop: "11px"} }>Payables</div> */}
-      <div className="ag-theme-material mygrid" id="payable">
+      <div className="ag-theme-alpine mygrid" id="payable">
         <AgGridReact
           columnDefs={columnDefs1}
           defaultColDef={defaultColDef}
@@ -336,7 +336,7 @@ const Tier1DataUpdate = () => {
         </div>
       </div>
       {/* <div className="container has-background-grey-dark payables" style={{ width: 116, marginTop: "50px"}}>Receivables</div> */}
-      <div className="ag-theme-material mygrid" id="receivables" style={{ display: "none" }}>
+      <div className="ag-theme-alpine mygrid" id="receivables" style={{ display: "none" }}>
         <AgGridReact
           columnDefs={columnDefs2}
           defaultColDef={defaultColDef}

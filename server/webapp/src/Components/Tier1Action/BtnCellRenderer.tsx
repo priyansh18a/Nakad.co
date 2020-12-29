@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-
 interface BtnCellRendererProps {
   clicked: (arg0: string) => void;
   value: string;
 }
-
 class BtnCellRenderer extends Component<BtnCellRendererProps> {
   constructor(props: BtnCellRendererProps) {
     super(props);
@@ -16,7 +14,7 @@ class BtnCellRenderer extends Component<BtnCellRendererProps> {
   render() {
     return (
       <button className="button is-primary" onClick={this.btnClickedHandler} style={{ marginTop: "3px" }}>
-        More Details
+        Approved
       </button>
     );
   }

@@ -6,7 +6,7 @@ import { Tier2Invoice } from "../database/entity/Tier2Invoice";
 export async function listTier2Invoices(req: Request, res: Response) {
   const tier1Id = parseInt(req.query.tier1Id[0], 10);
   const approvalStatus = req.query.approvalStatus as string;
-  console.log(approvalStatus);
+  // console.log(approvalStatus);
   return res.json(await listTier2InvoicesForApprovalInternal(tier1Id, approvalStatus));
 }
 

@@ -1,8 +1,9 @@
 import React from "react";
+import "./Tier2EarlyPayment.scss";
 
 const BtnCellRenderer2 = () => {
   return (
-    <button className="button is-primary" style={{ marginTop: "3px" }}>
+    <button className="button is-accept">
       Send
     </button>
   );

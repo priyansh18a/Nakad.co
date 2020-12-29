@@ -1,11 +1,12 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import "./Tier2EarlyPayment.scss";
 
 const BtnCellRenderer2 = () => {
   const history = useHistory();
 
   return (
-    <button className="button is-primary" onClick={() => history.push("/tier2/upload")} style={{ marginTop: "3px" }}>
+    <button className="button is-accept" onClick={() => history.push("/tier2/upload")}>
       Reupload
     </button>
   );

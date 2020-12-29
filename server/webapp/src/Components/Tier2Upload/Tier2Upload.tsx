@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import FormData from "form-data";
-import logo from "./../../Graphics/logo.jpg";
+import Nakad from "./../../Graphics/Nakad.svg";
+import Notification from "./../../Graphics/Notification.svg";
+import Support from "./../../Graphics/Support.svg";
 import "./Tier2Upload.scss";
 
 const Tier2Upload = () => {
@@ -162,12 +164,11 @@ const Tier2Upload = () => {
 
   return (
     <div>
-      <nav className="navbar is-info" role="navigation" aria-label="main navigation">
+      <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <a className="navbar-item" href="/">
-            <img src={logo} width="150" alt="" />
+            <img src={Nakad} height="37" alt="" className="main-logo"/>
           </a>
-
           <a
             role="button"
             className="navbar-burger burger"
@@ -181,30 +182,52 @@ const Tier2Upload = () => {
           </a>
         </div>
 
-        <div id="navbarBasicExample" className="navbar-menu">
-          <div className="navbar-end">
-            <a className="navbar-item" href="/tier2/early">
+        <div className="navbar-menu">
+          <div className="navbar-center">
+            <a className="navbar-item " href="/tier2/early">
               Early Payment
             </a>
-            <a className="navbar-item" href="/tier2/consolidated">
+            <a className="navbar-item " href="/tier2/consolidated">
               Consolidated View
             </a>
-            <a className="navbar-item" href="/tier2/upload">
+            <a className="navbar-item this-page" href="/tier2/upload">
               Upload Invoice
             </a>
             <a className="navbar-item" href="/tier2/account">
               Account
             </a>
-            <div className="navbar-item">
-              <div className="buttons">
-                <a className="button is-primary is-light">Log Out</a>
-              </div>
-            </div>
           </div>
+           <div className="navbar-right">
+             <img src={Support} alt="" width="16px" className="support"/>
+             <img src={Notification} alt="" width="20px" />
+             <div>
+                <div className="navbar-item has-dropdown is-hoverable">
+                  <a className="navbar-link">
+                    <p className="name-full">Kamal enterprise</p>  {/* Need to make this dynamic */}
+                     <div className="name-first"><p>K</p></div>
+                  </a>
+
+                  <div className="navbar-dropdown">
+                    <a className="navbar-item">
+                      Profile
+                    </a>
+                    <a className="navbar-item">
+                      Settings
+                    </a>
+                    <a className="navbar-item">
+                      Logout
+                    </a>
+                  </div>
+                  </div>
+             </div>
+             
+          </div> 
+
         </div>
       </nav>
+      <div className="main-content">
       <div className="container">
-        <p className="title has-text-info tier-2-head">Kamal enterprise Invoice and GRN upload</p>
+        <p className="title has-text-info tier-2-head">Documents upload</p>
         <div className="tier-2-login" style={{ height: "auto" }}>
           <div className="column is-4 is-offset-4 ">
             <form onSubmit={uploadinvoiceandgrn}>
@@ -282,7 +305,7 @@ const Tier2Upload = () => {
                           </div>
                           <div className=" field file has-name is-dark">
                             <label className="file-label">
-                              <input className="file-input" type="file" name="debitNoteFile" onChange={e => uploaddebitnotefile(e,i)}  required />
+                              <input className="file-input" type="file" name="debitNoteFile" onChange={e => uploaddebitnotefile(e,i)}  />
                               <span className="file-cta">
                                 <span className="file-icon">
                                   <i className="fas fa-upload"></i>
@@ -335,6 +358,7 @@ const Tier2Upload = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
