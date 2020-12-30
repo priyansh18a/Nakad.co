@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import "./../Tier2EarlyPayment/Tier2EarlyPayment.scss";
 interface BtnCellRendererProps {
   clicked: (arg0: string) => void;
   value: string;
@@ -15,7 +15,7 @@ class BtnCellRenderer extends Component<BtnCellRendererProps> {
   }
   render() {
     return (
-      <button className="button is-primary" onClick={this.btnClickedHandler} style={{ marginTop: "3px" }}>
+      <button className="button is-accept" onClick={this.btnClickedHandler}>
         Confirm
       </button>
     );

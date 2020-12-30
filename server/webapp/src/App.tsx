@@ -6,7 +6,6 @@ import BankLogin from "./Components/BankLogin/BankLogin";
 import Tier1Action from "./Components/Tier1Action/Tier1Action";
 import Tier2Upload from "./Components/Tier2Upload/Tier2Upload";
 import Tier2Account from "./Components/Tier2Account/Tier2Account";
-import ChooseType from "./Components/ChooseType/ChooseType";
 import Tier1DataUpdate from "./Components/Tier1DataUpdate/Tier1DataUpdate";
 import Tier2EarlyPayment from "./Components/Tier2EarlyPayment/Tier2EarlyPayment";
 import BankCollection from "./Components/BankCollection/BankCollection";
@@ -19,14 +18,11 @@ const App = () => {
   return (
     <Router>
       <Switch>
-        <Route exact path="/">
-          <ChooseType />
+      <Route exact path="/">
+          <Tier1Login />
         </Route>
         <Route exact path="/register">
           <Register />
-        </Route>
-        <Route exact path="/tier1">
-          <Tier1Login />
         </Route>
         <Route exact path="/tier1/action">
           <Tier1Action />

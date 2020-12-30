@@ -3,8 +3,10 @@ import { useHistory } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import axios from "axios";
 import "ag-grid-community/dist/styles/ag-grid.css";
-import "ag-grid-community/dist/styles/ag-theme-material.css";
-import BtnCellRenderer from "./BtnCellRenderer";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+import Nakad from "./../../Graphics/Nakad.svg";
+import Notification from "./../../Graphics/Notification.svg";
+import Support from "./../../Graphics/Support.svg";import BtnCellRenderer from "./BtnCellRenderer";
 import logo from "./../../Graphics/logo.jpg";
 import "./Tier1Action.scss";
 import Dinero from "dinero.js";
@@ -30,12 +32,12 @@ const Tier1Action = () => {
   };
 
   const columnDefs = [
-    { headerName: "Invoice #", field: "invoice", maxWidth: 150 },
+    { headerName: "Invoice number", field: "invoice"},
     { headerName: "Supplier", field: "vendor", minWidth: 200 },
-    { headerName: "Invoice Date", field: "invoice_date", minWidth: 130 },
-    { headerName: "Payable Date", field: "payable_date", minWidth: 130 },
-    { headerName: "Invoice Amount", field: "invoice_amount", minWidth: 150 },
-    { headerName: "Payable Amount", field: "payable_amount", minWidth: 180 },
+    { headerName: "Invoice date", field: "invoice_date" },
+    { headerName: "Payable date", field: "payable_date"},
+    { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150 },
+    { headerName: "Payable amount", field: "payable_amount", minWidth: 180 },
     {
       headerName: "Details",
       field: "details",
@@ -170,10 +172,10 @@ const Tier1Action = () => {
 
   return (
     <div>
-      <nav className="navbar is-info" role="navigation" aria-label="main navigation">
+      <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <a className="navbar-item" href="/">
-            <img src={logo} width="150" alt="" />
+            <img src={Nakad} height="37" alt="" className="main-logo"/>
           </a>
           <a
             role="button"
@@ -187,9 +189,10 @@ const Tier1Action = () => {
             <span aria-hidden="true"></span>
           </a>
         </div>
-        <div id="navbarBasicExample" className="navbar-menu">
-          <div className="navbar-end">
-            <a className="navbar-item" href="/tier1/action">
+
+        <div className="navbar-menu">
+          <div className="navbar-center">
+          <a className="navbar-item" href="/tier1/action">
               Invoice Approval
             </a>
             <a className="navbar-item" href="/tier1/data">
@@ -199,16 +202,36 @@ const Tier1Action = () => {
               Consolidated View
             </a>
             <a className="navbar-item">Settings</a>
-            <div className="navbar-item">
-              <div className="buttons">
-                <button className="button is-primary is-light" onClick={logout}>
-                  Log Out
-                </button>
-              </div>
-            </div>
           </div>
+           <div className="navbar-right">
+             <img src={Support} alt="" width="16px" className="support"/>
+             <img src={Notification} alt="" width="20px" />
+             <div>
+                <div className="navbar-item has-dropdown is-hoverable">
+                  <a className="navbar-link">
+                    <p className="name-full">Kamal enterprise</p>  {/* Need to make this dynamic */}
+                     <div className="name-first"><p>K</p></div>
+                  </a>
+
+                  <div className="navbar-dropdown">
+                    <a className="navbar-item">
+                      Profile
+                    </a>
+                    <a className="navbar-item">
+                      Settings
+                    </a>
+                    <a className="navbar-item" onClick={logout}>
+                      Logout
+                    </a>
+                  </div>
+                  </div>
+             </div>
+             
+          </div> 
+
         </div>
       </nav>
+      <div className="main-content">
       <div className="actiontop">
         <p className="title has-text-info tier-2-action">Shyam International</p>
         <button className="button is-success is-outlined notification">
@@ -229,7 +252,7 @@ const Tier1Action = () => {
         </span>
       </div>
       <div>
-        <div className="ag-theme-material mygrid">
+        <div className="ag-theme-alpine mygrid">
           <AgGridReact
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
@@ -311,6 +334,7 @@ const Tier1Action = () => {
               </footer>
             </section>
           </div>
+        </div>
         </div>
       </div>
     </div>

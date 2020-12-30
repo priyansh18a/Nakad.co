@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 interface BtnCellRendererProps {
-  changed: (arg0: string) => void;
+  clicked: (arg0: string) => void;
   value: string;
 }
 
@@ -10,18 +10,14 @@ class BtnCellRenderer extends Component<BtnCellRendererProps> {
     super(props);
     this.btnClickedHandler = this.btnClickedHandler.bind(this);
   }
-
   btnClickedHandler() {
-    this.props.changed(this.props.value);
+    this.props.clicked(this.props.value);
   }
-
   render() {
     return (
-      <input
-        className=""
-        onChange={this.btnClickedHandler}
-        style={{ height: "45px", width: "150", outline: "none", border: "none" }}
-      />
+      <button className="button is-primary" onClick={this.btnClickedHandler} style={{ marginTop: "3px" }}>
+        More Details
+      </button>
     );
   }
 }

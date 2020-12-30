@@ -10,12 +10,16 @@
 .Tier-2-Invoice{
     margin: auto;
 }
-.ag-header-row{
-    background-color: skyblue;
-    margin-top: 10px;
+
+.ag-theme-alpine .ag-root-wrapper {
+    border: none !important;
+    border-radius: 8px;
 }
+
 .ag-header-cell-text {
-    margin-top: -8px;
+    font-size: 14px;
+    line-height: 16px;
+    color: #53526C;
 }
 .navbar-item img {
     max-height: 2.5rem;

@@ -3,8 +3,10 @@ import { useHistory } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import axios from "axios";
 import "ag-grid-community/dist/styles/ag-grid.css";
-import "ag-grid-community/dist/styles/ag-theme-material.css";
-import logo from "./../../Graphics/logo.jpg";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+import Nakad from "./../../Graphics/Nakad.svg";
+import Notification from "./../../Graphics/Notification.svg";
+import Support from "./../../Graphics/Support.svg";
 import "./../Tier1DataUpdate/Tier1DataUpdate.scss";
 import "./Tier2EarlyPayment.scss";
 import Dinero from "dinero.js";
@@ -22,17 +24,19 @@ const Tier2EarlyPayment = () => {
   const [invoicetoupdate, setInvoicetoupdate] = useState("");
 
   const columnDefs1 = [
-    { headerName: "Invoice Date", field: "invoice_date" },
-    { headerName: "Invoice Number", field: "invoice" },
-    { headerName: "Customer", field: "customer", minWidth: 150 },
-    { headerName: "Net Receivable Amount", field: "receivable_amount", minWidth: 180 },
-    { headerName: "Receivable Date", field: "receivable_date" },
-    { headerName: "Send Reminder", field: "invoice", minWidth: 150, cellRenderer: "btnCellRenderer3" },
+    { headerName: "Invoice date", field: "invoice_date" },
+    { headerName: "Invoice number", field: "invoice" },
+    { headerName: "Customer", field: "customer"},
+    { headerName: "Net receivable amount", field: "receivable_amount", minWidth: 180, headerClass: "grid-header-right", cellStyle:{ color: "#48AC23", textAlign: 'right' } },
+    { headerName: "Receivable date", field: "receivable_date"  },
+    { headerName: "Send reminder", field: "invoice", cellRenderer: "btnCellRenderer3" , headerClass: "grid-header-centered", cellStyle: {textAlign: 'center'}},
     {
-      headerName: "Cancel Early Payment Request",
+      headerName: "Cancel request",
       field: "invoice",
       minWidth: 180,
       cellRenderer: "btnCellRenderer4",
+      cellStyle: {textAlign: 'center'},
+      headerClass: "grid-header-centered",
       cellRendererParams: {
         clicked(field: any) {
           console.log(field);
@@ -44,18 +48,20 @@ const Tier2EarlyPayment = () => {
   ];
 
   const columnDefs2 = [
-    { headerName: "Invoice Number", field: "invoice" },
-    { headerName: "Customer", field: "customer", minWidth: 200 },
-    { headerName: "Invoice Amount", field: "invoice_amount", minWidth: 130 },
-    { headerName: "Payment Date", field: "payment_date", minWidth: 130 },
-    { headerName: "Net Receivable", field: "receivable_amount", minWidth: 180 },
-    { headerName: "Early Payment Discount ", field: "payment_discount", minWidth: 200 },
-    { headerName: "Early Payment Amount", field: "payment_amount", minWidth: 200 },
+    { headerName: "Invoice number", field: "invoice" },
+    { headerName: "Customer", field: "customer"},
+    { headerName: "Invoice Amount", field: "invoice_amount"},
+    { headerName: "Payment Date", field: "payment_date" },
+    { headerName: "Net Receivable", field: "receivable_amount", minWidth: 180,headerClass: "grid-header-right", cellStyle:{  textAlign: 'right'}  },
+    { headerName: "Early Payment Discount ", field: "payment_discount", minWidth: 220, headerClass: "grid-header-right", cellStyle:{ color: "#48AC23",  textAlign: 'right'} },
+    { headerName: "Early Payment Amount", field: "payment_amount", minWidth: 210, headerClass: "grid-header-right",cellStyle:{ color: "#4072E3", textAlign: 'right'} },
     {
-      headerName: "Take Early Payment",
+      headerName: "Take early payment",
       field: "invoice",
       minWidth: 180,
       cellRenderer: "btnCellRenderer1",
+      headerClass: "grid-header-centered",   
+      cellStyle: {textAlign: 'center'},
       cellRendererParams: {
         clicked(field: any) {
           console.log(field);
@@ -67,11 +73,11 @@ const Tier2EarlyPayment = () => {
   ];
 
   const columnDefs3 = [
-    { headerName: "Invoice Number", field: "invoice" },
+    { headerName: "Invoice number", field: "invoice" },
     { headerName: "Customer", field: "customer", minWidth: 200 },
-    { headerName: "Invoice Amount", field: "invoice_amount", minWidth: 150 },
+    { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150,headerClass: "grid-header-right", cellStyle:{ color: "#4072E3" , textAlign: 'right'} },
     { headerName: "Remark", field: "remark", cellClass: "remark-class", tooltipField: "remark" },
-    { headerName: "Reupload Invoice", field: "reupload", minWidth: 150, cellRenderer: "btnCellRenderer2" },
+    { headerName: "Reupload invoice", field: "reupload", minWidth: 150, cellRenderer: "btnCellRenderer2" , cellStyle: {textAlign: 'center'}, headerClass: "grid-header-centered",},
   ];
 
   const defaultColDef = {
@@ -82,7 +88,7 @@ const Tier2EarlyPayment = () => {
     wrapText: true,
     filter: true,
     autoHeight: true,
-    cellStyle: { color: "Black", textAlign: "center" },
+    cellStyle: { color: "#4D4F5C" },
     headerComponentParams: {
       template:
         '<div class="ag-cell-label-container" role="presentation">' +
@@ -197,14 +203,14 @@ const Tier2EarlyPayment = () => {
       });
   };
 
-  // TODO(Priyanshu) Need to confirm to this with Harshil Bhaiya
+
   const getrejectedrowdata = () => {
     return rejectedbytier1.map((inv) => {
       return {
         invoice: inv.invoiceId,
         customer: inv.tier1.actorInfo.name,
         invoice_amount: Dinero(inv.invoiceAmount).toFormat("$0,0"),
-        remark: inv.tier2InvoiceDetails.remark, // TODO(Priyanshu)
+        remark: inv.tier2InvoiceDetails.remark, 
       };
     });
   };
@@ -243,10 +249,10 @@ const Tier2EarlyPayment = () => {
 
   return (
     <div>
-      <nav className="navbar is-info" role="navigation" aria-label="main navigation">
+      <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <a className="navbar-item" href="/">
-            <img src={logo} width="150" alt="" />
+            <img src={Nakad} height="37" alt="" className="main-logo"/>
           </a>
           <a
             role="button"
@@ -261,9 +267,9 @@ const Tier2EarlyPayment = () => {
           </a>
         </div>
 
-        <div id="navbarBasicExample" className="navbar-menu">
-          <div className="navbar-end">
-            <a className="navbar-item" href="/tier2/early">
+        <div className="navbar-menu">
+          <div className="navbar-center">
+            <a className="navbar-item this-page" href="/tier2/early">
               Early Payment
             </a>
             <a className="navbar-item" href="/tier2/consolidated">
@@ -275,26 +281,38 @@ const Tier2EarlyPayment = () => {
             <a className="navbar-item" href="/tier2/account">
               Account
             </a>
-            <div className="navbar-item">
-              <div className="buttons">
-                <button className="button is-primary is-light">Log Out</button>
-              </div>
-            </div>
           </div>
+           <div className="navbar-right">
+             <img src={Support} alt="" width="16px" className="support"/>
+             <img src={Notification} alt="" width="20px" />
+             <div>
+                <div className="navbar-item has-dropdown is-hoverable">
+                  <a className="navbar-link">
+                    <p className="name-full">Kamal enterprise</p>  {/* Need to make this dynamic */}
+                     <div className="name-first"><p>K</p></div>
+                  </a>
+
+                  <div className="navbar-dropdown">
+                    <a className="navbar-item">
+                      Profile
+                    </a>
+                    <a className="navbar-item">
+                      Settings
+                    </a>
+                    <a className="navbar-item">
+                      Logout
+                    </a>
+                  </div>
+                  </div>
+             </div>
+             
+          </div> 
+
         </div>
       </nav>
-      <div className="actiontop">
-        <p className="title has-text-info tier-2-action">Kamal enterprise early payment pipeline</p>
-        <button className="button is-success is-outlined notification">
-          <span className="icon">
-            <i className="fas fa-bell"></i>
-          </span>
-          <span>Notification</span>
-        </button>
-        {/* <div className="total-benefit has-background-info">Total Benefit: ₹10000</div> */}
-      </div>
+      <div className="main-content">
 
-      <div className="tabs is-boxed">
+      <div className="tabs is-toggle">
         <ul>
           <li className="is-active" onClick={displaytab1} id="tab-1">
             <a>
@@ -313,7 +331,7 @@ const Tier2EarlyPayment = () => {
           </li>
         </ul>
       </div>
-      <div className="ag-theme-material mygrid" id="table-1">
+      <div className="ag-theme-alpine mygrid" id="table-1">
         <AgGridReact
           columnDefs={columnDefs1}
           defaultColDef={defaultColDef}
@@ -347,7 +365,7 @@ const Tier2EarlyPayment = () => {
 
       {/* <div className="table-info has-background-info invoice-approved" >Invoices approved by tier 1</div> */}
       <div id="table-2" style={{ display: "none" }}>
-        <div className="ag-theme-material mygrid">
+        <div className="ag-theme-alpine mygrid">
           <AgGridReact
             columnDefs={columnDefs2}
             defaultColDef={defaultColDef}
@@ -355,11 +373,6 @@ const Tier2EarlyPayment = () => {
             onGridReady={onGridReady2}
             rowData={getapprovedrowdata()}
             domLayout="autoHeight"
-            rowClassRules={{
-              highlight(params) {
-                return params.data.invoice === "KEINV1234";
-              },
-            }}
           />
         </div>
         <div className="modal" id="modal">
@@ -383,11 +396,11 @@ const Tier2EarlyPayment = () => {
           </div>
         </div>
         <div className="dont-like">
-          <small>Don’t like the discounting rates? Check back again later</small>
+          <p>Don’t like the discounting rates? Check back again later</p>
         </div>
       </div>
       {/* <div className="table-info has-background-info invoice-approved" >Invoices rejected by tier 1</div> */}
-      <div className="ag-theme-material mygrid" id="table-3" style={{ display: "none" }}>
+      <div className="ag-theme-alpine mygrid" id="table-3" style={{ display: "none" }}>
         <AgGridReact
           columnDefs={columnDefs3}
           defaultColDef={defaultColDef}
@@ -396,7 +409,9 @@ const Tier2EarlyPayment = () => {
           onGridReady={onGridReady3}
           rowData={getrejectedrowdata()}
           domLayout="autoHeight"
+
         />
+      </div>
       </div>
     </div>
   );
