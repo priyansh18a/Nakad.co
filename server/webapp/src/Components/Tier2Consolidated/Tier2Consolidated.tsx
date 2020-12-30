@@ -56,7 +56,7 @@ const Tier2Consolidated = () => {
     resizable: true,
     wrapText: true,
     autoHeight: true,
-    cellStyle: { color: "#4D4F5C", textAlign: "center" },
+    cellStyle: { color: "#4D4F5C", textAlign: "left" },
     headerComponentParams: {
       template:
         '<div class="ag-cell-label-container" role="presentation">' +

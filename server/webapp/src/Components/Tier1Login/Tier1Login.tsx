@@ -1,7 +1,9 @@
- import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory, useLocation } from "react-router-dom";
 import "react-bulma-components/dist/react-bulma-components.min.css";
+import illustration from "./../../Graphics/illustration.svg";
+import logoblue from "./../../Graphics/logoblue.svg"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import "./Tier1Login.scss";
@@ -55,40 +57,44 @@ const Tier1Login = () => {
   };
 
   return (
-    <div className="container">
-      <p className="title has-text-info">Tier 1 Login</p>
-      <div className="tier-1-login">
-        <div className="column is-4 is-offset-4">
-          <div className="notification is-danger" id="flash-msg">
-            <button className="delete" onClick={closeflash}></button>
-            <p id="msg"></p>
-          </div>
-          <form onSubmit={logintier1}>
-            <div className="field">
-              <div className="control">
-                <label className="label">User ID</label>
-                <input className="input" type="text" name="username" placeholder="User ID" value={form.username} onChange={update} required/>
-              </div>
-            </div>
-            <div className="field">
-              <div className="control has-icons-right">
-                <label className="label">Password</label>
-                <div style={{display:"flex"}}>
-                  <input  className="input"  type={passwordShown ? "text" : "password"}  name="password"  placeholder="Password"  value={form.password}  onChange={update}  required/>
-                  <i onClick={togglePasswordVisiblity} id="eye">{eye}</i>
+    <div className=" login-page">
+      <div className="login-left">
+        <img src={illustration} alt=""/>
+      </div>
+      <div className="login-right">
+        <div className="login-right-center">
+          <div className="center-box column is-5">
+            <img src={logoblue} alt=""/>
+            <p className="enter-info-text">Please enter your user information</p>
+                <div className="notification is-danger" id="flash-msg">
+                  <button className="delete" onClick={closeflash}></button>
+                  <p id="msg"></p>
                 </div>
+                <form onSubmit={logintier1}>
+                  <div className="field">
+                    <div className="control">
+                      <input className="input input-box" type="text" name="username" placeholder="User ID" value={form.username} onChange={update} required/>
+                    </div>
+                  </div>
+                  <div className="field">
+                    <div className="control has-icons-right">
+                      <div style={{display:"flex"}}>
+                        <input  className="input input-box"  type={passwordShown ? "text" : "password"}  name="password"  placeholder="Password"  value={form.password}  onChange={update}  required/>
+                        <i onClick={togglePasswordVisiblity} id="eye">{eye}</i>
+                      </div>
+                    </div>
+                    <a className="help has-text-right" href="/tier1">
+                      Forgot Password?
+                    </a>
+                  </div>
+                    <div className="buttons">
+                      <button type="submit" className="button login-button">Login</button>
+                    </div>
+                </form>
+               
               </div>
-              <a className="help has-text-left" href="/tier1">
-                Forgot Company ID / User ID / Password
-              </a>
-            </div>
-            <div className="field is-grouped is-grouped-centered">
-              <div className="buttons">
-                <input type="submit" className="is-info  button "></input>
               </div>
-            </div>
-          </form>
-        </div>
+            <p className="contact">Contact/support details </p>
       </div>
     </div>
   );

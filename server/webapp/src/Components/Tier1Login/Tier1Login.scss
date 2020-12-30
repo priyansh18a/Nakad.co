@@ -1,15 +1,108 @@
-.container{
-    text-align: center;
+@font-face {
+    font-family: 'WorkSans';
+    font-style: normal;
+    font-weight: normal;
+    src: local('WorkSans'), url(./../../Fonts/WorkSans-VariableFont_wght.ttf ) format('truetype');
 }
-.tier-1-login{
-    height: 80vh;
+@font-face {
+    font-family: 'WorkSansItalic';
+    font-style: normal;
+    font-weight: normal;
+    src: local('WorkSansItalic'), url(./../../Fonts/WorkSans-Italic-VariableFont_wght.ttf) format('truetype');
+}
+*{
+	margin: 0px;
+    padding: 0px;
+    font-family:'WorkSans'; 
+    font-size: 16px;
+}
+
+$primary-color: #4072E3;
+$text-color: #808080;
+$background-color: #F0F0F7;
+
+.login-page{
+    display: flex;
+}
+.login-left{
+    width: 40vw;
+    height: 100vh;
+    min-height: 1000px;
+    background-color:$primary-color ;
+    z-index: 10;
+}
+.login-left img{
+    width: 38vw;
+    margin-left: 6vw;
+    margin-top: 5vw;
+    z-index: 20;
+}
+
+.login-right{ 
+    text-align: center;
+    width: 60vw;
+    background-color: $background-color;
+}
+
+.login-right-center>img{
+    width: 222px;
+}
+.enter-info-text{
+    font-size: 18px;
+    line-height: 21px;
+    color: $text-color;
+    margin-top: 20px;
+    margin-bottom: 45px;
+}
+.login-right-center {
+    height: 92vh;
+    min-height: 800px;
     display: flex;
     align-items: center;
 }
+.center-box{
+    display: block;
+    margin: auto;
+}
 
-.title, .has-text-centereds{
-    padding-top: 3rem;
-}   
+.input-box{
+    height: 50px;
+    border:1px solid $primary-color;
+    padding-left: 20px;
+    font-size: 16px;
+    background-color: $background-color;
+    font-family: 'WorkSans';
+}
+.input-box::-webkit-input-placeholder {
+    font-family: 'WorkSans';
+}
+  
+.input-box:-ms-input-placeholder {
+    font-family: 'WorkSans';
+}
+.input-box:hover{
+    border: 1px solid $primary-color;
+}
+
+.login-button{
+    background-color:$primary-color;
+    color: white;
+    height: 50px;
+    width: 9vw;
+    min-width: 100px;
+    font-size: 18px;
+    border-radius: 6px;
+    margin: auto;
+    margin-top: 20px;
+}
+.login-button:hover{
+    color: white;
+    font-weight: bold;
+} 
+.help{
+    font-size: 16px;
+    margin-top: 10px;
+}
 
 #flash-msg{
     right: 0px !important;
@@ -24,7 +117,26 @@
 }
 
 #eye{
-    margin-top: 9px;
+    margin-top: 16px;
     margin-left: -32px;
     z-index: 10;
+}
+
+.contact{
+    line-height: 19px;
+    color: $text-color;  
+}
+
+
+@media(max-width:600px){
+    .login-page{
+        display: block;
+    }
+
+    .login-left{
+        width: 100vw;
+        min-height: 300px;
+        height: 300px;
+    }
+   
 }

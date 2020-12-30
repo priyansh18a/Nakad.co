@@ -27,14 +27,16 @@ const Tier2EarlyPayment = () => {
     { headerName: "Invoice date", field: "invoice_date" },
     { headerName: "Invoice number", field: "invoice" },
     { headerName: "Customer", field: "customer"},
-    { headerName: "Net receivable amount", field: "receivable_amount", minWidth: 180,cellStyle:{ color: "#48AC23"} },
-    { headerName: "Receivable date", field: "receivable_date" },
-    { headerName: "Send reminder", field: "invoice", cellRenderer: "btnCellRenderer3" },
+    { headerName: "Net receivable amount", field: "receivable_amount", minWidth: 180, headerClass: "grid-header-right", cellStyle:{ color: "#48AC23", textAlign: 'right' } },
+    { headerName: "Receivable date", field: "receivable_date"  },
+    { headerName: "Send reminder", field: "invoice", cellRenderer: "btnCellRenderer3" , headerClass: "grid-header-centered", cellStyle: {textAlign: 'center'}},
     {
-      headerName: "Cancel early payment request",
+      headerName: "Cancel request",
       field: "invoice",
       minWidth: 180,
       cellRenderer: "btnCellRenderer4",
+      cellStyle: {textAlign: 'center'},
+      headerClass: "grid-header-centered",
       cellRendererParams: {
         clicked(field: any) {
           console.log(field);
@@ -50,14 +52,16 @@ const Tier2EarlyPayment = () => {
     { headerName: "Customer", field: "customer"},
     { headerName: "Invoice Amount", field: "invoice_amount"},
     { headerName: "Payment Date", field: "payment_date" },
-    { headerName: "Net Receivable", field: "receivable_amount", minWidth: 180 },
-    { headerName: "Early Payment Discount ", field: "payment_discount", minWidth: 220,  cellStyle:{ color: "#48AC23"} },
-    { headerName: "Early Payment Amount", field: "payment_amount", minWidth: 210, cellStyle:{ color: "#4072E3"} },
+    { headerName: "Net Receivable", field: "receivable_amount", minWidth: 180,headerClass: "grid-header-right", cellStyle:{  textAlign: 'right'}  },
+    { headerName: "Early Payment Discount ", field: "payment_discount", minWidth: 220, headerClass: "grid-header-right", cellStyle:{ color: "#48AC23",  textAlign: 'right'} },
+    { headerName: "Early Payment Amount", field: "payment_amount", minWidth: 210, headerClass: "grid-header-right",cellStyle:{ color: "#4072E3", textAlign: 'right'} },
     {
       headerName: "Take early payment",
       field: "invoice",
       minWidth: 180,
       cellRenderer: "btnCellRenderer1",
+      headerClass: "grid-header-centered",   
+      cellStyle: {textAlign: 'center'},
       cellRendererParams: {
         clicked(field: any) {
           console.log(field);
@@ -71,9 +75,9 @@ const Tier2EarlyPayment = () => {
   const columnDefs3 = [
     { headerName: "Invoice number", field: "invoice" },
     { headerName: "Customer", field: "customer", minWidth: 200 },
-    { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150, cellStyle:{ color: "#4072E3"} },
+    { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150,headerClass: "grid-header-right", cellStyle:{ color: "#4072E3" , textAlign: 'right'} },
     { headerName: "Remark", field: "remark", cellClass: "remark-class", tooltipField: "remark" },
-    { headerName: "Reupload invoice", field: "reupload", minWidth: 150, cellRenderer: "btnCellRenderer2" },
+    { headerName: "Reupload invoice", field: "reupload", minWidth: 150, cellRenderer: "btnCellRenderer2" , cellStyle: {textAlign: 'center'}, headerClass: "grid-header-centered",},
   ];
 
   const defaultColDef = {
@@ -84,7 +88,7 @@ const Tier2EarlyPayment = () => {
     wrapText: true,
     filter: true,
     autoHeight: true,
-    cellStyle: { color: "#4D4F5C", textAlign: "center" },
+    cellStyle: { color: "#4D4F5C" },
     headerComponentParams: {
       template:
         '<div class="ag-cell-label-container" role="presentation">' +
