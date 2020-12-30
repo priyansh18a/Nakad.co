@@ -32,4 +32,4 @@ jobs:
         app-name: 'nakad-dev'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_4af278cce2b64fe59d162c733a0f13fc }}
-        package: .
+        package: ./server
