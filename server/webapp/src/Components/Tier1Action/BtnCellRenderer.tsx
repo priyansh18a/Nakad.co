@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./../Tier2EarlyPayment/Tier2EarlyPayment.scss";
+
 
 interface BtnCellRendererProps {
   clicked: (arg0: string) => void;

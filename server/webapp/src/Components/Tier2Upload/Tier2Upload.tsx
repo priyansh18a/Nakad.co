@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { AgGridReact } from "ag-grid-react";
 import axios from "axios";
 import FormData from "form-data";
 import Nakad from "./../../Graphics/Nakad.svg";
@@ -185,6 +186,19 @@ const Tier2Upload = () => {
     setForm({ ...form, receivableamount: finalamount });
   };
 
+  const logout = () => {
+    axios
+      .get("/logout")
+      .then((response) => {
+        // handle success
+        history.push("/");
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error);
+      });
+  };
+
   return (
     <div>
       <nav className="navbar" role="navigation" aria-label="main navigation">
@@ -235,7 +249,9 @@ const Tier2Upload = () => {
                 <div className="navbar-dropdown">
                   <a className="navbar-item">Profile</a>
                   <a className="navbar-item">Settings</a>
-                  <a className="navbar-item">Logout</a>
+                  <a className="navbar-item" onClick={logout}>
+                    Logout
+                  </a>
                 </div>
               </div>
             </div>

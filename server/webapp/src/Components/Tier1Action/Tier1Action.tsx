@@ -36,12 +36,14 @@ const Tier1Action = () => {
     { headerName: "Supplier", field: "vendor", minWidth: 200 },
     { headerName: "Invoice date", field: "invoice_date" },
     { headerName: "Payable date", field: "payable_date" },
-    { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150 },
-    { headerName: "Payable amount", field: "payable_amount", minWidth: 180 },
+    { headerName: "Invoice amount", field: "invoice_amount", headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"}},
+    { headerName: "Payable amount", field: "payable_amount", minWidth: 180,headerClass: "grid-header-right",  cellStyle: { color: "#4072E3", textAlign: "right" , paddingRight:"42px"} },
     {
       headerName: "Details",
       field: "details",
       cellRenderer: "btnCellRenderer",
+      headerClass: "grid-header-centered",
+      cellStyle: { textAlign: "center" },
       cellRendererParams: {
         clicked(field: any) {
           console.log(field);
@@ -61,7 +63,7 @@ const Tier1Action = () => {
     flex: 1,
     minWidth: 150,
     sortable: true,
-    cellStyle: { color: "Black", textAlign: "center" },
+    cellStyle: { color: "#4D4F5C", textAlign: "left" },
     enableRowGroup: true,
     enablePivot: true,
     enableValue: true,
@@ -201,7 +203,6 @@ const Tier1Action = () => {
             <a className="navbar-item" href="/tier1/consolidated">
               Consolidated View
             </a>
-            <a className="navbar-item">Settings</a>
           </div>
           <div className="navbar-right">
             <img src={Support} alt="" width="16px" className="support" />
@@ -209,9 +210,9 @@ const Tier1Action = () => {
             <div>
               <div className="navbar-item has-dropdown is-hoverable">
                 <a className="navbar-link">
-                  <p className="name-full">Kamal enterprise</p> {/* Need to make this dynamic */}
+                  <p className="name-full">Shyam International</p> {/* Need to make this dynamic */}
                   <div className="name-first">
-                    <p>K</p>
+                    <p>S</p>
                   </div>
                 </a>
 
@@ -227,21 +228,11 @@ const Tier1Action = () => {
           </div>
         </div>
       </nav>
-      <div className="main-content">
-        <div className="actiontop">
-          <p className="title has-text-info tier-2-action">Shyam International</p>
-          <button className="button is-success is-outlined notification">
-            <span className="icon">
-              <i className="fas fa-bell"></i>
-            </span>
-            <span>Notification</span>
-          </button>
-          {/* <div className="total-benefit has-background-info">Total Benefit: ₹10000</div> */}
-        </div>
+      <div className="main-content" style={{paddingTop: "20px"}}>
         <div id="table-more-info" className="has-background-warning">
           Tier 2 requests confirmation of invoice. Based on <br /> this it will discount invoice to get early payment.
         </div>
-        <div className="table-info has-background-info" style={{ marginBottom: "20px", width: "300px" }}>
+        <div className="table-info has-background-info" style={{ marginBottom: "20px", width: "300px"}}>
           Supplier invoices for approval
           <span onMouseOver={showtablemoreinfo} onMouseLeave={hidetablemoreinfo} className="moreinfospan">
             <i className="fas fa-info-circle"></i>

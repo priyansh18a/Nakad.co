@@ -20,17 +20,19 @@ const Tier1DataUpdate = () => {
   const [anchortier2mappingtoupdate, setAnchortier2mappingtoupdate] = useState("");
 
   const columnDefs1 = [
-    { headerName: "Invoice number", field: "invoice", maxWidth: 150 },
+    { headerName: "Invoice number", field: "invoice" },
     { headerName: "Supplier", field: "supplier" },
     { headerName: "Invoice date", field: "invoice_date", minWidth: 180 },
-    { headerName: "Payable amount", field: "payable_amount", minWidth: 200 },
-    { headerName: "Amount discounted", field: "discounted_amount", minWidth: 200 },
-    { headerName: "Remaining amount", field: "remaining_payable", minWidth: 200 },
+    { headerName: "Payable amount", field: "payable_amount", minWidth: 200, headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"}},
+    { headerName: "Amount discounted", field: "discounted_amount", minWidth: 200 , headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"}},
+    { headerName: "Remaining amount", field: "remaining_payable", minWidth: 200 ,headerClass: "grid-header-right", cellStyle: { color: "#4072E3", textAlign: "right" , paddingRight:"42px"}},
     {
       headerName: "Entry adjusted in ERP",
       field: "details",
       minWidth: 200,
       cellRenderer: "btnCellRenderer1",
+      headerClass: "grid-header-centered",
+      cellStyle: { textAlign: "center" },
       cellRendererParams: {
         clicked(field: any) {
           console.log(field);
@@ -42,17 +44,19 @@ const Tier1DataUpdate = () => {
   ];
 
   const columnDefs2 = [
-    { headerName: "Invoice number", field: "invoice", maxWidth: 150 },
+    { headerName: "Invoice number", field: "invoice" },
     { headerName: "Customer", field: "customer" },
     { headerName: "Invoice date", field: "invoice_date", minWidth: 150 },
-    { headerName: "Receivable amount", field: "receivable_amount", minWidth: 200 },
-    { headerName: "Amount discounted", field: "discounted_amount", minWidth: 220 },
-    { headerName: "Remaining amount", field: "remaining_receivable", minWidth: 220 },
+    { headerName: "Receivable amount", field: "receivable_amount", minWidth: 200, headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"} },
+    { headerName: "Amount discounted", field: "discounted_amount", minWidth: 220, headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"} },
+    { headerName: "Remaining amount", field: "remaining_receivable", minWidth: 220, headerClass: "grid-header-right", cellStyle: { color: "#4072E3", textAlign: "right" , paddingRight:"42px"} },
     {
       headerName: "Entry adjusted in ERP",
       field: "details",
       minWidth: 150,
       cellRenderer: "btnCellRenderer2",
+      headerClass: "grid-header-centered",
+      cellStyle: { textAlign: "center" },
       cellRendererParams: {
         clicked(field: any) {
           console.log(field);
@@ -64,14 +68,17 @@ const Tier1DataUpdate = () => {
   ];
 
   const defaultColDef = {
+    flex: 1,
     minWidth: 150,
     sortable: true,
-    flex: 1,
+    cellStyle: { color: "#4D4F5C", textAlign: "left" },
+    enableRowGroup: true,
+    enablePivot: true,
+    enableValue: true,
+    filter: true,
     resizable: true,
     wrapText: true,
-    filter: true,
     autoHeight: true,
-    cellStyle: { color: "#4D4F5C", textAlign: "center" },
     headerComponentParams: {
       template:
         '<div class="ag-cell-label-container" role="presentation">' +
@@ -261,7 +268,6 @@ const Tier1DataUpdate = () => {
             <a className="navbar-item" href="/tier1/consolidated">
               Consolidated View
             </a>
-            <a className="navbar-item">Settings</a>
           </div>
            <div className="navbar-right">
              <img src={Support} alt="" width="16px" className="support"/>
@@ -269,8 +275,8 @@ const Tier1DataUpdate = () => {
              <div>
                 <div className="navbar-item has-dropdown is-hoverable">
                   <a className="navbar-link">
-                    <p className="name-full">Kamal enterprise</p>  {/* Need to make this dynamic */}
-                     <div className="name-first"><p>K</p></div>
+                    <p className="name-full">Shyam International</p>  {/* Need to make this dynamic */}
+                     <div className="name-first"><p>S</p></div>
                   </a>
 
                   <div className="navbar-dropdown">
@@ -291,17 +297,7 @@ const Tier1DataUpdate = () => {
 
         </div>
       </nav>
-      <div className="main-content">
-      <div className="actiontop">
-        <p className="title has-text-info tier-2-action">Shyam International</p>
-        <button className="button is-success is-outlined notification">
-          <span className="icon">
-            <i className="fas fa-bell"></i>
-          </span>
-          <span>Notification</span>
-        </button>
-        {/* <div className="total-benefit has-background-info">Total Benefit: ₹10000</div> */}
-      </div>
+      <div className="main-content"  style={{paddingTop: "20px"}}>
 
       <div id="table-more-info" className="has-background-warning">
         Tier 2 has discounted its invoice for early payments. Request <br />

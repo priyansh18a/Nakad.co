@@ -204,6 +204,7 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
 .ag-theme-alpine .ag-root-wrapper {
     border: none !important;
     border-radius: 8px;
+    padding-bottom: 20px;
 }
 .ag-theme-alpine .ag-header {
     border: none !important;
@@ -242,9 +243,14 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
 }
 
 .grid-header-right div div{
-    justify-content: left;
-    margin-right: 5px;
+    justify-content: flex-end;
+    margin-right: 8px;
 }
+.grid-header-marginLeft div div{
+    margin-left: 51px;
+}
+
+
 
 .ag-theme-alpine .ag-header-icon {
     display: contents;
@@ -273,7 +279,7 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
 }
 
 .is-accept{
-    background-color: #48AC23;
+    background-color: #29ba74;
 }
 
 .is-accept:hover{
@@ -283,7 +289,7 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
 }
 
 .is-cancel{
-    background-color:#d85555;
+    background-color:#e71c56;
 }
 
 .is-cancel:hover{

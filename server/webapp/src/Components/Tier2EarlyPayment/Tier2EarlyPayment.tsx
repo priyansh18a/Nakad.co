@@ -28,11 +28,11 @@ const Tier2EarlyPayment = () => {
     { headerName: "Invoice number", field: "invoice" },
     { headerName: "Customer", field: "customer" },
     {
-      headerName: "Net receivable amount",
+      headerName: "Net receivable",
       field: "receivable_amount",
       minWidth: 180,
       headerClass: "grid-header-right",
-      cellStyle: { color: "#48AC23", textAlign: "right" },
+      cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"},
     },
     { headerName: "Receivable date", field: "receivable_date" },
     {
@@ -40,7 +40,7 @@ const Tier2EarlyPayment = () => {
       field: "invoice",
       cellRenderer: "btnCellRenderer3",
       headerClass: "grid-header-centered",
-      cellStyle: { textAlign: "center" },
+      cellStyle: { textAlign: "center"},
     },
     {
       headerName: "Cancel request",
@@ -62,7 +62,7 @@ const Tier2EarlyPayment = () => {
   const columnDefs2 = [
     { headerName: "Invoice number", field: "invoice" },
     { headerName: "Customer", field: "customer" },
-    { headerName: "Invoice Amount", field: "invoice_amount" },
+    { headerName: "Invoice Amount", field: "invoice_amount",headerClass: "grid-header-right" },
     { headerName: "Payment Date", field: "payment_date" },
     {
       headerName: "Net Receivable",
@@ -75,15 +75,15 @@ const Tier2EarlyPayment = () => {
       headerName: "Early Payment Discount ",
       field: "payment_discount",
       minWidth: 220,
-      headerClass: "grid-header-right",
-      cellStyle: { color: "#48AC23", textAlign: "right" },
+      headerClass: "grid-header-right grid-header-marginLeft ",
+      cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"},
     },
     {
       headerName: "Early Payment Amount",
       field: "payment_amount",
       minWidth: 210,
-      headerClass: "grid-header-right",
-      cellStyle: { color: "#4072E3", textAlign: "right" },
+      headerClass: "grid-header-right grid-header-marginLeft ",
+      cellStyle: { color: "#4072E3", textAlign: "right" , paddingRight:"42px"},
     },
     {
       headerName: "Take early payment",
@@ -110,7 +110,7 @@ const Tier2EarlyPayment = () => {
       field: "invoice_amount",
       minWidth: 150,
       headerClass: "grid-header-right",
-      cellStyle: { color: "#4072E3", textAlign: "right" },
+      cellStyle: { color: "#4072E3", textAlign: "right" , paddingRight:"42px"},
     },
     { headerName: "Remark", field: "remark", cellClass: "remark-class", tooltipField: "remark" },
     {
@@ -289,6 +289,19 @@ const Tier2EarlyPayment = () => {
     document.getElementById("tab-3").classList.add("is-active");
   };
 
+  const logout = () => {
+    axios
+      .get("/logout")
+      .then((response) => {
+        // handle success
+        history.push("/");
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error);
+      });
+  };
+
   return (
     <div>
       <nav className="navbar" role="navigation" aria-label="main navigation">
@@ -339,7 +352,9 @@ const Tier2EarlyPayment = () => {
                 <div className="navbar-dropdown">
                   <a className="navbar-item">Profile</a>
                   <a className="navbar-item">Settings</a>
-                  <a className="navbar-item">Logout</a>
+                  <a className="navbar-item" onClick={logout}>
+                    Logout
+                  </a>
                 </div>
               </div>
             </div>

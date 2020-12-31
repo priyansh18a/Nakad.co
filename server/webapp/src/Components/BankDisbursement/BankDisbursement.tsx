@@ -1,34 +1,42 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
+import axios from "axios";
 import "ag-grid-community/dist/styles/ag-grid.css";
-import "ag-grid-community/dist/styles/ag-theme-material.css";
-import logo from "./../../Graphics/logo.jpg";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+import Nakad from "./../../Graphics/Nakad.svg";
+import Notification from "./../../Graphics/Notification.svg";
+import Support from "./../../Graphics/Support.svg"
 import "./../Tier1DataUpdate/Tier1DataUpdate.scss";
 import "./../Tier2EarlyPayment/Tier2EarlyPayment.scss";
 import BtnCellRenderer from "./BtnCellRenderer";
 import invoice from "../../Graphics/invoice.jpeg";
 
 const BankDisbursement = () => {
+  const history = useHistory();
   const columnDefs = [
     { headerName: "Loan Number", field: "loan_number", minWidth: 155, maxWidth: 200 },
     { headerName: "Requesting Party Name", field: "party_name", minWidth: 200 },
     { headerName: "Requesting Party Account", field: "party_account", minWidth: 200 },
-    { headerName: "Loan Amount to be Disbursed", field: "loan_amount", minWidth: 200 },
+    { headerName: "Loan Amount to be Disbursed", field: "loan_amount", minWidth: 200, headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"} },
     { headerName: "Annualized IRR", field: "annualized_irr", minWidth: 200 },
     { headerName: "Repayment Date", field: "repayment_date", minWidth: 170 },
     { headerName: "Linked Invoice Amount", field: "invoice_amount", minWidth: 170 },
     { headerName: "Invoice Payee Name", field: "payee_name", minWidth: 170 },
-    { headerName: "Loan already issued against invoice", field: "loan_issued", minWidth: 205 },
+    { headerName: "Loan already issued against invoice", field: "loan_issued", minWidth: 205, headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"}},
     { headerName: "GRN issued against the linked invoice(Yes/No)", field: "grn_issued", minWidth: 230 },
     {
       headerName: "Rupee value of debit note(s) issued against the linked invoice",
       field: "rupee_value",
       minWidth: 300,
+      headerClass: "grid-header-right", cellStyle: { color: "#4072E3", textAlign: "right" , paddingRight:"42px"}
     },
     {
       headerName: "Details",
       field: "details",
       cellRenderer: "btnCellRenderer",
+      headerClass: "grid-header-centered",
+      cellStyle: { textAlign: "center" },
       cellRendererParams: {
         clicked() {
           const element = document.getElementById("modal");
@@ -41,25 +49,28 @@ const BankDisbursement = () => {
   ];
 
   const defaultColDef = {
+    flex: 1,
     minWidth: 150,
     sortable: true,
-    flex: 1,
-    resizable: true,
+    cellStyle: { color: "#4D4F5C", textAlign: "left" },
+    enableRowGroup: true,
+    enablePivot: true,
+    enableValue: true,
     filter: true,
+    resizable: true,
     wrapText: true,
     autoHeight: true,
-    cellStyle: { color: "Black", textAlign: "center" },
     headerComponentParams: {
       template:
-        '<div className="ag-cell-label-container" role="presentation">' +
-        '  <span ref="eMenu" className="ag-header-icon ag-header-cell-menu-button"></span>' +
-        '  <div ref="eLabel" className="ag-header-cell-label" role="presentation">' +
-        '    <span ref="eSortOrder" className="ag-header-icon ag-sort-order"></span>' +
-        '    <span ref="eSortAsc" className="ag-header-icon ag-sort-ascending-icon"></span>' +
-        '    <span ref="eSortDesc" className="ag-header-icon ag-sort-descending-icon"></span>' +
-        '    <span ref="eSortNone" className="ag-header-icon ag-sort-none-icon"></span>' +
-        '    <span ref="eText" className="ag-header-cell-text" role="columnheader" style="white-space: normal;"></span>' +
-        '    <span ref="eFilter" className="ag-header-icon ag-filter-icon"></span>' +
+        '<div class="ag-cell-label-container" role="presentation">' +
+        '  <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button"></span>' +
+        '  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
+        '    <span ref="eSortOrder" class="ag-header-icon ag-sort-order"></span>' +
+        '    <span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon"></span>' +
+        '    <span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon"></span>' +
+        '    <span ref="eSortNone" class="ag-header-icon ag-sort-none-icon"></span>' +
+        '    <span ref="eText" class="ag-header-cell-text" role="columnheader" style="white-space: normal;"></span>' +
+        '    <span ref="eFilter" class="ag-header-icon ag-filter-icon"></span>' +
         "  </div>" +
         "</div>",
     },
@@ -162,12 +173,24 @@ const BankDisbursement = () => {
     }
   };
 
+  const logout = () => {
+    axios
+      .get("/logout")
+      .then((response) => {
+        history.push("/");
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error);
+      });
+  };
+
   return (
     <div>
-      <nav className="navbar is-info" role="navigation" aria-label="main navigation">
+       <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <a className="navbar-item" href="/">
-            <img src={logo} width="150" alt="" />
+            <img src={Nakad} height="37" alt="" className="main-logo" />
           </a>
           <a
             role="button"
@@ -182,29 +205,42 @@ const BankDisbursement = () => {
           </a>
         </div>
 
-        <div id="navbarBasicExample" className="navbar-menu">
-          <div className="navbar-end">
+        <div className="navbar-menu">
+          <div className="navbar-center">
+          <a className="navbar-item  this-page" href="/bank/disbursement">
+              Disbursement Screen
+            </a>
             <a className="navbar-item" href="/bank/collection">
               Collection Screen
             </a>
-            <a className="navbar-item" href="/bank/disbursement">
-              Disbursement Screen
-            </a>
-            <div className="navbar-item">
-              <div className="buttons">
-                <a className="button is-primary is-light">Log Out</a>
+          </div>
+          <div className="navbar-right">
+            <img src={Support} alt="" width="16px" className="support" />
+            <img src={Notification} alt="" width="20px" />
+            <div>
+              <div className="navbar-item has-dropdown is-hoverable">
+                <a className="navbar-link">
+                  <p className="name-full">ICICI Bank</p> {/* Need to make this dynamic */}
+                  <div className="name-first">
+                    <p>I</p>
+                  </div>
+                </a>
+
+                <div className="navbar-dropdown">
+                  <a className="navbar-item">Profile</a>
+                  <a className="navbar-item">Settings</a>
+                  <a className="navbar-item" onClick={logout}>
+                    Logout
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </nav>
-      <div className="actiontop">
-        <p className="title has-text-info tier-2-action" style={{ marginBottom: "20px" }}>
-          Bank Disbursement Screen
-        </p>
-      </div>
+      <div className="main-content">
       <div>
-        <div className="ag-theme-material mygrid">
+        <div className="ag-theme-alpine mygrid" style={{paddingTop: "5vw"}}>
           <AgGridReact
             columnDefs={columnDefs}
             defaultColDef={defaultColDef}
@@ -212,11 +248,6 @@ const BankDisbursement = () => {
             onGridReady={onGridReady}
             rowData={rowData}
             domLayout="autoHeight"
-            rowClassRules={{
-              highlight(params) {
-                return params.data.party_account === "120967123456";
-              },
-            }}
           />
         </div>
         <div className="modal" id="modal">
@@ -247,6 +278,7 @@ const BankDisbursement = () => {
             </footer>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

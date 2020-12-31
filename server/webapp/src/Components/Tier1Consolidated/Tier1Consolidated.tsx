@@ -3,8 +3,10 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
-import "ag-grid-community/dist/styles/ag-theme-material.css";
-import logo from "./../../Graphics/logo.jpg";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+import Nakad from "./../../Graphics/Nakad.svg";
+import Notification from "./../../Graphics/Notification.svg";
+import Support from "./../../Graphics/Support.svg";
 import "./../Tier1DataUpdate/Tier1DataUpdate.scss";
 import "../Tier2EarlyPayment/Tier2EarlyPayment.scss";
 import Dinero from "dinero.js";
@@ -18,38 +20,40 @@ const Tier1Consolidated = () => {
   const [invoicetodisapprove, setInvoicetodisapprove] = useState("");
 
   const columnDefs = [
-    { headerName: "Invoice", field: "invoice" },
+    { headerName: "Invoice Number", field: "invoice" },
     { headerName: "Customer", field: "customer", minWidth: 200 },
-    { headerName: "Invoice Date", field: "invoice_date", minWidth: 150 },
-    { headerName: "Receivable Date", field: "receivable_date", minWidth: 180 },
-    { headerName: "Receivable Amount", field: "receivable_amount", minWidth: 180 },
-    { headerName: "Discounted Amount", field: "discounted_amount", minWidth: 200 },
-    { headerName: "Net receivable amount", field: "new_receivable", minWidth: 230 },
+    { headerName: "Invoice date", field: "invoice_date", minWidth: 150 },
+    { headerName: "Receivable date", field: "receivable_date", minWidth: 180 },
+    { headerName: "Receivable amount", field: "receivable_amount", minWidth: 180, headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"} },
+    { headerName: "Discounted amount", field: "discounted_amount", minWidth: 200, headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"} },
+    { headerName: "Net receivable", field: "new_receivable", minWidth: 200, headerClass: "grid-header-right", cellStyle: { color: "#4072E3", textAlign: "right" , paddingRight:"42px"} },
   ];
 
   const columnDefs2 = [
-    { headerName: "Invoice Number", field: "invoice" },
+    { headerName: "Invoice number", field: "invoice" },
     { headerName: "Supplier", field: "supplier" },
-    { headerName: "Payable Date", field: "payable_date", minWidth: 170 },
-    { headerName: "Buffer Days", field: "buffer_days", minWidth: 150 },
-    { headerName: "Payable Amount", field: "payable_amount", minWidth: 180 },
-    { headerName: "Discounted Amount", field: "discounted_amount", minWidth: 200 },
-    { headerName: "Net payable amount", field: "new_payable", minWidth: 230 },
+    { headerName: "Payable date", field: "payable_date", minWidth: 170 },
+    { headerName: "Buffer days", field: "buffer_days", minWidth: 150 },
+    { headerName: "Payable amount", field: "payable_amount", minWidth: 180, headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"} },
+    { headerName: "Discounted amount", field: "discounted_amount", minWidth: 200, headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"} },
+    { headerName: "Net payable", field: "new_payable", minWidth: 200, headerClass: "grid-header-right", cellStyle: { color: "#4072E3", textAlign: "right" , paddingRight:"42px"} },
   ];
 
   const columnDefs3 = [
-    { headerName: "Invoice", field: "invoice" },
+    { headerName: "Invoice number", field: "invoice" },
     { headerName: "Supplier", field: "supplier" },
-    { headerName: "Invoice Date", field: "invoice_date", minWidth: 150 },
-    { headerName: "Payable Date", field: "payable_date", minWidth: 150 },
-    { headerName: "Receivable Amount", field: "receivable_amount", minWidth: 180 },
-    { headerName: "Payable Amount", field: "payable_amount", minWidth: 180 },
-    { headerName: "Approval Date", field: "approval_date", minWidth: 180 },
+    { headerName: "Invoice date", field: "invoice_date", minWidth: 150 },
+    { headerName: "Payable date", field: "payable_date", minWidth: 150 },
+    { headerName: "Receivable amount", field: "receivable_amount", minWidth: 180, headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"}},
+    { headerName: "Payable amount", field: "payable_amount", minWidth: 180, headerClass: "grid-header-right", cellStyle: { color: "#4072E3", textAlign: "right" , paddingRight:"42px"} },
+    { headerName: "Approval sate", field: "approval_date", minWidth: 180 },
     {
       headerName: "Disapprove",
       field: "invoice",
       minWidth: 150,
       cellRenderer: "btnCellRenderer",
+      headerClass: "grid-header-centered",
+      cellStyle: { textAlign: "center" },
       cellRendererParams: {
         clicked(field: any) {
           console.log(field);
@@ -68,7 +72,7 @@ const Tier1Consolidated = () => {
     resizable: true,
     wrapText: true,
     autoHeight: true,
-    cellStyle: { color: "Black", textAlign: "center" },
+    cellStyle: { color: "#4D4F5C", textAlign: "left" },
     headerComponentParams: {
       template:
         '<div class="ag-cell-label-container" role="presentation">' +
@@ -230,10 +234,10 @@ const Tier1Consolidated = () => {
 
   return (
     <div>
-      <nav className="navbar is-info" role="navigation" aria-label="main navigation">
+     <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <a className="navbar-item" href="/">
-            <img src={logo} width="150" alt="" />
+            <img src={Nakad} height="37" alt="" className="main-logo"/>
           </a>
           <a
             role="button"
@@ -248,36 +252,49 @@ const Tier1Consolidated = () => {
           </a>
         </div>
 
-        <div id="navbarBasicExample" className="navbar-menu">
-          <div className="navbar-end">
-            <a className="navbar-item" href="/tier1/action">
+        <div className="navbar-menu">
+          <div className="navbar-center">
+          <a className="navbar-item " href="/tier1/action">
               Invoice Approval
             </a>
-            <a className="navbar-item" href="/tier1/data">
+            <a className="navbar-item " href="/tier1/data">
               Entry Adjustment
             </a>
-            <a className="navbar-item" href="/tier1/consolidated">
+            <a className="navbar-item this-page" href="/tier1/consolidated">
               Consolidated View
             </a>
-            <a className="navbar-item">Settings</a>
-            <div className="navbar-item">
-              <div className="buttons">
-                <button className="button is-primary is-light" onClick={logout}>
-                  Log Out
-                </button>
-              </div>
-            </div>
           </div>
+           <div className="navbar-right">
+             <img src={Support} alt="" width="16px" className="support"/>
+             <img src={Notification} alt="" width="20px" />
+             <div>
+                <div className="navbar-item has-dropdown is-hoverable">
+                  <a className="navbar-link">
+                    <p className="name-full">Shyam International</p>  {/* Need to make this dynamic */}
+                     <div className="name-first"><p>S</p></div>
+                  </a>
+
+                  <div className="navbar-dropdown">
+                    <a className="navbar-item">
+                      Profile
+                    </a>
+                    <a className="navbar-item">
+                      Settings
+                    </a>
+                    <a className="navbar-item" onClick={logout}>
+                      Logout
+                    </a>
+                  </div>
+                  </div>
+             </div>
+             
+          </div> 
+
         </div>
       </nav>
-      <div className="actiontop">
-        <p className="title has-text-info tier-2-action" style={{ marginBottom: "40px" }}>
-          Shyam International
-        </p>
-        {/* <div className="total-benefit has-background-info">Total Benefit: ₹10000</div> */}
-      </div>
 
-      <div className="tabs is-boxed">
+      <div className="main-content">
+      <div className="tabs is-toggle">
         <ul>
           <li className="is-active" onClick={displaytab1} id="tab-1">
             <a>
@@ -299,7 +316,7 @@ const Tier1Consolidated = () => {
 
       {/* <div className="table-info has-background-info invoice-approved" style={{ width: "390px", marginTop: "15px", marginBottom: "15px"}}>Invoices for which Loan taken by Tier 2</div> */}
       {/* <div className="container has-background-grey-dark payables"   style={{width: "124px"}}>Receivables</div> */}
-      <div className="ag-theme-material mygrid" id="table-1">
+      <div className="ag-theme-alpine mygrid" id="table-1">
         <AgGridReact
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
@@ -310,7 +327,7 @@ const Tier1Consolidated = () => {
         />
       </div>
       {/* <div className="container has-background-grey-dark payables">Payables</div> */}
-      <div className="ag-theme-material mygrid" id="table-2" style={{ display: "none" }}>
+      <div className="ag-theme-alpine mygrid" id="table-2" style={{ display: "none" }}>
         <AgGridReact
           columnDefs={columnDefs2}
           defaultColDef={defaultColDef}
@@ -321,7 +338,7 @@ const Tier1Consolidated = () => {
       </div>
       {/* <div className="table-info has-background-info invoice-approved" >Tier 2 Invoices approved</div> */}
       <div>
-        <div className="ag-theme-material mygrid" id="table-3" style={{ display: "none" }}>
+        <div className="ag-theme-alpine mygrid" id="table-3" style={{ display: "none" }}>
           <AgGridReact
             columnDefs={columnDefs3}
             defaultColDef={defaultColDef}
@@ -352,6 +369,7 @@ const Tier1Consolidated = () => {
             </footer>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -124,8 +124,8 @@ const Login = () => {
               </div>
             </form>
           </div>
-          <p className="contact">Contact/support details </p>
         </div>
+        <p className="contact">Reach us at <a href="mailto:support@nakad.co">support@nakad.co</a></p>
       </div>
     </div>
   );

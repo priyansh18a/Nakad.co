@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import axios from "axios";
 import "ag-grid-community/dist/styles/ag-grid.css";
@@ -13,6 +14,7 @@ import BtnCellRenderer from "./BtnCellRenderer";
 import { formatDate } from "../../Utils/DateUtils";
 
 const Tier2Consolidated = () => {
+  const history = useHistory();
   const [tier2adjustmentpending, setTier2adjustmentpending] = useState([]);
   const [tier2adjustmentdone, setTier2adjustmentdone] = useState([]);
   const [anchortier2mappingtoupdate, setAnchortier2mappingtoupdate] = useState("");
@@ -20,15 +22,17 @@ const Tier2Consolidated = () => {
   const columnDefs = [
     { headerName: "Invoice number", field: "invoice", minWidth: 150 },
     { headerName: "Customer", field: "customer", minWidth: 200 },
-    { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150 },
-    { headerName: "Payment date (as on invoice)", field: "payment_date", minWidth: 180 },
-    { headerName: "Receivable amount", field: "receivable_amount", minWidth: 180 },
-    { headerName: "Early payment amount", field: "early_payment_amount", minWidth: 200 },
+    { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150 ,headerClass: "grid-header-right", cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"}},
+    { headerName: "Payment date", field: "payment_date", minWidth: 180 },
+    { headerName: "Receivable amount", field: "receivable_amount", minWidth: 180 , headerClass: "grid-header-right",  cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"},},
+    { headerName: "Early payment amount", field: "early_payment_amount", minWidth: 220 ,headerClass: "grid-header-right",  cellStyle: { color: "#4072E3", textAlign: "right" , paddingRight:"42px"}},
     { headerName: "Date of early payment", field: "early_payment_date", minWidth: 200 },
     {
       headerName: "Adjusted in tally",
       field: "details",
       cellRenderer: "btnCellRenderer1",
+      headerClass: "grid-header-centered",
+      cellStyle: { textAlign: "center" },
       cellRendererParams: {
         clicked(field: any) {
           console.log(field);
@@ -42,9 +46,9 @@ const Tier2Consolidated = () => {
   const columnDefs2 = [
     { headerName: "Invoice number", field: "invoice" },
     { headerName: "Customer", field: "customer", minWidth: 200 },
-    { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150 },
-    { headerName: "Payment date (as on invoice)", field: "payment_date", minWidth: 200 },
-    { headerName: "Receivable amount", field: "receivable_amount", minWidth: 200 },
+    { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150 ,headerClass: "grid-header-right",  cellStyle: { color: "#48AC23", textAlign: "right" , paddingRight:"42px"},},
+    { headerName: "Payment date", field: "payment_date", minWidth: 200 },
+    { headerName: "Receivable amount", field: "receivable_amount", minWidth: 200 ,headerClass: "grid-header-right", cellStyle: { color: "#4072E3", textAlign: "right" , paddingRight:"42px"},},
     { headerName: "Date of early payment", field: "early_payment_date", minWidth: 200 },
   ];
 
@@ -159,6 +163,19 @@ const Tier2Consolidated = () => {
     document.getElementById("list-done").classList.add("is-active");
   };
 
+  const logout = () => {
+    axios
+      .get("/logout")
+      .then((response) => {
+        // handle success
+        history.push("/");
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error);
+      });
+  };
+
   return (
     <div>
       <nav className="navbar" role="navigation" aria-label="main navigation">
@@ -209,7 +226,9 @@ const Tier2Consolidated = () => {
                 <div className="navbar-dropdown">
                   <a className="navbar-item">Profile</a>
                   <a className="navbar-item">Settings</a>
-                  <a className="navbar-item">Logout</a>
+                  <a className="navbar-item" onClick={logout}>
+                    Logout
+                  </a>
                 </div>
               </div>
             </div>

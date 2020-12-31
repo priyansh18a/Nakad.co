@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import logo from "./../../Graphics/logo.jpg";
+import axios from "axios";
+import Nakad from "./../../Graphics/Nakad.svg";
+import Notification from "./../../Graphics/Notification.svg";
+import Support from "./../../Graphics/Support.svg";
 import "../Tier2Upload/Tier2Upload.scss";
 
 const Tier2Account = () => {
@@ -22,14 +25,26 @@ const Tier2Account = () => {
     history.push("/tier2/upload");
   };
 
+  const logout = () => {
+    axios
+      .get("/logout")
+      .then((response) => {
+        // handle success
+        history.push("/");
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error);
+      });
+  };
+
   return (
     <div>
-      <nav className="navbar is-info" role="navigation" aria-label="main navigation">
+      <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <a className="navbar-item" href="/">
-            <img src={logo} width="150" alt="" />
+            <img src={Nakad} height="37" alt="" className="main-logo" />
           </a>
-
           <a
             role="button"
             className="navbar-burger burger"
@@ -43,28 +58,46 @@ const Tier2Account = () => {
           </a>
         </div>
 
-        <div id="navbarBasicExample" className="navbar-menu">
-          <div className="navbar-end">
-            <a className="navbar-item" href="/tier2/early">
+        <div className="navbar-menu">
+          <div className="navbar-center">
+            <a className="navbar-item " href="/tier2/early">
               Early Payment
             </a>
-            <a className="navbar-item" href="/tier2/consolidated">
+            <a className="navbar-item " href="/tier2/consolidated">
               Consolidated View
             </a>
-            <a className="navbar-item" href="/tier2/upload">
+            <a className="navbar-item " href="/tier2/upload">
               Upload Invoice
             </a>
-            <a className="navbar-item" href="/tier2/account">
+            <a className="navbar-item this-page" href="/tier2/account">
               Account
             </a>
-            <div className="navbar-item">
-              <div className="buttons">
-                <a className="button is-primary is-light">Log Out</a>
+          </div>
+          <div className="navbar-right">
+            <img src={Support} alt="" width="16px" className="support" />
+            <img src={Notification} alt="" width="20px" />
+            <div>
+              <div className="navbar-item has-dropdown is-hoverable">
+                <a className="navbar-link">
+                  <p className="name-full">Kamal enterprise</p> {/* Need to make this dynamic */}
+                  <div className="name-first">
+                    <p>K</p>
+                  </div>
+                </a>
+
+                <div className="navbar-dropdown">
+                  <a className="navbar-item">Profile</a>
+                  <a className="navbar-item">Settings</a>
+                  <a className="navbar-item" onClick={logout}>
+                    Logout
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </nav>
+      <div className="main-content">
       <div className="container">
         <p className="title has-text-info tier-2-head">Tier 2 Account details</p>
         <div className="tier-2-login">
@@ -163,6 +196,7 @@ const Tier2Account = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };

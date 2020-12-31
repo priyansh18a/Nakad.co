@@ -15,7 +15,7 @@ class BtnCellRenderer extends Component<BtnCellRendererProps> {
   }
   render() {
     return (
-      <button className="button is-primary" onClick={this.btnClickedHandler} style={{ marginTop: "3px" }}>
+      <button className="button is-cancel" onClick={this.btnClickedHandler}>
         Disapprove
       </button>
     );
