@@ -15,7 +15,7 @@ class BtnCellRenderer extends Component<BtnCellRendererProps> {
   }
   render() {
     return (
-      <button className="button is-cancel" onClick={this.btnClickedHandler} >
+      <button className="button is-cancel" onClick={this.btnClickedHandler}>
         Cancel
       </button>
     );

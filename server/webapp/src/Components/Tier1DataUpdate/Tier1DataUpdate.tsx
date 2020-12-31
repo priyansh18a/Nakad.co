@@ -110,7 +110,9 @@ const Tier1DataUpdate = () => {
             invoice_date: formatDate(inv.tier2Invoice.invoiceDate),
             discounted_amount: Dinero(inv.discountedAmount).toFormat("$0,0"),
             payable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat("$0,0"),
-            
+            remaining_payable: Dinero(inv.tier2Invoice.receivableAmount)
+              .subtract(Dinero(inv.discountedAmount))
+              .toFormat("$0,0"),
             details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId],
           };
         });
@@ -122,10 +124,12 @@ const Tier1DataUpdate = () => {
           return {
             invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
             customer: inv.partAnchorInvoices.anchorInvoice.anchor.actorInfo.name,
-            invoice_date:formatDate(inv.partAnchorInvoices.anchorInvoice.invoiceDate),
-            receivable_amount:Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat("$0,0"),
+            invoice_date: formatDate(inv.partAnchorInvoices.anchorInvoice.invoiceDate),
+            receivable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat("$0,0"),
             discounted_amount: Dinero(inv.discountedAmount).toFormat("$0,0"),
-            remaining_receivable:Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat("$0,0"),
+            remaining_receivable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount)
+              .subtract(Dinero(inv.discountedAmount))
+              .toFormat("$0,0"),
             details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId],
           };
         });
@@ -300,8 +304,8 @@ const Tier1DataUpdate = () => {
       </div>
 
       <div id="table-more-info" className="has-background-warning">
-        Tier 2 has discounted its invoice for early payments.
-        Request <br />you to make following changes in your accounting system.
+        Tier 2 has discounted its invoice for early payments. Request <br />
+        you to make following changes in your accounting system.
       </div>
       <div className="table-info has-background-info" style={{ width: "300px" }}>
         ERP entry adjustment

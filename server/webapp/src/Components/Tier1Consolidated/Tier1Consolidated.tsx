@@ -119,13 +119,13 @@ const Tier1Consolidated = () => {
     });
     return takenpayable.map((inv) => {
       return {
-        invoice:inv.tier2Invoice.invoiceId, 
+        invoice: inv.tier2Invoice.invoiceId,
         supplier: inv.tier2Invoice.tier2.actorInfo.name,
-        invoice_date:  formatDate(inv.tier2Invoice.invoiceDate),
+        invoice_date: formatDate(inv.tier2Invoice.invoiceDate),
         payable_date: formatDate(inv.tier2Invoice.dueDate),
-        payable_amount:  Dinero(inv.tier2Invoice.invoiceAmount).toFormat("$0,0"),
-        discounted_amount:Dinero(inv.discountedAmount).toFormat("$0,0"),
-        new_payable:  Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat("$0,0"),
+        payable_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat("$0,0"),
+        discounted_amount: Dinero(inv.discountedAmount).toFormat("$0,0"),
+        new_payable: Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat("$0,0"),
       };
     });
   };
@@ -136,13 +136,15 @@ const Tier1Consolidated = () => {
     });
     return takenreceivable.map((inv) => {
       return {
-        invoice:inv.partAnchorInvoices.anchorInvoice.invoiceId,
-        customer:inv.partAnchorInvoices.anchorInvoice.anchor.actorInfo.name,
-        invoice_date:formatDate(inv.partAnchorInvoices.anchorInvoice.invoiceDate),
-        receivable_amount:Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat("$0,0"),
+        invoice: inv.partAnchorInvoices.anchorInvoice.invoiceId,
+        customer: inv.partAnchorInvoices.anchorInvoice.anchor.actorInfo.name,
+        invoice_date: formatDate(inv.partAnchorInvoices.anchorInvoice.invoiceDate),
+        receivable_amount: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).toFormat("$0,0"),
         receivable_date: formatDate(inv.partAnchorInvoices.anchorInvoice.dueDate),
         discounted_amount: Dinero(inv.discountedAmount).toFormat("$0,0"),
-        new_receivable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount).subtract(Dinero(inv.discountedAmount)).toFormat("$0,0"),
+        new_receivable: Dinero(inv.partAnchorInvoices.anchorInvoice.invoiceAmount)
+          .subtract(Dinero(inv.discountedAmount))
+          .toFormat("$0,0"),
       };
     });
   };
@@ -151,7 +153,7 @@ const Tier1Consolidated = () => {
     return approvedtier2invoice.map((inv) => {
       return {
         invoice: inv.tier2Invoice.invoiceId,
-        supplier: inv.tier2Invoice.tier2.actorInfo.name, 
+        supplier: inv.tier2Invoice.tier2.actorInfo.name,
         invoice_date: inv.tier2Invoice.invoiceDate.slice(0, 10),
         payable_date: inv.tier2Invoice.dueDate.slice(0, 10),
         receivable_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat("$0,0"),
