@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 // import { useHistory } from "react-router-dom";
 import axios from "axios";
-import "react-bulma-components/dist/react-bulma-components.min.css";
-import "../Tier1Login/Tier1Login.scss";
+import "../Login/Login.scss";
 
 const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });

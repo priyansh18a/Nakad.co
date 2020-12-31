@@ -26,16 +26,28 @@ const Tier2EarlyPayment = () => {
   const columnDefs1 = [
     { headerName: "Invoice date", field: "invoice_date" },
     { headerName: "Invoice number", field: "invoice" },
-    { headerName: "Customer", field: "customer"},
-    { headerName: "Net receivable amount", field: "receivable_amount", minWidth: 180, headerClass: "grid-header-right", cellStyle:{ color: "#48AC23", textAlign: 'right' } },
-    { headerName: "Receivable date", field: "receivable_date"  },
-    { headerName: "Send reminder", field: "invoice", cellRenderer: "btnCellRenderer3" , headerClass: "grid-header-centered", cellStyle: {textAlign: 'center'}},
+    { headerName: "Customer", field: "customer" },
+    {
+      headerName: "Net receivable amount",
+      field: "receivable_amount",
+      minWidth: 180,
+      headerClass: "grid-header-right",
+      cellStyle: { color: "#48AC23", textAlign: "right" },
+    },
+    { headerName: "Receivable date", field: "receivable_date" },
+    {
+      headerName: "Send reminder",
+      field: "invoice",
+      cellRenderer: "btnCellRenderer3",
+      headerClass: "grid-header-centered",
+      cellStyle: { textAlign: "center" },
+    },
     {
       headerName: "Cancel request",
       field: "invoice",
       minWidth: 180,
       cellRenderer: "btnCellRenderer4",
-      cellStyle: {textAlign: 'center'},
+      cellStyle: { textAlign: "center" },
       headerClass: "grid-header-centered",
       cellRendererParams: {
         clicked(field: any) {
@@ -49,19 +61,37 @@ const Tier2EarlyPayment = () => {
 
   const columnDefs2 = [
     { headerName: "Invoice number", field: "invoice" },
-    { headerName: "Customer", field: "customer"},
-    { headerName: "Invoice Amount", field: "invoice_amount"},
+    { headerName: "Customer", field: "customer" },
+    { headerName: "Invoice Amount", field: "invoice_amount" },
     { headerName: "Payment Date", field: "payment_date" },
-    { headerName: "Net Receivable", field: "receivable_amount", minWidth: 180,headerClass: "grid-header-right", cellStyle:{  textAlign: 'right'}  },
-    { headerName: "Early Payment Discount ", field: "payment_discount", minWidth: 220, headerClass: "grid-header-right", cellStyle:{ color: "#48AC23",  textAlign: 'right'} },
-    { headerName: "Early Payment Amount", field: "payment_amount", minWidth: 210, headerClass: "grid-header-right",cellStyle:{ color: "#4072E3", textAlign: 'right'} },
+    {
+      headerName: "Net Receivable",
+      field: "receivable_amount",
+      minWidth: 180,
+      headerClass: "grid-header-right",
+      cellStyle: { textAlign: "right" },
+    },
+    {
+      headerName: "Early Payment Discount ",
+      field: "payment_discount",
+      minWidth: 220,
+      headerClass: "grid-header-right",
+      cellStyle: { color: "#48AC23", textAlign: "right" },
+    },
+    {
+      headerName: "Early Payment Amount",
+      field: "payment_amount",
+      minWidth: 210,
+      headerClass: "grid-header-right",
+      cellStyle: { color: "#4072E3", textAlign: "right" },
+    },
     {
       headerName: "Take early payment",
       field: "invoice",
       minWidth: 180,
       cellRenderer: "btnCellRenderer1",
-      headerClass: "grid-header-centered",   
-      cellStyle: {textAlign: 'center'},
+      headerClass: "grid-header-centered",
+      cellStyle: { textAlign: "center" },
       cellRendererParams: {
         clicked(field: any) {
           console.log(field);
@@ -75,9 +105,22 @@ const Tier2EarlyPayment = () => {
   const columnDefs3 = [
     { headerName: "Invoice number", field: "invoice" },
     { headerName: "Customer", field: "customer", minWidth: 200 },
-    { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150,headerClass: "grid-header-right", cellStyle:{ color: "#4072E3" , textAlign: 'right'} },
+    {
+      headerName: "Invoice amount",
+      field: "invoice_amount",
+      minWidth: 150,
+      headerClass: "grid-header-right",
+      cellStyle: { color: "#4072E3", textAlign: "right" },
+    },
     { headerName: "Remark", field: "remark", cellClass: "remark-class", tooltipField: "remark" },
-    { headerName: "Reupload invoice", field: "reupload", minWidth: 150, cellRenderer: "btnCellRenderer2" , cellStyle: {textAlign: 'center'}, headerClass: "grid-header-centered",},
+    {
+      headerName: "Reupload invoice",
+      field: "reupload",
+      minWidth: 150,
+      cellRenderer: "btnCellRenderer2",
+      cellStyle: { textAlign: "center" },
+      headerClass: "grid-header-centered",
+    },
   ];
 
   const defaultColDef = {
@@ -203,14 +246,13 @@ const Tier2EarlyPayment = () => {
       });
   };
 
-
   const getrejectedrowdata = () => {
     return rejectedbytier1.map((inv) => {
       return {
         invoice: inv.invoiceId,
         customer: inv.tier1.actorInfo.name,
         invoice_amount: Dinero(inv.invoiceAmount).toFormat("$0,0"),
-        remark: inv.tier2InvoiceDetails.remark, 
+        remark: inv.tier2InvoiceDetails.remark,
       };
     });
   };
@@ -252,7 +294,7 @@ const Tier2EarlyPayment = () => {
       <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <a className="navbar-item" href="/">
-            <img src={Nakad} height="37" alt="" className="main-logo"/>
+            <img src={Nakad} height="37" alt="" className="main-logo" />
           </a>
           <a
             role="button"
@@ -282,100 +324,59 @@ const Tier2EarlyPayment = () => {
               Account
             </a>
           </div>
-           <div className="navbar-right">
-             <img src={Support} alt="" width="16px" className="support"/>
-             <img src={Notification} alt="" width="20px" />
-             <div>
-                <div className="navbar-item has-dropdown is-hoverable">
-                  <a className="navbar-link">
-                    <p className="name-full">Kamal enterprise</p>  {/* Need to make this dynamic */}
-                     <div className="name-first"><p>K</p></div>
-                  </a>
-
-                  <div className="navbar-dropdown">
-                    <a className="navbar-item">
-                      Profile
-                    </a>
-                    <a className="navbar-item">
-                      Settings
-                    </a>
-                    <a className="navbar-item">
-                      Logout
-                    </a>
+          <div className="navbar-right">
+            <img src={Support} alt="" width="16px" className="support" />
+            <img src={Notification} alt="" width="20px" />
+            <div>
+              <div className="navbar-item has-dropdown is-hoverable">
+                <a className="navbar-link">
+                  <p className="name-full">Kamal enterprise</p> {/* Need to make this dynamic */}
+                  <div className="name-first">
+                    <p>K</p>
                   </div>
-                  </div>
-             </div>
-             
-          </div> 
+                </a>
 
+                <div className="navbar-dropdown">
+                  <a className="navbar-item">Profile</a>
+                  <a className="navbar-item">Settings</a>
+                  <a className="navbar-item">Logout</a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </nav>
       <div className="main-content">
-
-      <div className="tabs is-toggle">
-        <ul>
-          <li className="is-active" onClick={displaytab1} id="tab-1">
-            <a>
-              <span>Pending with Customer</span>
-            </a>
-          </li>
-          <li onClick={displaytab2} id="tab-2">
-            <a>
-              <span> Approved by Customer</span>
-            </a>
-          </li>
-          <li onClick={displaytab3} id="tab-3">
-            <a>
-              <span>Rejected by Customer</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div className="ag-theme-alpine mygrid" id="table-1">
-        <AgGridReact
-          columnDefs={columnDefs1}
-          defaultColDef={defaultColDef}
-          frameworkComponents={frameworkComponents1}
-          onGridReady={onGridReady1}
-          rowData={getpendingbytier1data()}
-          domLayout="autoHeight"
-        />
-      </div>
-      <div className="modal" id="modal2">
-        <div className="modal-background" onClick={closemodal}></div>
-        <div className="modal-card">
-          <header className="modal-card-head">
-            <p className="modal-card-title">Confirmation</p>
-            <button className="delete" aria-label="close" onClick={closemodal}></button>
-          </header>
-          <section className="modal-card-body">
-            <p>Are you sure you want to cancel request of early payment?</p>
-          </section>
-          <footer className="modal-card-foot">
-            <button className="button is-success" onClick={closemodal}>
-              Confirm
-            </button>{" "}
-            //TODO(Priyanshu ) what to do set status when he cancel the request for early payment
-            <button className="button is-danger" onClick={closemodal}>
-              Cancel
-            </button>
-          </footer>
+        <div className="tabs is-toggle">
+          <ul>
+            <li className="is-active" onClick={displaytab1} id="tab-1">
+              <a>
+                <span>Pending with Customer</span>
+              </a>
+            </li>
+            <li onClick={displaytab2} id="tab-2">
+              <a>
+                <span> Approved by Customer</span>
+              </a>
+            </li>
+            <li onClick={displaytab3} id="tab-3">
+              <a>
+                <span>Rejected by Customer</span>
+              </a>
+            </li>
+          </ul>
         </div>
-      </div>
-
-      {/* <div className="table-info has-background-info invoice-approved" >Invoices approved by tier 1</div> */}
-      <div id="table-2" style={{ display: "none" }}>
-        <div className="ag-theme-alpine mygrid">
+        <div className="ag-theme-alpine mygrid" id="table-1">
           <AgGridReact
-            columnDefs={columnDefs2}
+            columnDefs={columnDefs1}
             defaultColDef={defaultColDef}
-            frameworkComponents={frameworkComponents2}
-            onGridReady={onGridReady2}
-            rowData={getapprovedrowdata()}
+            frameworkComponents={frameworkComponents1}
+            onGridReady={onGridReady1}
+            rowData={getpendingbytier1data()}
             domLayout="autoHeight"
           />
         </div>
-        <div className="modal" id="modal">
+        <div className="modal" id="modal2">
           <div className="modal-background" onClick={closemodal}></div>
           <div className="modal-card">
             <header className="modal-card-head">
@@ -383,35 +384,68 @@ const Tier2EarlyPayment = () => {
               <button className="delete" aria-label="close" onClick={closemodal}></button>
             </header>
             <section className="modal-card-body">
-              <p>Are you sure you want to take early payment?</p>
+              <p>Are you sure you want to cancel request of early payment?</p>
             </section>
             <footer className="modal-card-foot">
-              <button className="button is-success" onClick={confirmearlypayment}>
+              <button className="button is-success" onClick={closemodal}>
                 Confirm
-              </button>
+              </button>{" "}
+              //TODO(Priyanshu ) what to do set status when he cancel the request for early payment
               <button className="button is-danger" onClick={closemodal}>
-                Decline
+                Cancel
               </button>
             </footer>
           </div>
         </div>
-        <div className="dont-like">
-          <p>Don’t like the discounting rates? Check back again later</p>
-        </div>
-      </div>
-      {/* <div className="table-info has-background-info invoice-approved" >Invoices rejected by tier 1</div> */}
-      <div className="ag-theme-alpine mygrid" id="table-3" style={{ display: "none" }}>
-        <AgGridReact
-          columnDefs={columnDefs3}
-          defaultColDef={defaultColDef}
-          frameworkComponents={frameworkComponents3}
-          enableBrowserTooltips={true}
-          onGridReady={onGridReady3}
-          rowData={getrejectedrowdata()}
-          domLayout="autoHeight"
 
-        />
-      </div>
+        {/* <div className="table-info has-background-info invoice-approved" >Invoices approved by tier 1</div> */}
+        <div id="table-2" style={{ display: "none" }}>
+          <div className="ag-theme-alpine mygrid">
+            <AgGridReact
+              columnDefs={columnDefs2}
+              defaultColDef={defaultColDef}
+              frameworkComponents={frameworkComponents2}
+              onGridReady={onGridReady2}
+              rowData={getapprovedrowdata()}
+              domLayout="autoHeight"
+            />
+          </div>
+          <div className="modal" id="modal">
+            <div className="modal-background" onClick={closemodal}></div>
+            <div className="modal-card">
+              <header className="modal-card-head">
+                <p className="modal-card-title">Confirmation</p>
+                <button className="delete" aria-label="close" onClick={closemodal}></button>
+              </header>
+              <section className="modal-card-body">
+                <p>Are you sure you want to take early payment?</p>
+              </section>
+              <footer className="modal-card-foot">
+                <button className="button is-success" onClick={confirmearlypayment}>
+                  Confirm
+                </button>
+                <button className="button is-danger" onClick={closemodal}>
+                  Decline
+                </button>
+              </footer>
+            </div>
+          </div>
+          <div className="dont-like">
+            <p>Don’t like the discounting rates? Check back again later</p>
+          </div>
+        </div>
+        {/* <div className="table-info has-background-info invoice-approved" >Invoices rejected by tier 1</div> */}
+        <div className="ag-theme-alpine mygrid" id="table-3" style={{ display: "none" }}>
+          <AgGridReact
+            columnDefs={columnDefs3}
+            defaultColDef={defaultColDef}
+            frameworkComponents={frameworkComponents3}
+            enableBrowserTooltips={true}
+            onGridReady={onGridReady3}
+            rowData={getrejectedrowdata()}
+            domLayout="autoHeight"
+          />
+        </div>
       </div>
     </div>
   );
