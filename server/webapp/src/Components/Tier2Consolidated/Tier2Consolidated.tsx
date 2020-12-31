@@ -103,7 +103,7 @@ const Tier2Consolidated = () => {
         const rowdata2 = adjustmentdone.map((inv: any) => {
           return {
             invoice: inv.tier2Invoice.invoiceId,
-            customer:  inv.tier2Invoice.tier2.actorInfo.name,
+            customer: inv.tier2Invoice.tier2.actorInfo.name,
             invoice_amount: Dinero(inv.tier2Invoice.invoiceAmount).toFormat("$0,0"),
             payment_date: formatDate(inv.tier2Invoice.dueDate),
             receivable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat("$0,0"),
@@ -164,7 +164,7 @@ const Tier2Consolidated = () => {
       <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <a className="navbar-item" href="/">
-            <img src={Nakad} height="37" alt="" className="main-logo"/>
+            <img src={Nakad} height="37" alt="" className="main-logo" />
           </a>
           <a
             role="button"
@@ -194,91 +194,84 @@ const Tier2Consolidated = () => {
               Account
             </a>
           </div>
-           <div className="navbar-right">
-             <img src={Support} alt="" width="16px" className="support"/>
-             <img src={Notification} alt="" width="20px" />
-             <div>
-                <div className="navbar-item has-dropdown is-hoverable">
-                  <a className="navbar-link">
-                    <p className="name-full">Kamal enterprise</p>  {/* Need to make this dynamic */}
-                     <div className="name-first"><p>K</p></div>
-                  </a>
-
-                  <div className="navbar-dropdown">
-                    <a className="navbar-item">
-                      Profile
-                    </a>
-                    <a className="navbar-item">
-                      Settings
-                    </a>
-                    <a className="navbar-item">
-                      Logout
-                    </a>
+          <div className="navbar-right">
+            <img src={Support} alt="" width="16px" className="support" />
+            <img src={Notification} alt="" width="20px" />
+            <div>
+              <div className="navbar-item has-dropdown is-hoverable">
+                <a className="navbar-link">
+                  <p className="name-full">Kamal enterprise</p> {/* Need to make this dynamic */}
+                  <div className="name-first">
+                    <p>K</p>
                   </div>
-                  </div>
-             </div>
-             
-          </div> 
+                </a>
 
+                <div className="navbar-dropdown">
+                  <a className="navbar-item">Profile</a>
+                  <a className="navbar-item">Settings</a>
+                  <a className="navbar-item">Logout</a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </nav>
       <div className="main-content">
-
-      <div className="tabs  is-toggle">
-        <ul>
-          <li className="is-active" onClick={displaypending} id="list-pending">
-            <a>
-              <span>Early payment received but Tally adjustment pending</span>
-            </a>
-          </li>
-          <li onClick={displaydone} id="list-done">
-            <a>
-              <span>Early payment received but Tally adjustment done</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      {/* <div className="table-info has-background-info invoice-approved" style={{width: "484px", marginTop:"10px"}}>Early payment received but Tally adjustment pending</div> */}
-      <div className="ag-theme-alpine mygrid" id="adjustment-pending">
-        <AgGridReact
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          frameworkComponents={frameworkComponents}
-          onGridReady={onGridReady}
-          rowData={tier2adjustmentpending}
-          rowSelection="multiple"
-          domLayout="autoHeight"
-        />
-      </div>
-      <div className="modal" id="modal">
-        <div className="modal-background" onClick={closemodal}></div>
-        <div className="modal-card">
-          <header className="modal-card-head">
-            <p className="modal-card-title">Confirmation</p>
-            <button className="delete" aria-label="close" onClick={closemodal}></button>
-          </header>
-          <section className="modal-card-body">
-            <p>Are you sure you have done tally adjustment?</p>
-          </section>
-          <footer className="modal-card-foot">
-            <button className="button is-success" onClick={tallyadjustmentdone}>
-              Confirm
-            </button>
-            <button className="button is-danger" onClick={closemodal}>
-              Decline
-            </button>
-          </footer>
+        <div className="tabs  is-toggle">
+          <ul>
+            <li className="is-active" onClick={displaypending} id="list-pending">
+              <a>
+                <span>Early payment received but Tally adjustment pending</span>
+              </a>
+            </li>
+            <li onClick={displaydone} id="list-done">
+              <a>
+                <span>Early payment received but Tally adjustment done</span>
+              </a>
+            </li>
+          </ul>
         </div>
-      </div>
-      <div className="ag-theme-alpine mygrid" id="adjustment-done" style={{ display: "none" }}>
-        <AgGridReact
-          columnDefs={columnDefs2}
-          defaultColDef={defaultColDef}
-          onGridReady={onGridReady2}
-          rowData={tier2adjustmentdone}
-          domLayout="autoHeight"
-        />
-      </div>
+        {/* <div className="table-info has-background-info invoice-approved" style={{width: "484px", marginTop:"10px"}}>Early payment received but Tally adjustment pending</div> */}
+        <div className="ag-theme-alpine mygrid" id="adjustment-pending">
+          <AgGridReact
+            columnDefs={columnDefs}
+            defaultColDef={defaultColDef}
+            frameworkComponents={frameworkComponents}
+            onGridReady={onGridReady}
+            rowData={tier2adjustmentpending}
+            rowSelection="multiple"
+            domLayout="autoHeight"
+          />
+        </div>
+        <div className="modal" id="modal">
+          <div className="modal-background" onClick={closemodal}></div>
+          <div className="modal-card">
+            <header className="modal-card-head">
+              <p className="modal-card-title">Confirmation</p>
+              <button className="delete" aria-label="close" onClick={closemodal}></button>
+            </header>
+            <section className="modal-card-body">
+              <p>Are you sure you have done tally adjustment?</p>
+            </section>
+            <footer className="modal-card-foot">
+              <button className="button is-success" onClick={tallyadjustmentdone}>
+                Confirm
+              </button>
+              <button className="button is-danger" onClick={closemodal}>
+                Decline
+              </button>
+            </footer>
+          </div>
+        </div>
+        <div className="ag-theme-alpine mygrid" id="adjustment-done" style={{ display: "none" }}>
+          <AgGridReact
+            columnDefs={columnDefs2}
+            defaultColDef={defaultColDef}
+            onGridReady={onGridReady2}
+            rowData={tier2adjustmentdone}
+            domLayout="autoHeight"
+          />
+        </div>
       </div>
     </div>
   );

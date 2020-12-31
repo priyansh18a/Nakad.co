@@ -6,7 +6,8 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import Nakad from "./../../Graphics/Nakad.svg";
 import Notification from "./../../Graphics/Notification.svg";
-import Support from "./../../Graphics/Support.svg";import BtnCellRenderer from "./BtnCellRenderer";
+import Support from "./../../Graphics/Support.svg";
+import BtnCellRenderer from "./BtnCellRenderer";
 import logo from "./../../Graphics/logo.jpg";
 import "./Tier1Action.scss";
 import Dinero from "dinero.js";
@@ -32,10 +33,10 @@ const Tier1Action = () => {
   };
 
   const columnDefs = [
-    { headerName: "Invoice number", field: "invoice"},
+    { headerName: "Invoice number", field: "invoice" },
     { headerName: "Supplier", field: "vendor", minWidth: 200 },
     { headerName: "Invoice date", field: "invoice_date" },
-    { headerName: "Payable date", field: "payable_date"},
+    { headerName: "Payable date", field: "payable_date" },
     { headerName: "Invoice amount", field: "invoice_amount", minWidth: 150 },
     { headerName: "Payable amount", field: "payable_amount", minWidth: 180 },
     {
@@ -175,7 +176,7 @@ const Tier1Action = () => {
       <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <a className="navbar-item" href="/">
-            <img src={Nakad} height="37" alt="" className="main-logo"/>
+            <img src={Nakad} height="37" alt="" className="main-logo" />
           </a>
           <a
             role="button"
@@ -192,7 +193,7 @@ const Tier1Action = () => {
 
         <div className="navbar-menu">
           <div className="navbar-center">
-          <a className="navbar-item" href="/tier1/action">
+            <a className="navbar-item" href="/tier1/action">
               Invoice Approval
             </a>
             <a className="navbar-item" href="/tier1/data">
@@ -203,138 +204,134 @@ const Tier1Action = () => {
             </a>
             <a className="navbar-item">Settings</a>
           </div>
-           <div className="navbar-right">
-             <img src={Support} alt="" width="16px" className="support"/>
-             <img src={Notification} alt="" width="20px" />
-             <div>
-                <div className="navbar-item has-dropdown is-hoverable">
-                  <a className="navbar-link">
-                    <p className="name-full">Kamal enterprise</p>  {/* Need to make this dynamic */}
-                     <div className="name-first"><p>K</p></div>
+          <div className="navbar-right">
+            <img src={Support} alt="" width="16px" className="support" />
+            <img src={Notification} alt="" width="20px" />
+            <div>
+              <div className="navbar-item has-dropdown is-hoverable">
+                <a className="navbar-link">
+                  <p className="name-full">Kamal enterprise</p> {/* Need to make this dynamic */}
+                  <div className="name-first">
+                    <p>K</p>
+                  </div>
+                </a>
+
+                <div className="navbar-dropdown">
+                  <a className="navbar-item">Profile</a>
+                  <a className="navbar-item">Settings</a>
+                  <a className="navbar-item" onClick={logout}>
+                    Logout
                   </a>
-
-                  <div className="navbar-dropdown">
-                    <a className="navbar-item">
-                      Profile
-                    </a>
-                    <a className="navbar-item">
-                      Settings
-                    </a>
-                    <a className="navbar-item" onClick={logout}>
-                      Logout
-                    </a>
-                  </div>
-                  </div>
-             </div>
-             
-          </div> 
-
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </nav>
       <div className="main-content">
-      <div className="actiontop">
-        <p className="title has-text-info tier-2-action">Shyam International</p>
-        <button className="button is-success is-outlined notification">
-          <span className="icon">
-            <i className="fas fa-bell"></i>
+        <div className="actiontop">
+          <p className="title has-text-info tier-2-action">Shyam International</p>
+          <button className="button is-success is-outlined notification">
+            <span className="icon">
+              <i className="fas fa-bell"></i>
+            </span>
+            <span>Notification</span>
+          </button>
+          {/* <div className="total-benefit has-background-info">Total Benefit: ₹10000</div> */}
+        </div>
+        <div id="table-more-info" className="has-background-warning">
+          Tier 2 requests confirmation of invoice. Based on <br /> this it will discount invoice to get early payment.
+        </div>
+        <div className="table-info has-background-info" style={{ marginBottom: "20px", width: "300px" }}>
+          Supplier invoices for approval
+          <span onMouseOver={showtablemoreinfo} onMouseLeave={hidetablemoreinfo} className="moreinfospan">
+            <i className="fas fa-info-circle"></i>
           </span>
-          <span>Notification</span>
-        </button>
-        {/* <div className="total-benefit has-background-info">Total Benefit: ₹10000</div> */}
-      </div>
-      <div id="table-more-info" className="has-background-warning">
-        Tier 2 requests confirmation of invoice. Based on <br /> this it will discount invoice to get early payment.
-      </div>
-      <div className="table-info has-background-info" style={{ marginBottom: "20px", width: "300px" }}>
-        Supplier invoices for approval
-        <span onMouseOver={showtablemoreinfo} onMouseLeave={hidetablemoreinfo} className="moreinfospan">
-          <i className="fas fa-info-circle"></i>
-        </span>
-      </div>
-      <div>
-        <div className="ag-theme-alpine mygrid">
-          <AgGridReact
-            columnDefs={columnDefs}
-            defaultColDef={defaultColDef}
-            frameworkComponents={frameworkComponents}
-            onGridReady={onGridReady}
-            rowData={getrowdata()}
-            domLayout="autoHeight"
-            rowClassRules={{
-              highlight(params) {
-                return params.data.invoice === "KEINV1234";
-              },
-            }}
-          />
         </div>
-        <div className="modal" id="modal">
-          <div className="modal-background" onClick={closemodal}></div>
-          <div className="modal-card">
-            <header className="modal-card-head">
-              <p className="modal-card-title">More Details</p>
-              <button className="delete" onClick={closemodal} aria-label="close"></button>
-            </header>
-            <section className="modal-card-body">
-              <div className="tabs is-toggle">
-                <ul>
-                  <li className="is-active" onClick={displaytab1} id="tab-1">
-                    <a>
-                      <span>Invoice</span>
-                    </a>
-                  </li>
-                  <li onClick={displaytab2} id="tab-2">
-                    <a>
-                      <span>GRN</span>
-                    </a>
-                  </li>
-                  <li id="tab-3">
-                    <a>
-                      <span>Debit Note</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <p className="image is-4by3" id="invoice">
-                <img src={tier2Invoiceurl} alt="" crossOrigin="anonymous" />
-              </p>
-              <p className="image is-4by3" id="grn">
-                <img src={tier2GRNurl} alt="" crossOrigin="anonymous" />
-              </p>
-              <div className="field">
-                <div className="control">
-                  <label className="label">Remark</label>
-                  <textarea
-                    className="input"
-                    name="remark"
-                    placeholder="Write your remark here(if any)"
-                    style={{ height: "80px" }}
-                    value={remark}
-                    onChange={updateremark}
-                  />
-                </div>
-              </div>
-
-              <footer className="modal-card-foot">
-                <button
-                  className="button is-success"
-                  onClick={() => {
-                    changestatus("Approved");
-                  }}
-                >
-                  Approve
-                </button>
-                <button
-                  className="button is-danger"
-                  onClick={() => {
-                    changestatus("Rejected");
-                  }}
-                >
-                  Decline
-                </button>
-              </footer>
-            </section>
+        <div>
+          <div className="ag-theme-alpine mygrid">
+            <AgGridReact
+              columnDefs={columnDefs}
+              defaultColDef={defaultColDef}
+              frameworkComponents={frameworkComponents}
+              onGridReady={onGridReady}
+              rowData={getrowdata()}
+              domLayout="autoHeight"
+              rowClassRules={{
+                highlight(params) {
+                  return params.data.invoice === "KEINV1234";
+                },
+              }}
+            />
           </div>
-        </div>
+          <div className="modal" id="modal">
+            <div className="modal-background" onClick={closemodal}></div>
+            <div className="modal-card">
+              <header className="modal-card-head">
+                <p className="modal-card-title">More Details</p>
+                <button className="delete" onClick={closemodal} aria-label="close"></button>
+              </header>
+              <section className="modal-card-body">
+                <div className="tabs is-toggle">
+                  <ul>
+                    <li className="is-active" onClick={displaytab1} id="tab-1">
+                      <a>
+                        <span>Invoice</span>
+                      </a>
+                    </li>
+                    <li onClick={displaytab2} id="tab-2">
+                      <a>
+                        <span>GRN</span>
+                      </a>
+                    </li>
+                    <li id="tab-3">
+                      <a>
+                        <span>Debit Note</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <p className="image is-4by3" id="invoice">
+                  <img src={tier2Invoiceurl} alt="" crossOrigin="anonymous" />
+                </p>
+                <p className="image is-4by3" id="grn">
+                  <img src={tier2GRNurl} alt="" crossOrigin="anonymous" />
+                </p>
+                <div className="field">
+                  <div className="control">
+                    <label className="label">Remark</label>
+                    <textarea
+                      className="input"
+                      name="remark"
+                      placeholder="Write your remark here(if any)"
+                      style={{ height: "80px" }}
+                      value={remark}
+                      onChange={updateremark}
+                    />
+                  </div>
+                </div>
+
+                <footer className="modal-card-foot">
+                  <button
+                    className="button is-success"
+                    onClick={() => {
+                      changestatus("Approved");
+                    }}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    className="button is-danger"
+                    onClick={() => {
+                      changestatus("Rejected");
+                    }}
+                  >
+                    Decline
+                  </button>
+                </footer>
+              </section>
+            </div>
+          </div>
         </div>
       </div>
     </div>

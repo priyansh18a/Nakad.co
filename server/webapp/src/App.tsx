@@ -1,8 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
-import Tier1Login from "./Components/Tier1Login/Tier1Login";
-import Tier2Login from "./Components/Tier2Login/Tier2Login";
-import BankLogin from "./Components/BankLogin/BankLogin";
+import Login from "./Components/Login/Login";
 import Tier1Action from "./Components/Tier1Action/Tier1Action";
 import Tier2Upload from "./Components/Tier2Upload/Tier2Upload";
 import Tier2Account from "./Components/Tier2Account/Tier2Account";
@@ -18,8 +16,8 @@ const App = () => {
   return (
     <Router>
       <Switch>
-      <Route exact path="/">
-          <Tier1Login />
+        <Route exact path="/">
+          <Login />
         </Route>
         <Route exact path="/register">
           <Register />
@@ -33,9 +31,6 @@ const App = () => {
         <Route exact path="/tier1/data">
           <Tier1DataUpdate />
         </Route>
-        <Route exact path="/tier2">
-          <Tier2Login />
-        </Route>
         <Route exact path="/tier2/account">
           <Tier2Account />
         </Route>
@@ -47,9 +42,6 @@ const App = () => {
         </Route>
         <Route exact path="/tier2/upload">
           <Tier2Upload />
-        </Route>
-        <Route exact path="/bank">
-          <BankLogin />
         </Route>
         <Route exact path="/bank/collection">
           <BankCollection />
