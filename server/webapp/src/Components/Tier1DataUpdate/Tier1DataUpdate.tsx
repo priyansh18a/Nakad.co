@@ -4,7 +4,9 @@ import axios from "axios";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
-import logo from "./../../Graphics/logo.jpg";
+import Nakad from "./../../Graphics/Nakad.svg";
+import Notification from "./../../Graphics/Notification.svg";
+import Support from "./../../Graphics/Support.svg";
 import Dinero from "dinero.js";
 import "./Tier1DataUpdate.scss";
 import BtnCellRenderer from "./BtnCellRenderer";
@@ -18,14 +20,14 @@ const Tier1DataUpdate = () => {
   const [anchortier2mappingtoupdate, setAnchortier2mappingtoupdate] = useState("");
 
   const columnDefs1 = [
-    { headerName: "Invoice #", field: "invoice", maxWidth: 150 },
+    { headerName: "Invoice number", field: "invoice", maxWidth: 150 },
     { headerName: "Supplier", field: "supplier" },
-    { headerName: "Invoice Date", field: "invoice_date", minWidth: 180 },
-    { headerName: "Payable Amount", field: "payable_amount", minWidth: 200 },
-    { headerName: "Amount Discounted", field: "discounted_amount", minWidth: 200 },
-    { headerName: "Remaining Amount", field: "remaining_payable", minWidth: 200 },
+    { headerName: "Invoice date", field: "invoice_date", minWidth: 180 },
+    { headerName: "Payable amount", field: "payable_amount", minWidth: 200 },
+    { headerName: "Amount discounted", field: "discounted_amount", minWidth: 200 },
+    { headerName: "Remaining amount", field: "remaining_payable", minWidth: 200 },
     {
-      headerName: "Entry Adjusted in ERP",
+      headerName: "Entry adjusted in ERP",
       field: "details",
       minWidth: 200,
       cellRenderer: "btnCellRenderer1",
@@ -40,14 +42,14 @@ const Tier1DataUpdate = () => {
   ];
 
   const columnDefs2 = [
-    { headerName: "Invoice", field: "invoice", maxWidth: 150 },
+    { headerName: "Invoice number", field: "invoice", maxWidth: 150 },
     { headerName: "Customer", field: "customer" },
-    { headerName: "Invoice Date", field: "invoice_date", minWidth: 150 },
-    { headerName: "Receivable Amount", field: "receivable_amount", minWidth: 200 },
-    { headerName: "Amount Discounted", field: "discounted_amount", minWidth: 220 },
-    { headerName: "Remaining Amount", field: "remaining_receivable", minWidth: 220 },
+    { headerName: "Invoice date", field: "invoice_date", minWidth: 150 },
+    { headerName: "Receivable amount", field: "receivable_amount", minWidth: 200 },
+    { headerName: "Amount discounted", field: "discounted_amount", minWidth: 220 },
+    { headerName: "Remaining amount", field: "remaining_receivable", minWidth: 220 },
     {
-      headerName: "Entry Adjusted in ERP",
+      headerName: "Entry adjusted in ERP",
       field: "details",
       minWidth: 150,
       cellRenderer: "btnCellRenderer2",
@@ -108,7 +110,7 @@ const Tier1DataUpdate = () => {
             invoice_date: formatDate(inv.tier2Invoice.invoiceDate),
             discounted_amount: Dinero(inv.discountedAmount).toFormat("$0,0"),
             payable_amount: Dinero(inv.tier2Invoice.receivableAmount).toFormat("$0,0"),
-            remaining_payable:  Dinero(inv.tier2Invoice.receivableAmount).subtract(Dinero(inv.discountedAmount)).toFormat("$0,0"),
+            
             details: [inv.tier2Invoice.invoiceId, inv.partAnchorInvoices.anchorInvoice.invoiceId],
           };
         });
@@ -226,12 +228,11 @@ const Tier1DataUpdate = () => {
 
   return (
     <div>
-      <nav className="navbar is-info" role="navigation" aria-label="main navigation">
+     <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <a className="navbar-item" href="/">
-            <img src={logo} width="150" alt="" />
+            <img src={Nakad} height="37" alt="" className="main-logo"/>
           </a>
-
           <a
             role="button"
             className="navbar-burger burger"
@@ -245,28 +246,48 @@ const Tier1DataUpdate = () => {
           </a>
         </div>
 
-        <div id="navbarBasicExample" className="navbar-menu">
-          <div className="navbar-end">
-            <a className="navbar-item" href="/tier1/action">
+        <div className="navbar-menu">
+          <div className="navbar-center">
+          <a className="navbar-item " href="/tier1/action">
               Invoice Approval
             </a>
-            <a className="navbar-item" href="/tier1/data">
+            <a className="navbar-item this-page" href="/tier1/data">
               Entry Adjustment
             </a>
             <a className="navbar-item" href="/tier1/consolidated">
               Consolidated View
             </a>
             <a className="navbar-item">Settings</a>
-            <div className="navbar-item">
-              <div className="buttons">
-                <button className="button is-primary is-light" onClick={logout}>
-                  Log Out
-                </button>
-              </div>
-            </div>
           </div>
+           <div className="navbar-right">
+             <img src={Support} alt="" width="16px" className="support"/>
+             <img src={Notification} alt="" width="20px" />
+             <div>
+                <div className="navbar-item has-dropdown is-hoverable">
+                  <a className="navbar-link">
+                    <p className="name-full">Kamal enterprise</p>  {/* Need to make this dynamic */}
+                     <div className="name-first"><p>K</p></div>
+                  </a>
+
+                  <div className="navbar-dropdown">
+                    <a className="navbar-item">
+                      Profile
+                    </a>
+                    <a className="navbar-item">
+                      Settings
+                    </a>
+                    <a className="navbar-item" onClick={logout}>
+                      Logout
+                    </a>
+                  </div>
+                  </div>
+             </div>
+             
+          </div> 
+
         </div>
       </nav>
+      <div className="main-content">
       <div className="actiontop">
         <p className="title has-text-info tier-2-action">Shyam International</p>
         <button className="button is-success is-outlined notification">
@@ -289,7 +310,7 @@ const Tier1DataUpdate = () => {
         </span>
       </div>
 
-      <div className="tabs is-boxed">
+      <div className="tabs is-toggle">
         <ul>
           <li className="is-active" onClick={displaypending} id="list-payable">
             <a>
@@ -366,6 +387,7 @@ const Tier1DataUpdate = () => {
             </button>
           </footer>
         </div>
+      </div>
       </div>
     </div>
   );

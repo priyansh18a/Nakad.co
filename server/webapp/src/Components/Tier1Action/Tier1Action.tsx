@@ -6,8 +6,8 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import Nakad from "./../../Graphics/Nakad.svg";
 import Notification from "./../../Graphics/Notification.svg";
-import Support from "./../../Graphics/Support.svg";import BtnCellRenderer from "./BtnCellRenderer";
-import logo from "./../../Graphics/logo.jpg";
+import Support from "./../../Graphics/Support.svg";
+import BtnCellRenderer from "./BtnCellRenderer";
 import "./Tier1Action.scss";
 import Dinero from "dinero.js";
 import { formatDate } from "../../Utils/DateUtils";
@@ -192,7 +192,7 @@ const Tier1Action = () => {
 
         <div className="navbar-menu">
           <div className="navbar-center">
-          <a className="navbar-item" href="/tier1/action">
+          <a className="navbar-item this-page" href="/tier1/action">
               Invoice Approval
             </a>
             <a className="navbar-item" href="/tier1/data">
