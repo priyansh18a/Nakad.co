@@ -27,7 +27,7 @@ $background-color: #F0F0F7;
 .login-left{
     width: 40vw;
     height: 100vh;
-    min-height: 1000px;
+    min-height: 500px;
     background-color:$primary-color ;
     z-index: 10;
     display: flex;
@@ -57,7 +57,7 @@ $background-color: #F0F0F7;
 }
 .login-right-center {
     height: 92vh;
-    min-height: 800px;
+    min-height: 500px;
     display: flex;
     align-items: center;
 }
