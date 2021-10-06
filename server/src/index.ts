@@ -94,7 +94,7 @@ function setupSessionAndPassport(connection: Connection) {
         store: new (connectPgSimple(Session))({
           pool,
         }),
-        secret: "9OLWxND4o83j4K4iuopOhjbdjwgg515",
+        secret: "SECRET_KEY",
         saveUninitialized: false,
         resave: false,
         cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 },
