@@ -16,13 +16,13 @@ SME’s and MSME’s by tying up banks with tier-1 enterprises.
 
 #Early Payment Screen:
 
-<img src="media/Early_Payment_Pipeline.png" width="250">
+<img src="media/Early_Payment_Pipeline.png">
 
 #Invoice & GRN Upload Screen:
 
-<img src="media/Invoice&GRN_Upload.png" width="250">
+<img src="media/Invoice&GRN_Upload.png">
 
 #Bank Disbursement Screen:
 
-<img src="media/Bank_Disbursement.png" width="250">
+<img src="media/Bank_Disbursement.png">
 
