@@ -12,7 +12,7 @@ SME’s and MSME’s by tying up banks with tier-1 enterprises.
 
 #Login Page:
 
-<img src="media/Login_Screen.png" width="250">
+<img src="media/Login_Screen.png">
 
 #Early Payment Screen:
 
